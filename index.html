@@ -4,7 +4,7 @@
     <script async src="https://pagead2.googlesyndication.com/pagead/js/ads=google.js?client=ca-pub-5395525176253885" crossorigin="anonymous"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pilot Intelligent v3.2.5</title>
+    <title>Pilot Intelligent v3.2.6</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
@@ -15,20 +15,19 @@
 
     <style>
         :root { --blue-corp: #1e3a8a; }
-        body { font-family: 'Poppins', sans-serif; background: #f1f5f9; color: #1e293b; }
+        body { font-family: 'Poppins', sans-serif; background: #f1f5f9; color: #1e293b; line-height: 1.2; }
 
-        /* UI Styling */
-        .pixar-card { background: white; border-radius: 1rem; border: 1px solid rgba(0,0,0,0.1); }
+        .pixar-card { background: white; border-radius: 0.75rem; border: 1px solid rgba(0,0,0,0.1); }
         .row-input { 
             font-size: 0.75rem; width: 100%; border: none; background: transparent; 
-            padding: 4px; outline: none; resize: none; overflow: hidden; display: block; line-height: 1.3;
+            padding: 4px; outline: none; resize: none; overflow: hidden; display: block;
         }
 
-        /* HIDE BROWSER UI */
+        /* HIDE BROWSER UI ELEMENTS */
         input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
         input[type=number] { -moz-appearance: textfield; }
 
-        /* PRINT ENGINE v3.2.5 */
+        /* PRINT ENGINE v3.2.6 */
         @media print {
             @page { 
                 size: A4 landscape; 
@@ -36,56 +35,57 @@
             }
             body { background: white !important; padding: 0 !important; margin: 0 !important; }
             .no-print { display: none !important; }
-            .print-full { width: 100% !important; border: none !important; box-shadow: none !important; margin: 0 !important; }
+            .print-full { width: 100% !important; border: none !important; box-shadow: none !important; }
             
             .corporate-header-print {
                 display: flex !important;
                 align-items: center;
-                border-bottom: 2pt solid black;
-                padding-bottom: 8px;
-                margin-bottom: 10px;
+                border-bottom: 1.5pt solid black;
+                padding-bottom: 5px;
+                margin-bottom: 8px;
             }
 
             table { 
                 width: 100% !important; 
-                table-layout: fixed !important; /* Strict column control */
+                table-layout: fixed !important; 
                 border-collapse: collapse !important; 
             }
             
             th, td { 
                 border: 0.5pt solid black !important; 
-                padding: 2px 1px !important; 
+                padding: 2px !important; 
                 word-wrap: break-word !important;
                 vertical-align: top !important;
-                font-size: 6.5pt !important; /* Smaller font to fit everything */
+                font-size: 6.5pt !important; /* Smaller text for print */
                 color: black !important;
             }
 
-            th { background-color: #f2f2f2 !important; font-weight: bold; text-transform: uppercase; }
+            th { background-color: #f3f4f6 !important; font-weight: bold; text-transform: uppercase; font-size: 6pt !important; }
 
-            /* COLUMN RATIO CONTROL (Total 100%) */
+            /* STRICT COLUMN WIDTHS (Total 100%) */
             .col-date { width: 7.5%; }
-            .col-time { width: 4.5%; }
-            .col-driver { width: 10%; }
-            .col-purpose { width: 32%; } /* Terbesar untuk Tujuan */
+            .col-time { width: 4%; }
+            .col-driver { width: 9%; }
+            .col-purpose { width: 42%; } /* Massive space for destination */
             .col-auth { width: 7%; }
             .col-odo { width: 6%; }
-            .col-dist { width: 5%; }
-            .col-fuel { width: 4.5%; }
-            .col-notes { width: 10%; }
+            .col-dist { width: 4.5%; }
+            .col-fuel { width: 3.5%; }
+            .col-notes { width: 5%; }
 
-            /* FORCE TEXT VISIBILITY */
-            .row-input { 
+            /* FORCE TEXTAREA TO SHOW ALL CONTENT */
+            textarea.row-input, input.row-input { 
                 height: auto !important; 
+                min-height: unset !important;
                 overflow: visible !important;
                 display: block !important;
-                white-space: pre-wrap !important; /* Wrap long text */
+                white-space: pre-wrap !important; 
                 font-size: 7pt !important;
                 line-height: 1.1 !important;
+                appearance: none !important;
             }
 
-            /* Hide input icons in print */
-            input[type="date"]::-webkit-inner-spin-button,
+            /* Hide browser UI icons on print */
             input[type="date"]::-webkit-calendar-picker-indicator,
             input[type="time"]::-webkit-calendar-picker-indicator {
                 display: none !important;
@@ -93,59 +93,59 @@
             }
 
             tr { page-break-inside: avoid; }
-            .signature-section { page-break-inside: avoid; margin-top: 15px; }
+            .signature-section { page-break-inside: avoid; margin-top: 10px; }
         }
 
         .corporate-header-print { display: none; }
     </style>
 </head>
-<body class="p-2 md:p-6">
+<body class="p-2 md:p-4">
 
     <div class="max-w-[1600px] mx-auto print-full">
         
         <!-- PRINT HEADER -->
         <div class="corporate-header-print">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/2/26/Coat_of_arms_of_Malaysia.svg" style="width: 50px; height: 50px; margin-right: 15px;">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/2/26/Coat_of_arms_of_Malaysia.svg" style="width: 45px; height: 45px; margin-right: 15px;">
             <div style="flex-grow: 1;">
-                <h2 style="font-size: 13pt; font-weight: bold; margin: 0;">LOG PERJALANAN KENDERAAN JABATAN</h2>
-                <h3 style="font-size: 9pt; margin: 0;">Sistem Pilot Intelligent Veterinar (Universal Logistics)</h3>
+                <h2 style="font-size: 12pt; font-weight: bold; margin: 0;">LOG PERJALANAN KENDERAAN JABATAN</h2>
+                <h3 style="font-size: 8pt; margin: 0;">Sistem Pilot Intelligent Veterinar (Universal Logistics)</h3>
             </div>
         </div>
 
         <!-- SCREEN HEADER -->
-        <header class="pixar-card p-6 mb-6 flex flex-col lg:flex-row items-center justify-between border-b-8 border-blue-900 no-print gap-6 shadow-xl">
-            <div class="flex items-center gap-6">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/2/26/Coat_of_arms_of_Malaysia.svg" class="w-12 h-12">
+        <header class="pixar-card p-4 mb-4 flex flex-col lg:flex-row items-center justify-between border-b-4 border-blue-900 no-print gap-4 shadow-lg">
+            <div class="flex items-center gap-4">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/2/26/Coat_of_arms_of_Malaysia.svg" class="w-10 h-10">
                 <div>
-                    <h1 class="text-xl font-black text-blue-900">PILOT INTELLIGENT v3.2.5</h1>
-                    <p class="text-[9px] font-bold text-blue-500 tracking-widest uppercase">Penyelarasan Logistik Automatik</p>
+                    <h1 class="text-lg font-black text-blue-900">PILOT INTELLIGENT v3.2.6</h1>
+                    <p class="text-[8px] font-bold text-blue-500 tracking-widest uppercase">Logistik Kenderaan Rasmi</p>
                 </div>
             </div>
-            <div id="auth-area" class="flex items-center gap-4">
-                <button id="login-btn" onclick="loginGoogle()" class="bg-blue-900 text-white px-5 py-2 rounded-full text-sm font-bold shadow-lg hover:bg-blue-800">LOGIN GOOGLE</button>
-                <div id="user-profile" class="hidden flex items-center gap-3">
-                    <img id="u-avatar" class="w-10 h-10 rounded-full border-2 border-blue-900">
-                    <button onclick="logout()" class="text-xs text-red-500 underline">Logout</button>
+            <div id="auth-area" class="flex items-center gap-3">
+                <button id="login-btn" onclick="loginGoogle()" class="bg-blue-900 text-white px-4 py-2 rounded-full text-xs font-bold hover:bg-blue-800 transition">GOOGLE LOGIN</button>
+                <div id="user-profile" class="hidden flex items-center gap-2">
+                    <img id="u-avatar" class="w-8 h-8 rounded-full border border-blue-900">
+                    <button onclick="logout()" class="text-[10px] text-red-500 underline font-bold">Logout</button>
                 </div>
             </div>
         </header>
 
         <!-- METADATA -->
-        <div class="pixar-card overflow-hidden mb-6 border-t-8 border-blue-600 print-full shadow-md">
+        <div class="pixar-card overflow-hidden mb-4 border-t-4 border-blue-600 print-full shadow-sm">
             <div class="grid grid-cols-2 lg:grid-cols-4">
-                <div class="p-2 border-r border-b lg:border-b-0"><label class="text-[8px] font-bold text-gray-400 uppercase">Bulan/Tahun</label>
-                    <input type="month" id="m-month" class="w-full font-bold text-blue-900 outline-none" onchange="sync()"></div>
-                <div class="p-2 border-r border-b lg:border-b-0"><label class="text-[8px] font-bold text-gray-400 uppercase">Model Kenderaan</label>
-                    <input type="text" id="m-type" class="w-full font-bold uppercase outline-none" placeholder="Contoh: NISSAN X-TRAIL" onchange="sync()"></div>
-                <div class="p-2 border-r"><label class="text-[8px] font-bold text-gray-400 uppercase">No. Pendaftaran</label>
-                    <input type="text" id="m-plate" class="w-full font-bold uppercase outline-none" placeholder="Contoh: VNC 974" onchange="sync()"></div>
-                <div class="p-2"><label class="text-[8px] font-bold text-gray-400 uppercase">Bahagian/Unit</label>
-                    <input type="text" id="m-unit" class="w-full font-bold uppercase outline-none" placeholder="Bahagian..." onchange="sync()"></div>
+                <div class="p-2 border-r border-b lg:border-b-0"><label class="text-[7px] font-bold text-gray-400 uppercase">Bulan/Tahun</label>
+                    <input type="month" id="m-month" class="w-full font-bold text-blue-900 outline-none text-xs" onchange="sync()"></div>
+                <div class="p-2 border-r border-b lg:border-b-0"><label class="text-[7px] font-bold text-gray-400 uppercase">Model Kenderaan</label>
+                    <input type="text" id="m-type" class="w-full font-bold uppercase outline-none text-xs" onchange="sync()"></div>
+                <div class="p-2 border-r"><label class="text-[7px] font-bold text-gray-400 uppercase">No. Pendaftaran</label>
+                    <input type="text" id="m-plate" class="w-full font-bold uppercase outline-none text-xs" onchange="sync()"></div>
+                <div class="p-2"><label class="text-[7px] font-bold text-gray-400 uppercase">Bahagian/Unit</label>
+                    <input type="text" id="m-unit" class="w-full font-bold uppercase outline-none text-xs" onchange="sync()"></div>
             </div>
         </div>
 
         <!-- MAIN TABLE -->
-        <div class="pixar-card overflow-hidden mb-6 border-t-8 border-blue-900 shadow-xl print-full">
+        <div class="pixar-card overflow-hidden mb-4 border-t-4 border-blue-900 shadow-xl print-full">
             <div class="overflow-x-auto">
                 <table id="main-table">
                     <thead class="bg-blue-900 text-white">
@@ -160,51 +160,54 @@
                             <th rowspan="2" class="col-dist">Jarak</th>
                             <th colspan="2" class="col-fuel">Bahan Api</th>
                             <th rowspan="2" class="col-notes">Catatan</th>
-                            <th rowspan="2" class="no-print" style="width: 30px;"></th>
+                            <th rowspan="2" class="no-print" style="width: 25px;"></th>
                         </tr>
-                        <tr class="bg-blue-800 text-[8px]">
+                        <tr class="bg-blue-800 text-[7px]">
                             <th class="col-time">Mula</th><th class="col-time">Hingga</th>
                             <th class="col-fuel">RM</th><th class="col-fuel">Liter</th>
                         </tr>
                     </thead>
                     <tbody id="log-body" class="bg-white">
-                        <!-- Rows -->
+                        <!-- Rows are added here -->
                     </tbody>
                 </table>
             </div>
-            <div class="p-4 bg-gray-50 flex justify-between no-print">
-                <button onclick="addRow()" class="bg-blue-900 text-white px-6 py-2 rounded-lg font-bold shadow-md hover:bg-blue-800">+ Tambah Rekod</button>
-                <div class="flex items-center gap-3">
-                    <span class="text-xs font-bold text-gray-500 uppercase">Odo Awal:</span>
-                    <input type="number" id="m-odo-start" class="border rounded px-3 py-1 w-32 font-black text-blue-900" oninput="calcLogic(); sync()">
+            <div class="p-3 bg-gray-50 flex justify-between no-print">
+                <button onclick="addRow()" class="bg-blue-900 text-white px-5 py-1.5 rounded-lg text-xs font-bold shadow-md hover:bg-blue-800">+ Tambah Rekod</button>
+                <div class="flex items-center gap-2">
+                    <span class="text-[10px] font-bold text-gray-500 uppercase">Odo Awal:</span>
+                    <input type="number" id="m-odo-start" class="border rounded px-2 py-1 w-24 font-black text-blue-900 text-xs" oninput="calcLogic(); sync()">
                 </div>
             </div>
         </div>
 
-        <!-- FOOTER SUMMARY -->
+        <!-- FOOTER SUMMARY & SIGNATURE -->
         <div class="signature-section grid grid-cols-1 lg:grid-cols-2 gap-4 print-full">
-            <div class="pixar-card border-t-4 border-green-600 p-3 shadow-sm">
+            <!-- Summary Table -->
+            <div class="pixar-card border-t-2 border-green-600 p-2 shadow-sm">
                 <table class="w-full text-center">
                     <tr class="text-[7px] font-bold text-gray-400 uppercase">
                         <td>Jarak (KM)</td><td>Liter (L)</td><td>Kos (RM)</td><td>Kadar KM/L</td>
                     </tr>
-                    <tr class="text-lg font-black">
+                    <tr class="text-base font-black">
                         <td id="sum-dist">0</td><td id="sum-liter">0</td><td id="sum-rm">0</td><td id="sum-rate" class="text-green-700">0.00</td>
                     </tr>
                 </table>
             </div>
 
-            <div class="pixar-card border-t-4 border-gray-400 p-3 shadow-sm">
-                <p class="text-[8px] font-bold text-gray-400 uppercase mb-2">Pengesahan Pegawai Kenderaan:</p>
+            <!-- Signature Section -->
+            <div class="pixar-card border-t-2 border-gray-400 p-2 shadow-sm">
+                <p class="text-[7px] font-bold text-gray-400 uppercase mb-2">Pengesahan Pegawai Kenderaan / Ketua Unit:</p>
                 <div class="border-b border-black w-full mb-1">
-                    <textarea id="auth-name" placeholder="NAMA & JAWATAN" class="row-input font-bold uppercase"></textarea>
+                    <textarea id="auth-name" placeholder="NAMA & JAWATAN" class="row-input font-bold uppercase text-[9px] h-8"></textarea>
                 </div>
-                <p class="text-[8px] uppercase font-bold text-gray-500">Tarikh:</p>
+                <p class="text-[7px] uppercase font-bold text-gray-500">Tarikh:</p>
             </div>
         </div>
 
+        <!-- FLOATING PRINT BUTTON -->
         <div class="fixed bottom-6 right-6 no-print">
-            <button onclick="window.print()" class="bg-rose-600 text-white px-6 py-4 rounded-full shadow-2xl hover:scale-105 transition-transform flex items-center gap-2 font-bold">
+            <button onclick="window.print()" class="bg-rose-600 text-white px-5 py-3 rounded-full shadow-2xl hover:scale-110 transition flex items-center gap-2 font-bold text-sm">
                 <i data-lucide="printer"></i> CETAK LOG PERJALANAN
             </button>
         </div>
@@ -229,7 +232,7 @@
                 <td class="col-time"><input type="time" value="${v.mulaRaw||''}" class="row-input"></td>
                 <td class="col-time"><input type="time" value="${v.hinggaRaw||''}" class="row-input"></td>
                 <td class="col-driver"><textarea class="row-input uppercase font-semibold" oninput="adjustHeight(this)">${v.pemandu||''}</textarea></td>
-                <td class="col-purpose"><textarea class="row-input uppercase text-blue-900 font-medium" oninput="adjustHeight(this)" placeholder="Nyatakan urusan...">${v.tujuan||''}</textarea></td>
+                <td class="col-purpose"><textarea class="row-input uppercase text-blue-900" oninput="adjustHeight(this)">${v.tujuan||''}</textarea></td>
                 <td class="col-auth"><textarea class="row-input uppercase text-center" oninput="adjustHeight(this)">${v.pelulus||''}</textarea></td>
                 <td class="col-auth"><textarea class="row-input uppercase text-center" oninput="adjustHeight(this)">${v.pengguna||''}</textarea></td>
                 <td class="col-odo"><input type="number" value="${v.odo||''}" class="row-input odo-val font-bold text-center"></td>
@@ -237,11 +240,13 @@
                 <td class="col-fuel"><input type="number" step="0.01" value="${v.resit||''}" class="row-input rm-val text-center"></td>
                 <td class="col-fuel"><input type="number" step="0.01" value="${v.liter||''}" class="row-input liter-val text-center"></td>
                 <td class="col-notes"><textarea class="row-input italic text-gray-500" oninput="adjustHeight(this)">${v.arahan||''}</textarea></td>
-                <td class="no-print text-center"><button onclick="this.closest('tr').remove();calcLogic();sync()" class="text-red-400 font-bold p-2">×</button></td>
+                <td class="no-print text-center"><button onclick="this.closest('tr').remove();calcLogic();sync()" class="text-red-400 font-bold p-1">×</button></td>
             `;
             document.getElementById('log-body').appendChild(tr);
             
+            // Initial auto-height for loaded data
             setTimeout(() => { tr.querySelectorAll('textarea').forEach(tx => adjustHeight(tx)); }, 100);
+
             tr.querySelectorAll('input, textarea').forEach(i => {
                 i.oninput = (e) => { 
                     if(e.target.tagName === 'TEXTAREA') adjustHeight(e.target);

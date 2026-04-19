@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Pilot Intelligent v3.5.0</title>
+    <title>Pilot Intelligent v3.7.0</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
@@ -16,37 +16,31 @@
         :root { --cyber-blue: #0ea5e9; }
         body { font-family: 'Inter', sans-serif; background: #f1f5f9; color: #1e293b; margin: 0; padding: 10px; }
         
-        /* WEBVIEW STABILITY */
-        #main-table { 
-            width: 100%; 
-            border-collapse: collapse; 
-            background: white; 
-            table-layout: auto; /* Allow columns to adjust based on content */
-        }
+        #main-table { width: 100%; border-collapse: collapse; background: white; table-layout: auto; }
         
         .row-input { 
             width: 100%; border: none; background: transparent; 
-            padding: 8px 4px; outline: none; resize: none; overflow: hidden;
+            padding: 6px 4px; outline: none; resize: none; overflow: hidden;
             font-size: 0.85rem; font-weight: 600; color: #1e293b;
-            display: block; line-height: 1.4;
+            display: block; line-height: 1.3;
         }
 
-        /* Responsive Columns Widths */
-        .w-date { width: 110px; }
-        .w-time { width: 160px; }
-        .w-driver { width: 140px; }
-        .w-purpose { min-width: 250px; } /* Purpose gets most space */
-        .w-auth { width: 100px; }
+        /* Column Width Logic */
+        .w-date { width: 100px; }
+        .w-time { width: 185px; }
+        .w-purpose { min-width: 280px; }
         .w-odo { width: 90px; }
-        .w-dist { width: 70px; }
-        .w-fuel { width: 75px; }
-        .w-notes { width: 140px; }
+        .w-dist { width: 65px; }
+        .w-fuel { width: 70px; }
 
-        .ot-badge { font-size: 0.65rem; padding: 2px 4px; border-radius: 4px; font-weight: 800; display: inline-block; margin-top: 2px; white-space: nowrap; }
+        .ot-badge { font-size: 0.65rem; padding: 2px 4px; border-radius: 4px; font-weight: 800; display: inline-block; margin-top: 2px; }
         .ot-before { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
         .ot-after { background: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
+        .ot-money { font-size: 0.7rem; color: #059669; font-weight: 800; display: block; }
 
-        /* PRINT ENGINE - TOTAL FIX */
+        .salary-badge { font-size: 0.7rem; padding: 3px 6px; border-radius: 6px; font-weight: 700; margin-top: 4px; display: inline-block; }
+
+        /* PRINT STYLING */
         @media print {
             @page { size: A4 landscape; margin: 5mm; }
             body { background: white; padding: 0; }
@@ -54,24 +48,15 @@
             .print-full { width: 100% !important; border: none !important; box-shadow: none !important; }
             
             table { width: 100% !important; table-layout: fixed !important; border: 0.5pt solid black !important; }
-            th, td { border: 0.5pt solid black !important; padding: 2px !important; word-wrap: break-word; vertical-align: top !important; }
+            tr { page-break-inside: avoid; }
+            th, td { border: 0.5pt solid black !important; padding: 2px !important; word-wrap: break-word; vertical-align: top !important; line-height: 1.1; }
             
-            th { font-size: 7pt !important; background-color: #f1f5f9 !important; text-transform: uppercase; }
+            th { font-size: 6.5pt !important; background-color: #f1f5f9 !important; text-transform: uppercase; }
             td { font-size: 7.5pt !important; }
 
             .input-box { display: none !important; }
             .print-text { display: block !important; font-weight: 600 !important; white-space: pre-wrap; text-transform: uppercase; }
-            
-            /* Print Specific Widths to fit everything */
-            .w-date { width: 7%; }
-            .w-time { width: 11%; }
-            .w-driver { width: 9%; }
-            .w-purpose { width: 25%; }
-            .w-auth { width: 8%; }
-            .w-odo { width: 7%; }
-            .w-dist { width: 5%; }
-            .w-fuel { width: 5%; }
-            .w-notes { width: 10%; }
+            .ot-money { color: black !important; font-size: 6.5pt; border-top: 0.2pt dashed #000; margin-top: 1px; }
         }
 
         .print-text { display: none; }
@@ -85,10 +70,10 @@
         
         <!-- PRINT HEADER -->
         <div class="corporate-header-print">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/2/26/Coat_of_arms_of_Malaysia.svg" style="width: 40px; height: 40px; margin-right: 15px;">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/2/26/Coat_of_arms_of_Malaysia.svg" style="width: 35px; height: 35px; margin-right: 15px;">
             <div>
-                <h2 style="font-size: 13pt; font-weight: 800; margin: 0;">LOG PERJALANAN KENDERAAN JABATAN</h2>
-                <p style="font-size: 8pt; margin: 0; font-weight: 600;">Bahagian Penguatkuasa • Sistem Pilot Intelligent v3.5.0</p>
+                <h2 style="font-size: 12pt; font-weight: 800; margin: 0;">LOG PERJALANAN KENDERAAN & ANGGARAN TUNTUTAN</h2>
+                <p style="font-size: 7.5pt; margin: 0; font-weight: 600;">Bahagian Penguatkuasa • Pilot Intelligent v3.7.0</p>
             </div>
         </div>
 
@@ -97,8 +82,8 @@
             <div class="flex items-center gap-3">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/2/26/Coat_of_arms_of_Malaysia.svg" class="w-10 h-10 bg-white p-1 rounded-lg">
                 <div>
-                    <h1 class="text-lg font-bold font-heading uppercase tracking-tight">Pilot <span class="text-blue-400">Intelligent</span></h1>
-                    <p class="text-[8px] text-slate-400 font-bold uppercase tracking-widest">Fleet Management System</p>
+                    <h1 class="text-lg font-bold font-heading uppercase">Pilot <span class="text-blue-400">Intelligent</span></h1>
+                    <p class="text-[8px] text-slate-400 font-bold uppercase tracking-widest">Enterprise Logistics & HR Calculator</p>
                 </div>
             </div>
 
@@ -113,13 +98,13 @@
                 <button id="login-btn" onclick="loginGoogle()" class="bg-blue-600 px-5 py-2 rounded-lg font-bold text-xs shadow-md active:scale-95 transition">LOGIN GOOGLE</button>
                 <div id="user-profile" class="hidden flex items-center gap-3">
                     <img id="u-avatar" class="w-8 h-8 rounded-full border border-slate-600">
-                    <button onclick="logout()" class="text-[10px] text-red-400 font-bold underline">LOGOUT</button>
+                    <button onclick="logout()" class="text-[10px] text-red-400 font-bold underline uppercase">Logout</button>
                 </div>
             </div>
         </header>
 
         <!-- INFO BAR -->
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4 no-print">
+        <div class="grid grid-cols-2 md:grid-cols-5 gap-3 mb-4 no-print">
             <div class="bg-white p-3 rounded-lg border border-slate-200 shadow-sm">
                 <label class="text-[9px] font-bold text-slate-400 uppercase">Bulan Rekod</label>
                 <input type="month" id="m-month" class="w-full font-bold text-sm outline-none text-blue-600" onchange="sync()">
@@ -131,6 +116,11 @@
             <div class="bg-white p-3 rounded-lg border border-slate-200 shadow-sm">
                 <label class="text-[9px] font-bold text-slate-400 uppercase">Odo Awal</label>
                 <input type="number" id="m-odo-start" class="w-full font-black text-lg outline-none" oninput="calcLogic(); sync()">
+            </div>
+            <div class="bg-white p-3 rounded-lg border border-slate-200 shadow-sm border-l-4 border-green-500">
+                <label class="text-[9px] font-bold text-green-600 uppercase">Gaji Pokok (RM)</label>
+                <input type="number" id="m-salary" class="w-full font-black text-lg outline-none" placeholder="0.00" oninput="calcLogic(); sync()">
+                <div id="salary-plus-imbuhan" class="salary-badge bg-blue-50 text-blue-700">Gaji + Imbuhan: RM 0.00</div>
             </div>
             <div class="bg-white p-3 rounded-lg border border-slate-200 shadow-sm">
                 <label class="text-[9px] font-bold text-slate-400 uppercase">Unit/Bahagian</label>
@@ -166,22 +156,30 @@
         </button>
 
         <!-- SUMMARY -->
-        <div class="grid grid-cols-4 gap-3 mt-6 print-full">
-            <div class="bg-white p-3 rounded-xl shadow-sm border-t-4 border-blue-500 text-center">
-                <p class="text-[9px] font-bold text-slate-400">JARAK (KM)</p>
-                <h3 id="sum-dist" class="text-xl font-black">0</h3>
+        <div class="grid grid-cols-2 md:grid-cols-6 gap-3 mt-6 print-full">
+            <div class="bg-white p-3 rounded-xl shadow-sm border-t-4 border-slate-300 text-center">
+                <p class="text-[9px] font-bold text-slate-400 uppercase">Jarak (KM)</p>
+                <h3 id="sum-dist" class="text-lg font-black">0</h3>
+            </div>
+            <div class="bg-white p-3 rounded-xl shadow-sm border-t-4 border-slate-300 text-center">
+                <p class="text-[9px] font-bold text-slate-400 uppercase">Minyak (LTR)</p>
+                <h3 id="sum-liter" class="text-lg font-black">0</h3>
+            </div>
+            <div class="bg-white p-3 rounded-xl shadow-sm border-t-4 border-green-500 text-center">
+                <p class="text-[9px] font-bold text-green-600 uppercase">Anggaran OT (RM)</p>
+                <h3 id="sum-ot-pay" class="text-xl font-black text-green-600">0.00</h3>
             </div>
             <div class="bg-white p-3 rounded-xl shadow-sm border-t-4 border-blue-500 text-center">
-                <p class="text-[9px] font-bold text-slate-400">MINYAK (LTR)</p>
-                <h3 id="sum-liter" class="text-xl font-black">0</h3>
+                <p class="text-[9px] font-bold text-blue-600 uppercase">Gaji + Imbuhan</p>
+                <h3 id="sum-salary-fix" class="text-lg font-black text-blue-600">0.00</h3>
             </div>
-            <div class="bg-white p-3 rounded-xl shadow-sm border-t-4 border-blue-500 text-center">
-                <p class="text-[9px] font-bold text-slate-400">KOS (RM)</p>
-                <h3 id="sum-rm" class="text-xl font-black">0</h3>
+            <div class="bg-white p-3 rounded-xl shadow-sm border-t-4 border-purple-600 text-center">
+                <p class="text-[9px] font-bold text-purple-600 uppercase">Grand Total (Est)</p>
+                <h3 id="sum-grand-total" class="text-xl font-black text-purple-600">0.00</h3>
             </div>
-            <div class="bg-white p-3 rounded-xl shadow-sm border-t-4 border-blue-500 text-center">
-                <p class="text-[9px] font-bold text-slate-400">KM/LTR</p>
-                <h3 id="sum-rate" class="text-xl font-black text-blue-600">0.00</h3>
+            <div class="bg-white p-3 rounded-xl shadow-sm border-t-4 border-slate-300 text-center">
+                <p class="text-[9px] font-bold text-slate-400 uppercase">KM/LTR</p>
+                <h3 id="sum-rate" class="text-lg font-black">0.00</h3>
             </div>
         </div>
 
@@ -222,10 +220,7 @@
             return `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth()+1).padStart(2, '0')}/${d.getFullYear()}\n(${days[d.getDay()]})`;
         }
 
-        function adjustHeight(el) { 
-            el.style.height = "auto"; 
-            el.style.height = (el.scrollHeight) + "px"; 
-        }
+        function adjustHeight(el) { el.style.height = "auto"; el.style.height = (el.scrollHeight) + "px"; }
 
         function addRow(v = {}) {
             const tr = document.createElement('tr');
@@ -238,10 +233,10 @@
                 <td class="w-time p-1">
                     <div class="input-box flex flex-col gap-1">
                         <select class="row-input shift-select text-[10px] bg-slate-100 rounded border">
-                            <option value="07:30-16:30" ${v.shiftRaw=='07:30-16:30'?'selected':''}>WBF: 07:30AM-04:30PM</option>
-                            <option value="08:00-17:00" ${v.shiftRaw=='08:00-17:00'?'selected':''}>WBF: 08:00AM-05:00PM</option>
-                            <option value="08:30-17:30" ${v.shiftRaw=='08:30-17:30'?'selected':''}>WBF: 08:30AM-05:30PM</option>
-                            <option value="09:00-18:00" ${v.shiftRaw=='09:00-18:00'?'selected':''}>WBF: 09:00AM-06:00PM</option>
+                            <option value="07:30-16:30" ${v.shiftRaw=='07:30-16:30'?'selected':''}>WBF: 07:30-16:30</option>
+                            <option value="08:00-17:00" ${v.shiftRaw=='08:00-17:00'?'selected':''}>WBF: 08:00-17:00</option>
+                            <option value="08:30-17:30" ${v.shiftRaw=='08:30-17:30'?'selected':''}>WBF: 08:30-17:30</option>
+                            <option value="09:00-18:00" ${v.shiftRaw=='09:00-18:00'?'selected':''}>WBF: 09:00-18:00</option>
                         </select>
                         <div class="flex gap-1">
                             <input type="time" value="${v.mulaRaw||''}" class="row-input t-mula border-b text-[11px]">
@@ -249,7 +244,7 @@
                         </div>
                     </div>
                     <div class="text-center">
-                        <span class="print-text text-[8pt] font-bold">${to12h(v.mulaRaw)} - ${to12h(v.hinggaRaw)}</span>
+                        <span class="print-text text-[7.5pt] font-bold">${to12h(v.mulaRaw)} - ${to12h(v.hinggaRaw)}</span>
                         <div class="ot-container"></div>
                     </div>
                 </td>
@@ -271,19 +266,19 @@
                 </td>
                 <td class="w-odo p-1 text-center">
                     <div class="input-box"><input type="number" value="${v.odo||''}" class="row-input odo-val font-black text-blue-600 text-center"></div>
-                    <span class="print-text font-black">${v.odo||''}</span>
+                    <span class="print-text font-black text-center">${v.odo||''}</span>
                 </td>
                 <td class="w-dist p-1 text-center">
                     <div class="input-box"><input type="number" value="${v.jarak||''}" class="row-input dist-val font-black bg-slate-100 text-center" readonly></div>
-                    <span class="print-text font-black">${v.jarak||''}</span>
+                    <span class="print-text font-black text-center">${v.jarak||''}</span>
                 </td>
                 <td class="w-fuel p-1 text-center">
                     <div class="input-box"><input type="number" step="0.01" value="${v.resit||''}" class="row-input rm-val text-center"></div>
-                    <span class="print-text">${v.resit||''}</span>
+                    <span class="print-text text-center">${v.resit||''}</span>
                 </td>
                 <td class="w-fuel p-1 text-center">
                     <div class="input-box"><input type="number" step="0.01" value="${v.liter||''}" class="row-input liter-val text-center"></div>
-                    <span class="print-text">${v.liter||''}</span>
+                    <span class="print-text text-center">${v.liter||''}</span>
                 </td>
                 <td class="w-notes p-1">
                     <div class="input-box"><textarea class="row-input italic text-slate-500 text-[10px]" oninput="adjustHeight(this)">${v.arahan||''}</textarea></div>
@@ -295,19 +290,8 @@
             `;
             document.getElementById('log-body').appendChild(tr);
             lucide.createIcons();
-            
-            // Re-trigger height adjustment for loaded data
             setTimeout(() => { tr.querySelectorAll('textarea').forEach(tx => adjustHeight(tx)); }, 50);
-
-            tr.querySelectorAll('input, textarea, select').forEach(el => {
-                el.oninput = () => { 
-                    if(el.classList.contains('date-input')) tr.querySelector('.w-date .print-text').innerText = formatDisplayDate(el.value);
-                    if(el.classList.contains('t-mula') || el.classList.contains('t-hingga')) {
-                        tr.querySelector('.w-time .print-text').innerText = `${to12h(tr.querySelector('.t-mula').value)} - ${to12h(tr.querySelector('.t-hingga').value)}`;
-                    }
-                    calcLogic(); sync(); 
-                };
-            });
+            tr.querySelectorAll('input, textarea, select').forEach(el => { el.oninput = () => { calcLogic(); sync(); }; });
             calcLogic();
         }
 
@@ -325,13 +309,21 @@
 
         function calcLogic() {
             let prev = Number(document.getElementById('m-odo-start').value) || 0;
-            let td = 0, tl = 0, trm = 0;
+            let basicSalary = Number(document.getElementById('m-salary').value) || 0;
+            
+            // Allowances: 300 (ITP) + 115 (ITKA) + 350 (BISH) = 765
+            const fixedAllowance = 765;
+            const totalGrossBase = basicSalary + fixedAllowance;
+            const hourlyRate = (basicSalary * 12) / 2504;
+            
+            let td = 0, tl = 0, trm = 0, totalOTPay = 0;
+
+            document.getElementById('salary-plus-imbuhan').innerText = `Gaji + Imbuhan: RM ${totalGrossBase.toFixed(2)}`;
 
             document.querySelectorAll('#log-body tr').forEach(row => {
                 const odo = Number(row.querySelector('.odo-val').value);
                 const distField = row.querySelector('.dist-val');
                 const distSpan = row.querySelector('.w-dist .print-text');
-                
                 if(odo > 0) { 
                     const currentDist = odo - prev;
                     distField.value = currentDist; distSpan.innerText = currentDist;
@@ -341,29 +333,43 @@
                 tl += Number(row.querySelector('.liter-val').value) || 0;
                 trm += Number(row.querySelector('.rm-val').value) || 0;
 
-                // OT LOGIC
                 const shiftVal = row.querySelector('.shift-select').value;
                 const [sStartStr, sEndStr] = shiftVal.split('-');
                 const sStart = getMinutes(sStartStr);
                 const sEnd = getMinutes(sEndStr);
                 const mula = getMinutes(row.querySelector('.t-mula').value);
                 const hingga = getMinutes(row.querySelector('.t-hingga').value);
+                
                 const otContainer = row.querySelector('.ot-container');
                 otContainer.innerHTML = "";
+                let rowOTMinutes = 0;
 
                 if(mula && mula < sStart) {
                     const diff = sStart - mula;
+                    rowOTMinutes += diff;
                     otContainer.innerHTML += `<span class="ot-badge ot-before">AWAL: -${formatDuration(diff)}</span>`;
                 }
                 if(hingga && hingga > sEnd) {
                     const diff = hingga - sEnd;
+                    rowOTMinutes += diff;
                     otContainer.innerHTML += `<span class="ot-badge ot-after">OT: +${formatDuration(diff)}</span>`;
                 }
+
+                if(rowOTMinutes > 0 && hourlyRate > 0) {
+                    const rowPay = (rowOTMinutes / 60) * hourlyRate;
+                    totalOTPay += rowPay;
+                    otContainer.innerHTML += `<span class="ot-money">EST: RM ${rowPay.toFixed(2)}</span>`;
+                }
+
+                row.querySelector('.w-date .print-text').innerText = formatDisplayDate(row.querySelector('.date-input').value);
+                row.querySelector('.w-time .print-text').innerText = `${to12h(row.querySelector('.t-mula').value)} - ${to12h(row.querySelector('.t-hingga').value)}`;
             });
 
             document.getElementById('sum-dist').innerText = td;
             document.getElementById('sum-liter').innerText = tl.toFixed(2);
-            document.getElementById('sum-rm').innerText = trm.toFixed(2);
+            document.getElementById('sum-ot-pay').innerText = totalOTPay.toFixed(2);
+            document.getElementById('sum-salary-fix').innerText = totalGrossBase.toFixed(2);
+            document.getElementById('sum-grand-total').innerText = (totalGrossBase + totalOTPay).toFixed(2);
             document.getElementById('sum-rate').innerText = tl > 0 ? (td/tl).toFixed(2) : "0.00";
         }
 
@@ -388,7 +394,7 @@
                 });
             });
             await db.collection("logs_v32").doc(currentUser.uid).set({
-                meta: { month:document.getElementById('m-month').value, plate:document.getElementById('m-plate').value, odo:document.getElementById('m-odo-start').value, unit:document.getElementById('m-unit').value },
+                meta: { month:document.getElementById('m-month').value, plate:document.getElementById('m-plate').value, odo:document.getElementById('m-odo-start').value, unit:document.getElementById('m-unit').value, salary:document.getElementById('m-salary').value },
                 logs: logs
             });
         }
@@ -401,8 +407,10 @@
                 document.getElementById('m-plate').value = d.meta.plate || '';
                 document.getElementById('m-odo-start').value = d.meta.odo || ''; 
                 document.getElementById('m-unit').value = d.meta.unit || '';
+                document.getElementById('m-salary').value = d.meta.salary || '';
                 document.getElementById('log-body').innerHTML = ""; 
                 if(d.logs?.length > 0) d.logs.forEach(l => addRow(l)); else addRow();
+                calcLogic();
             } else { addRow(); }
         }
 

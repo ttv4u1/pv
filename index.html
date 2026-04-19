@@ -3,371 +3,267 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pilot Intelligent Veterinar v2.3.0</title>
+    <title>Pilot Intelligent v2.4.0</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
     
-    <!-- Libraries -->
+    <!-- Export Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+
+    <!-- Firebase -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
     <style>
-        :root { --blue-dark: #1e3a8a; --blue-table: #254b9d; }
-
-        @media screen {
-            body {
-                font-family: 'Poppins', sans-serif;
-                background: #f1f5f9 url('https://upload.wikimedia.org/wikipedia/commons/2/26/Coat_of_arms_of_Malaysia.svg') no-repeat center fixed;
-                background-size: 35%;
-                min-height: 100vh;
-            }
-            .glass-card {
-                background: rgba(255, 255, 255, 0.98);
-                backdrop-filter: blur(12px);
-                border: 1px solid #e2e8f0;
-                box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
-                border-radius: 1rem;
-            }
-            .row-input { font-size: 0.8rem; width: 100%; border: none; background: transparent; padding: 10px; outline: none; }
-            textarea.row-input { resize: none; overflow: hidden; min-height: 50px; }
+        :root { --blue-navy: #1e3a8a; }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #f1f5f9 url('https://upload.wikimedia.org/wikipedia/commons/2/26/Coat_of_arms_of_Malaysia.svg') no-repeat center fixed;
+            background-size: 30%;
+            min-height: 100vh;
         }
-
-        /* PRINT / PDF PERFECT REPLICA */
-        @media print {
-            @page { size: A4 landscape; margin: 3mm; }
-            body { background: white !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; padding: 0 !important; }
-            
-            /* Tunjukkan Background Jata */
-            body::before {
-                content: ""; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
-                background-image: url('https://upload.wikimedia.org/wikipedia/commons/2/26/Coat_of_arms_of_Malaysia.svg');
-                background-repeat: no-repeat; background-position: center; background-size: 450px; opacity: 0.1; z-index: -1;
-            }
-
-            .no-print, button, .btn-action-col { display: none !important; }
-            .glass-card { border: none !important; box-shadow: none !important; padding: 0 !important; margin: 0 !important; width: 100% !important; background: white !important; }
-            
-            header { display: flex !important; border-bottom: 4px solid #1e3a8a !important; margin-bottom: 5mm !important; }
-            
-            table { 
-                width: 100% !important; 
-                table-layout: fixed !important; 
-                border-collapse: collapse !important; 
-                border: 2pt solid black !important;
-            }
-            th, td { 
-                border: 1pt solid black !important; 
-                padding: 6px !important; 
-                font-size: 7.5pt !important; 
-                line-height: 1.2 !important;
-                word-wrap: break-word !important; 
-                white-space: pre-wrap !important; 
-                vertical-align: middle;
-                text-align: center;
-                color: black !important;
-            }
-            /* Colors from Image */
-            th { background-color: #1e3a8a !important; color: white !important; font-weight: bold !important; }
-            .bg-sub-head { background-color: #254b9d !important; }
-            .bg-odo { background-color: #f97316 !important; color: white !important; } /* Orange */
-            .bg-jr { background-color: #1e3a8a !important; color: white !important; } /* Blue */
-            .bg-odo-cell { background-color: #fffbeb !important; }
-
-            input, textarea { 
-                border: none !important; background: transparent !important; 
-                font-size: inherit !important; width: 100% !important;
-                display: block !important; overflow: visible !important;
-                text-align: inherit !important; font-weight: bold !important;
-            }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(15px);
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
+            border-radius: 1.25rem;
         }
-
         .header-font { font-family: 'Orbitron', sans-serif; }
-        .btn-3d { transition: all 0.2s; box-shadow: 0 5px 0 #1e3a8a; }
-        .btn-3d:active { transform: translateY(3px); box-shadow: 0 1px 0 #1e3a8a; }
+        .btn-3d { transition: all 0.2s; box-shadow: 0 4px 0 #1e3a8a; }
+        .btn-3d:active { transform: translateY(2px); box-shadow: 0 1px 0 #1e3a8a; }
+        
+        @media print {
+            @page { size: A4 landscape; margin: 5mm; }
+            .no-print { display: none !important; }
+            body { background: white !important; -webkit-print-color-adjust: exact; }
+            table { width: 100% !important; border: 1.5pt solid black !important; table-layout: fixed; border-collapse: collapse; }
+            th, td { border: 0.5pt solid black !important; font-size: 7.5pt !important; padding: 4px; word-wrap: break-word; white-space: pre-wrap; }
+            th { background-color: #1e3a8a !important; color: white !important; }
+        }
 
-        /* Column Config for 12 columns */
-        .w-date { width: 100px; }
-        .w-masa { width: 75px; }
-        .w-pemandu { width: 140px; }
-        .w-tujuan { width: auto; min-width: 300px; }
-        .w-tt { width: 120px; }
-        .w-odo { width: 90px; }
-        .w-jr { width: 75px; }
-        .w-rs { width: 120px; }
-        .w-lt { width: 65px; }
-        .w-ak { width: 200px; }
+        /* Web Table styles */
+        .row-input { font-size: 0.8rem; width: 100%; border: none; background: transparent; padding: 8px; outline: none; }
+        textarea.row-input { resize: none; overflow: hidden; min-height: 50px; }
     </style>
 </head>
 <body class="p-2 lg:p-6">
 
     <div class="max-w-[1900px] mx-auto">
         
-        <!-- TOP LOGO & BRANDING -->
-        <header class="glass-card p-6 mb-6 flex flex-row items-center justify-between border-b-8 border-blue-900">
-            <div class="flex items-center gap-6">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/2/26/Coat_of_arms_of_Malaysia.svg" class="w-20 h-20 drop-shadow-xl">
-                <div class="text-left">
-                    <h1 class="header-font text-2xl lg:text-4xl font-black text-blue-900 leading-none">PILOT INTELLIGENT VETERINAR</h1>
-                    <p class="text-[10px] font-bold text-blue-500 uppercase tracking-[0.4em] mt-1">SISTEM LOG KENDERAAN DIGITAL RASMI - V2.3.0</p>
+        <!-- HEADER -->
+        <header class="glass-card p-6 mb-6 flex flex-row items-center justify-between border-b-8 border-blue-900 no-print">
+            <div class="flex items-center gap-5">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/2/26/Coat_of_arms_of_Malaysia.svg" class="w-16 h-16">
+                <div>
+                    <h1 class="header-font text-2xl lg:text-3xl font-black text-blue-900 leading-none">PILOT INTELLIGENT VETERINAR</h1>
+                    <p class="text-[9px] font-bold text-blue-500 tracking-widest mt-1 uppercase">Digital Logbook & Universal Export Hub - v2.4.0</p>
                 </div>
             </div>
-
-            <!-- Auth Status Area -->
-            <div id="auth-ui" class="flex items-center gap-4 no-print">
-                <button id="btn-login" onclick="loginGoogle()" class="bg-white border-2 border-blue-900 px-6 py-2 rounded-full font-bold text-blue-900 btn-3d">
-                    Google Login
-                </button>
-                <div id="user-info" class="hidden flex items-center gap-3">
-                    <div class="text-right">
-                        <p id="u-name" class="font-bold text-xs text-blue-900 uppercase"></p>
-                        <button onclick="logout()" class="text-[9px] text-red-500 font-bold underline uppercase">Log Keluar</button>
-                    </div>
-                    <div class="w-12 h-12 rounded-full border-4 border-cyan-500 shadow-lg overflow-hidden">
-                        <img id="u-photo" src="" class="w-full h-full object-cover">
-                    </div>
+            <div id="auth-section" class="flex items-center gap-4">
+                <button onclick="loginGoogle()" class="bg-blue-900 text-white px-6 py-2 rounded-full font-bold btn-3d">Sign In Staf</button>
+                <div id="user-p" class="hidden flex items-center gap-3">
+                    <img id="u-img" class="w-10 h-10 rounded-full border-2 border-blue-500">
                 </div>
             </div>
         </header>
 
-        <!-- DATA META (MONTH, PLATE, UNIT, ODO START) -->
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6 glass-card p-6 no-print border-t-8 border-blue-500">
-            <div>
-                <label class="text-[9px] font-black text-gray-400 uppercase mb-1 block">Bulan/Tahun</label>
-                <input type="month" id="m-month" class="w-full p-3 border-2 border-gray-100 rounded-xl font-bold focus:border-blue-500 outline-none" onchange="sync()">
+        <!-- INPUT FIELDS -->
+        <div class="grid grid-cols-2 lg:grid-cols-5 gap-4 mb-6 glass-card p-6 no-print border-l-8 border-amber-500">
+            <div><label class="text-[9px] font-bold text-gray-400 uppercase">Bulan</label><input type="month" id="m-month" class="w-full p-2 border rounded font-bold" onchange="sync()"></div>
+            <div><label class="text-[9px] font-bold text-gray-400 uppercase">No Plat</label><input type="text" id="m-plate" class="w-full p-2 border rounded font-bold uppercase" onchange="sync()"></div>
+            <div><label class="text-[9px] font-bold text-gray-400 uppercase">Unit</label><input type="text" id="m-unit" class="w-full p-2 border rounded font-bold" onchange="sync()"></div>
+            <div class="bg-amber-50 p-2 rounded-xl border border-amber-300">
+                <label class="text-[9px] font-bold text-amber-700 uppercase">Odo Awal (KM)</label>
+                <input type="number" id="m-odo-start" class="w-full p-2 rounded bg-white font-black text-amber-900" oninput="calcDist(); sync()">
             </div>
-            <div>
-                <label class="text-[9px] font-black text-gray-400 uppercase mb-1 block">No. Pendaftaran</label>
-                <input type="text" id="m-plate" placeholder="VAB 1234" class="w-full p-3 border-2 border-gray-100 rounded-xl font-bold uppercase focus:border-blue-500 outline-none" onchange="sync()">
-            </div>
-            <div>
-                <label class="text-[9px] font-black text-gray-400 uppercase mb-1 block">Bahagian/Unit</label>
-                <input type="text" id="m-unit" placeholder="Unit" class="w-full p-3 border-2 border-gray-100 rounded-xl font-bold focus:border-blue-500 outline-none" onchange="sync()">
-            </div>
-            <div class="bg-amber-50 p-2 rounded-xl border-2 border-amber-400">
-                <label class="text-[9px] font-black text-amber-700 uppercase flex items-center gap-1"><i data-lucide="gauge" class="w-3 h-3"></i> Odo Awal (KM)</label>
-                <input type="number" id="m-odo-start" class="w-full p-2 rounded-lg bg-white border-2 border-amber-500 font-black text-lg text-amber-900 outline-none" oninput="calculateDistances(); sync()">
-            </div>
+            <div class="flex items-end pb-2"><div id="sync-icon" class="text-[10px] font-bold text-green-500 flex items-center gap-2 uppercase"><i data-lucide="shield-check"></i> Cloud Secured</div></div>
         </div>
 
-        <!-- MAIN LOG TABLE -->
+        <!-- TABLE -->
         <div class="glass-card overflow-hidden mb-6 shadow-2xl border-t-8 border-blue-900">
             <div class="overflow-x-auto">
                 <table id="main-table" class="w-full border-collapse">
                     <thead class="bg-blue-900 text-white">
                         <tr>
-                            <th rowspan="2" class="w-date">Tarikh</th>
-                            <th colspan="2" class="w-[150px] bg-sub-head">Masa</th>
-                            <th rowspan="2" class="w-pemandu">Nama Pemandu</th>
-                            <th rowspan="2" class="w-tujuan">Tujuan / Destinasi</th>
-                            <th rowspan="2" class="w-tt">Pelulus</th>
-                            <th rowspan="2" class="w-tt">Pengguna</th>
-                            <th rowspan="2" class="w-odo bg-orange-500">Odometer</th>
-                            <th rowspan="2" class="w-jr bg-blue-700">Jarak</th>
+                            <th rowspan="2" class="w-[100px]">Tarikh</th>
+                            <th colspan="2">Masa</th>
+                            <th rowspan="2" class="w-[150px]">Pemandu</th>
+                            <th rowspan="2" class="w-[300px]">Tujuan / Destinasi</th>
+                            <th rowspan="2" class="w-[110px]">Pelulus</th>
+                            <th rowspan="2" class="w-[110px]">Pengguna</th>
+                            <th rowspan="2" class="w-[90px] bg-orange-600">Odometer</th>
+                            <th rowspan="2" class="w-[80px] bg-blue-700">Jarak</th>
                             <th colspan="2" class="bg-gray-800">Bahan Api</th>
-                            <th rowspan="2" class="w-ak">Arahan Khas</th>
-                            <th rowspan="2" class="w-[50px] no-print btn-action-col">X</th>
+                            <th rowspan="2" class="w-[200px]">Arahan Khas</th>
+                            <th rowspan="2" class="w-[40px] no-print">X</th>
                         </tr>
                         <tr class="bg-blue-800 text-[9px]">
-                            <th class="w-masa">Mula</th>
-                            <th class="w-masa">Hingga</th>
-                            <th class="w-rs">Resit & RM</th>
-                            <th class="w-lt">Liter</th>
+                            <th class="w-[80px]">Mula</th>
+                            <th class="w-[80px]">Hingga</th>
+                            <th class="w-[120px]">Resit & RM</th>
+                            <th class="w-[70px]">Liter</th>
                         </tr>
                     </thead>
                     <tbody id="log-body" class="bg-white"></tbody>
                 </table>
             </div>
-            <div class="p-6 bg-gray-50 flex justify-between no-print">
-                <button onclick="addRow()" class="bg-blue-900 text-white px-10 py-4 rounded-2xl font-black btn-3d flex items-center gap-3">
-                    <i data-lucide="plus-circle" class="w-6 h-6"></i> TAMBAH PERJALANAN
-                </button>
-                <div id="sync-status" class="text-xs font-bold text-gray-400 flex items-center gap-2">
-                    <i data-lucide="cloud-check" class="w-4 h-4 text-green-500"></i> AUTOMATIC CLOUD SYNC
-                </div>
+            <div class="p-6 bg-gray-50 flex justify-start no-print">
+                <button onclick="addRow()" class="bg-blue-900 text-white px-8 py-3 rounded-xl font-bold btn-3d flex items-center gap-2"><i data-lucide="plus"></i> TAMBAH LOG</button>
             </div>
         </div>
 
-        <!-- FOOTER BOXES -->
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-10 no-print">
-            <div class="glass-card p-6 border-l-8 border-blue-900">
-                <h3 class="font-black text-xs text-blue-900 mb-6 uppercase tracking-widest">Analisis Bahan Api</h3>
-                <div class="space-y-2 mb-4">
-                    <div class="flex justify-between text-sm"><span>Total Jarak:</span> <span id="res-dist" class="font-black">0 KM</span></div>
-                    <div class="flex justify-between text-sm"><span>Total Liter:</span> <span id="res-liter" class="font-black">0 L</span></div>
-                </div>
-                <div class="p-4 bg-blue-900 text-white rounded-2xl flex justify-between items-center shadow-xl">
-                    <span class="text-[10px] font-bold">PRESTASI KM/L:</span>
-                    <span id="res-rate" class="text-4xl font-black italic">0.00</span>
-                </div>
-            </div>
-
-            <div class="glass-card p-6 border-l-8 border-purple-600">
-                <h3 class="font-black text-xs text-purple-900 mb-6 uppercase tracking-widest">Kadar Gaji Sejam</h3>
-                <input type="number" id="g-pokok" placeholder="Gaji Pokok (RM)" class="w-full p-4 border-2 border-purple-100 rounded-2xl mb-6 font-bold text-lg" oninput="calcOT(); sync()">
-                <div class="flex justify-between items-center bg-purple-50 p-5 rounded-2xl border-2 border-purple-200">
-                    <span class="text-[10px] font-bold text-purple-900">GAJI SEJAM:</span>
-                    <span id="res-ot" class="text-3xl font-black text-purple-900">RM 0.00</span>
+        <!-- UNIVERSAL EXPORT HUB -->
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-10 no-print">
+            
+            <!-- Office & Database -->
+            <div class="glass-card p-6 bg-slate-900 text-white col-span-2">
+                <h3 class="font-black text-xs mb-4 uppercase text-cyan-400 tracking-widest flex items-center gap-2"><i data-lucide="box"></i> UNIVERSAL OFFICE & DB HUB</h3>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                    <button onclick="exportExcel()" class="bg-emerald-600 p-3 rounded-xl font-bold text-[10px] flex flex-col items-center gap-1 btn-3d" style="box-shadow: 0 4px 0 #064e3b;"><i data-lucide="file-spreadsheet"></i> EXCEL</button>
+                    <button onclick="exportWord()" class="bg-blue-600 p-3 rounded-xl font-bold text-[10px] flex flex-col items-center gap-1 btn-3d" style="box-shadow: 0 4px 0 #1e3a8a;"><i data-lucide="file-text"></i> WORD</button>
+                    <button onclick="exportPPT()" class="bg-orange-600 p-3 rounded-xl font-bold text-[10px] flex flex-col items-center gap-1 btn-3d" style="box-shadow: 0 4px 0 #9a3412;"><i data-lucide="presentation"></i> POWERPOINT</button>
+                    <button onclick="exportCSV()" class="bg-purple-600 p-3 rounded-xl font-bold text-[10px] flex flex-col items-center gap-1 btn-3d" style="box-shadow: 0 4px 0 #581c87;"><i data-lucide="database"></i> ACCESS DB</button>
                 </div>
             </div>
 
-            <div class="glass-card p-6 bg-slate-900 text-white shadow-2xl">
-                <h3 class="font-black text-xs mb-6 uppercase text-blue-400 text-center tracking-widest">Pusat Eksport Digital</h3>
-                <div class="grid grid-cols-2 gap-4">
-                    <button onclick="exportExcel()" class="bg-emerald-600 p-5 rounded-2xl font-bold flex flex-col items-center gap-2 btn-3d" style="box-shadow: 0 5px 0 #064e3b;">
-                        <i data-lucide="file-spreadsheet" class="w-7 h-7"></i> EXCEL PRO
-                    </button>
-                    <button onclick="window.print()" class="bg-rose-600 p-5 rounded-2xl font-bold flex flex-col items-center gap-2 btn-3d" style="box-shadow: 0 5px 0 #9f1239;">
-                        <i data-lucide="printer" class="w-7 h-7"></i> PDF FULL PAGE
-                    </button>
+            <!-- Notes & Editors -->
+            <div class="glass-card p-6 bg-slate-800 text-white">
+                <h3 class="font-black text-xs mb-4 uppercase text-amber-400 tracking-widest flex items-center gap-2"><i data-lucide="edit-3"></i> NOTES & EDITORS</h3>
+                <div class="grid grid-cols-3 gap-2">
+                    <button onclick="exportText('notepad')" class="bg-gray-700 p-2 rounded-lg text-[9px] font-bold flex flex-col items-center gap-1 hover:bg-gray-600"><i data-lucide="file"></i> NOTEPAD</button>
+                    <button onclick="exportText('notepad++')" class="bg-green-700 p-2 rounded-lg text-[9px] font-bold flex flex-col items-center gap-1 hover:bg-green-600"><i data-lucide="code-2"></i> NP++</button>
+                    <button onclick="shareToNotes()" class="bg-amber-600 p-2 rounded-lg text-[9px] font-bold flex flex-col items-center gap-1 hover:bg-amber-500"><i data-lucide="smartphone"></i> MOBILE NOTES</button>
                 </div>
             </div>
+
+            <!-- Print/PDF -->
+            <div class="glass-card p-6 bg-red-900 text-white flex flex-col justify-center">
+                <button onclick="window.print()" class="w-full h-full bg-rose-600 rounded-2xl font-black text-xs flex flex-col items-center justify-center gap-2 btn-3d" style="box-shadow: 0 6px 0 #881337;">
+                    <i data-lucide="printer" class="w-8 h-8"></i> CETAK PDF FULL PAGE
+                </button>
+            </div>
+
         </div>
     </div>
 
     <script>
         // === FIREBASE CONFIG ===
-        const firebaseConfig = {
-            apiKey: "AIzaSyDdCwKNCx0nA1cZirGrw1UYvtumALluVXw",
-            authDomain: "pilot-veterinar.firebaseapp.com",
-            projectId: "pilot-veterinar",
-            storageBucket: "pilot-veterinar.firebasestorage.app",
-            messagingSenderId: "559136368070",
-            appId: "1:559136368070:web:8aaa2dcb804c73f10cbec7"
-        };
+        const firebaseConfig = { apiKey: "AIzaSyDdCwKNCx0nA1cZirGrw1UYvtumALluVXw", authDomain: "pilot-veterinar.firebaseapp.com", projectId: "pilot-veterinar", storageBucket: "pilot-veterinar.firebasestorage.app", messagingSenderId: "559136368070", appId: "1:559136368070:web:8aaa2dcb804c73f10cbec7" };
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth(); const db = firebase.firestore(); const provider = new firebase.auth.GoogleAuthProvider();
-        let currentUser = null;
-        let logsData = [];
+        let currentUser = null; let logsData = [];
 
-        // === ENGINE ===
         function addRow(v = {}) {
             const tr = document.createElement('tr');
-            tr.className = "hover:bg-blue-50/50 transition-all";
             tr.innerHTML = `
-                <td><input type="text" value="${v.tarikh||''}" placeholder="DD/MM/YYYY" class="row-input cell-sync text-center"></td>
-                <td><input type="text" value="${v.mula||''}" placeholder="00:00 AM" class="row-input cell-sync text-center"></td>
-                <td><input type="text" value="${v.hingga||''}" placeholder="00:00 PM" class="row-input cell-sync text-center"></td>
-                <td><input type="text" value="${v.pemandu||''}" placeholder="NAMA" class="row-input cell-sync font-bold uppercase text-center"></td>
-                <td class="text-left"><textarea class="row-input cell-sync uppercase auto-expand">${v.tujuan||''}</textarea></td>
-                <td><input type="text" value="${v.pelulus||''}" placeholder="NAMA" class="row-input cell-sync uppercase text-center"></td>
-                <td><input type="text" value="${v.pengguna||''}" placeholder="NAMA" class="row-input cell-sync uppercase text-center"></td>
-                <td class="bg-amber-50 bg-odo-cell"><input type="number" value="${v.odo||''}" class="row-input odo-val font-black text-amber-900 text-center"></td>
-                <td class="bg-blue-50"><input type="number" value="${v.jarak||''}" class="row-input dist-val font-black text-blue-900 text-center" readonly></td>
-                <td><input type="text" value="${v.resit||''}" placeholder="RM0.00" class="row-input cell-sync font-bold text-center"></td>
+                <td><input type="text" value="${v.tarikh||''}" placeholder="DD/MM" class="row-input cell-sync text-center"></td>
+                <td><input type="text" value="${v.mula||''}" class="row-input cell-sync text-center"></td>
+                <td><input type="text" value="${v.hingga||''}" class="row-input cell-sync text-center"></td>
+                <td><input type="text" value="${v.pemandu||''}" class="row-input cell-sync font-bold uppercase text-center"></td>
+                <td><textarea class="row-input cell-sync auto-expand">${v.tujuan||''}</textarea></td>
+                <td><input type="text" value="${v.pelulus||''}" class="row-input cell-sync uppercase text-center"></td>
+                <td><input type="text" value="${v.pengguna||''}" class="row-input cell-sync uppercase text-center"></td>
+                <td class="bg-amber-50"><input type="number" value="${v.odo||''}" class="row-input odo-val font-black text-center"></td>
+                <td class="bg-blue-50"><input type="number" value="${v.jarak||''}" class="row-input dist-val font-black text-center" readonly></td>
+                <td><input type="text" value="${v.resit||''}" class="row-input cell-sync text-center"></td>
                 <td><input type="number" value="${v.liter||''}" class="row-input liter-val font-black text-center"></td>
-                <td class="text-left"><textarea class="row-input cell-sync italic text-gray-500 auto-expand">${v.arahan||''}</textarea></td>
-                <td class="no-print btn-action-col text-center">
-                    <button onclick="this.closest('tr').remove();calculateDistances();sync()" class="text-red-400 hover:text-red-600 transition-colors">
-                        <i data-lucide="trash-2" class="w-5 h-5"></i>
-                    </button>
-                </td>
+                <td><textarea class="row-input cell-sync italic auto-expand">${v.arahan||''}</textarea></td>
+                <td class="no-print text-center"><button onclick="this.closest('tr').remove();calcDist();sync()" class="text-red-400"><i data-lucide="trash-2"></i></button></td>
             `;
             document.getElementById('log-body').appendChild(tr);
             lucide.createIcons();
-            
-            // Sentence Auto-Wrap Logic
-            tr.querySelectorAll('textarea.auto-expand').forEach(t => {
-                const adj = (el) => { el.style.height = 'auto'; el.style.height = el.scrollHeight + 'px'; };
-                t.addEventListener('input', () => { adj(t); sync(); });
-                setTimeout(() => adj(t), 100);
+            tr.querySelectorAll('textarea').forEach(t => { 
+                t.oninput = () => { t.style.height = 'auto'; t.style.height = t.scrollHeight + 'px'; sync(); };
+                setTimeout(()=> t.style.height = t.scrollHeight + 'px', 100);
             });
-
-            tr.querySelectorAll('.row-input').forEach(i => {
-                i.oninput = () => { if(i.classList.contains('odo-val')) calculateDistances(); calcStats(); sync(); };
-            });
+            tr.querySelectorAll('.row-input').forEach(i => i.oninput = () => { if(i.classList.contains('odo-val')) calcDist(); sync(); });
         }
 
-        function calculateDistances() {
+        function calcDist() {
             let prev = Number(document.getElementById('m-odo-start').value) || 0;
             document.querySelectorAll('#log-body tr').forEach(row => {
                 const odo = Number(row.querySelector('.odo-val').value);
                 const dist = row.querySelector('.dist-val');
                 if(odo > 0) { dist.value = odo - prev; prev = odo; } else { dist.value = 0; }
             });
-            calcStats();
         }
 
-        function calcStats() {
-            let td = 0, tl = 0;
-            document.querySelectorAll('.dist-val').forEach(i => td += Number(i.value));
-            document.querySelectorAll('.liter-val').forEach(i => tl += Number(i.value));
-            document.getElementById('res-dist').innerText = td + " KM";
-            document.getElementById('res-liter').innerText = tl + " L";
-            document.getElementById('res-rate').innerText = tl > 0 ? (td/tl).toFixed(2) : "0.00";
-            calcOT();
-        }
-
-        function calcOT() {
-            const g = document.getElementById('g-pokok').value;
-            if(g) document.getElementById('res-ot').innerText = "RM " + ((g*12)/2504).toFixed(2);
-        }
-
-        // === SYNC & STORAGE ===
-        let timer;
         async function sync() {
             if(!currentUser) return;
-            document.getElementById('sync-status').innerHTML = `<i data-lucide="refresh-cw" class="w-4 h-4 animate-spin text-blue-500"></i> SAVING...`;
-            lucide.createIcons();
-            
-            clearTimeout(timer);
-            timer = setTimeout(async () => {
-                const logs = [];
-                document.querySelectorAll('#log-body tr').forEach(r => {
-                    const i = r.querySelectorAll('.row-input');
-                    logs.push({tarikh:i[0].value,mula:i[1].value,hingga:i[2].value,pemandu:i[3].value,tujuan:i[4].value,pelulus:i[5].value,pengguna:i[6].value,odo:i[7].value,jarak:i[8].value,resit:i[9].value,liter:i[10].value,arahan:i[11].value});
-                });
-                logsData = logs;
-                await db.collection("logs_v230").doc(currentUser.uid).set({
-                    meta: { month: document.getElementById('m-month').value, plate: document.getElementById('m-plate').value, unit: document.getElementById('m-unit').value, odoStart: document.getElementById('m-odo-start').value, gaji: document.getElementById('g-pokok').value },
-                    logs: logs
-                });
-                document.getElementById('sync-status').innerHTML = `<i data-lucide="cloud-check" class="w-4 h-4 text-green-500"></i> CLOUD SECURED`;
-                lucide.createIcons();
-            }, 1200);
+            const logs = [];
+            document.querySelectorAll('#log-body tr').forEach(r => {
+                const i = r.querySelectorAll('.row-input');
+                logs.push({tarikh:i[0].value,mula:i[1].value,hingga:i[2].value,pemandu:i[3].value,tujuan:i[4].value,pelulus:i[5].value,pengguna:i[6].value,odo:i[7].value,jarak:i[8].value,resit:i[9].value,liter:i[10].value,arahan:i[11].value});
+            });
+            logsData = logs;
+            await db.collection("logs_v24").doc(currentUser.uid).set({
+                meta: { month: document.getElementById('m-month').value, plate: document.getElementById('m-plate').value, unit: document.getElementById('m-unit').value, odoStart: document.getElementById('m-odo-start').value },
+                logs: logs
+            });
         }
 
         async function loadData() {
-            const doc = await db.collection("logs_v230").doc(currentUser.uid).get();
+            const doc = await db.collection("logs_v24").doc(currentUser.uid).get();
             if(doc.exists) {
                 const d = doc.data();
-                document.getElementById('m-month').value = d.meta.month; document.getElementById('m-plate').value = d.meta.plate; document.getElementById('m-unit').value = d.meta.unit; document.getElementById('m-odo-start').value = d.meta.odoStart; document.getElementById('g-pokok').value = d.meta.gaji;
-                document.getElementById('log-body').innerHTML = "";
-                d.logs.forEach(l => addRow(l));
-                logsData = d.logs;
-                calculateDistances();
+                document.getElementById('m-month').value = d.meta.month; document.getElementById('m-plate').value = d.meta.plate; document.getElementById('m-unit').value = d.meta.unit; document.getElementById('m-odo-start').value = d.meta.odoStart;
+                document.getElementById('log-body').innerHTML = ""; d.logs.forEach(l => addRow(l));
+                logsData = d.logs; calcDist();
             } else { addRow(); }
         }
 
-        async function loginGoogle() { const res = await auth.signInWithPopup(provider); currentUser = res.user; updateUI(); loadData(); }
-        function logout() { auth.signOut().then(() => location.reload()); }
-        function updateUI() { 
-            if(currentUser) { 
-                document.getElementById('btn-login').classList.add('hidden'); 
-                document.getElementById('user-info').classList.remove('hidden'); 
-                document.getElementById('u-name').innerText = currentUser.displayName; 
-                document.getElementById('u-photo').src = currentUser.photoURL; 
-            } 
-        }
-        auth.onAuthStateChanged(user => { if(user) { currentUser = user; updateUI(); loadData(); } });
+        async function loginGoogle() { const res = await auth.signInWithPopup(provider); currentUser = res.user; document.getElementById('u-img').src = currentUser.photoURL; document.getElementById('user-p').classList.remove('hidden'); document.getElementById('btn-login').classList.add('hidden'); loadData(); }
+        auth.onAuthStateChanged(user => { if(user) { currentUser = user; document.getElementById('u-img').src = user.photoURL; document.getElementById('user-p').classList.remove('hidden'); document.getElementById('btn-login').classList.add('hidden'); loadData(); } });
 
-        // === EXPORT ENGINE ===
+        // === UNIVERSAL EXPORT HUB FUNCTIONS ===
+
         function exportExcel() {
-            const header = [
-                ["PILOT INTELLIGENT VETERINAR - LAPORAN LOG RASMI DIGITAL"],
-                [`PLAT: ${document.getElementById('m-plate').value}`, `BULAN: ${document.getElementById('m-month').value}`, `UNIT: ${document.getElementById('m-unit').value}`],
-                [],
-                ["Tarikh", "Masa Mula", "Masa Tamat", "Pemandu", "Tujuan / Destinasi", "Pelulus", "Pengguna", "Odometer", "Jarak", "Resit & RM", "Liter", "Arahan Khas"]
-            ];
-            const rows = logsData.map(l => [l.tarikh, l.mula, l.hingga, l.pemandu, l.tujuan, l.pelulus, l.pengguna, l.odo, l.jarak, l.resit, l.liter, l.arahan]);
-            const ws = XLSX.utils.aoa_to_sheet(header.concat(rows));
-            ws['!cols'] = [{wpx:90},{wpx:70},{wpx:70},{wpx:150},{wpx:400},{wpx:120},{wpx:120},{wpx:90},{wpx:70},{wpx:120},{wpx:70},{wpx:250}];
-            const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, "Log");
-            XLSX.writeFile(wb, `Veterinar_Log_${document.getElementById('m-plate').value || 'Report'}.xlsx`);
+            const ws = XLSX.utils.aoa_to_sheet([["LOG VETERINAR DIGITAL v2.4"],[`PLATE: ${document.getElementById('m-plate').value}`],[],["Tarikh","Mula","Hingga","Pemandu","Tujuan","Pelulus","Pengguna","Odo","Jarak","RM","Liter","Arahan"]].concat(logsData.map(l=>[l.tarikh,l.mula,l.hingga,l.pemandu,l.tujuan,l.pelulus,l.pengguna,l.odo,l.jarak,l.resit,l.liter,l.arahan])));
+            const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "Log"); XLSX.writeFile(wb, "Log_Veterinar.xlsx");
+        }
+
+        function exportWord() {
+            let content = `<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word'><head><meta charset='utf-8'><title>Log</title></head><body><h1>LAPORAN LOG VETERINAR</h1><table border='1'><tr><th>Tarikh</th><th>Pemandu</th><th>Tujuan</th><th>Jarak</th></tr>`;
+            logsData.forEach(l => { content += `<tr><td>${l.tarikh}</td><td>${l.pemandu}</td><td>${l.tujuan}</td><td>${l.jarak}</td></tr>`; });
+            content += `</table></body></html>`;
+            const blob = new Blob(['\ufeff', content], { type: 'application/msword' });
+            saveAs(blob, "Log_Veterinar.doc");
+        }
+
+        function exportPPT() {
+            let pptx = new PptxGenJS();
+            logsData.forEach(l => {
+                let slide = pptx.addSlide();
+                slide.addText(`LOG PERJALANAN: ${l.tarikh}`, { x:0.5, y:0.5, fontSize:24, color:'1E3A8A', bold:true });
+                slide.addText(`Pemandu: ${l.pemandu}\nTujuan: ${l.tujuan}\nJarak: ${l.jarak} KM`, { x:0.5, y:1.5, fontSize:18 });
+            });
+            pptx.writeFile({ fileName: "Log_Veterinar.pptx" });
+        }
+
+        function exportCSV() {
+            let csv = "Tarikh,Masa_Mula,Masa_Hingga,Pemandu,Tujuan,Pelulus,Pengguna,Odometer,Jarak,BahanApi_RM,Liter,Arahan\n";
+            logsData.forEach(l => { csv += `"${l.tarikh}","${l.mula}","${l.hingga}","${l.pemandu}","${l.tujuan}","${l.pelulus}","${l.pengguna}",${l.odo},${l.jarak},"${l.resit}",${l.liter},"${l.arahan}"\n`; });
+            saveAs(new Blob([csv], {type:"text/csv"}), "Log_AccessDB.csv");
+        }
+
+        function exportText(type) {
+            let text = `LOG VETERINAR DIGITAL\nPLATE: ${document.getElementById('m-plate').value}\n\n`;
+            logsData.forEach(l => { text += `[${l.tarikh}] ${l.pemandu} - ${l.tujuan} (${l.jarak}KM)\n`; });
+            const ext = type === 'notepad++' ? 'cpp' : 'txt';
+            saveAs(new Blob([text], {type:"text/plain"}), `Log_Veterinar.${ext}`);
+        }
+
+        async function shareToNotes() {
+            const text = `LAPORAN LOG VETERINAR\nPlat: ${document.getElementById('m-plate').value}\nTrip: ${logsData.length} rekod.`;
+            if (navigator.share) {
+                await navigator.share({ title: 'Log Veterinar', text: text });
+            } else { alert("Peranti anda tidak menyokong fungsi Share. Sila gunakan eksport Notepad."); }
         }
 
         window.onload = () => { lucide.createIcons(); };

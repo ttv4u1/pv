@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Pilot Intelligent v3.8.0</title>
+    <title>Pilot Intelligent v3.5.0</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
@@ -14,187 +14,179 @@
 
     <style>
         :root { --cyber-blue: #0ea5e9; }
-        body { font-family: 'Inter', sans-serif; background: #f1f5f9; color: #1e293b; margin: 0; padding: 10px; -webkit-font-smoothing: antialiased; }
+        body { font-family: 'Inter', sans-serif; background: #f1f5f9; color: #1e293b; margin: 0; padding: 10px; }
         
-        /* --- RESPONSIVE TABLE CONTAINER --- */
-        .table-wrapper {
-            width: 100%;
-            overflow-x: auto; /* Membolehkan skrol mendatar pada mobile */
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-        }
-
+        /* WEBVIEW STABILITY */
         #main-table { 
-            min-width: 1400px; /* Force width on mobile supaya input tak kecil */
-            width: 100%;
+            width: 100%; 
             border-collapse: collapse; 
-            table-layout: fixed;
-        }
-
-        @media (min-width: 1024px) {
-            #main-table { min-width: 100%; table-layout: auto; }
+            background: white; 
+            table-layout: auto; /* Allow columns to adjust based on content */
         }
         
         .row-input { 
             width: 100%; border: none; background: transparent; 
-            padding: 10px 6px; outline: none; resize: none; overflow: hidden;
-            font-size: 0.9rem; font-weight: 600; color: #1e293b;
+            padding: 8px 4px; outline: none; resize: none; overflow: hidden;
+            font-size: 0.85rem; font-weight: 600; color: #1e293b;
             display: block; line-height: 1.4;
         }
 
-        /* Column Specific Widths */
-        .w-date { width: 120px; }
-        .w-time { width: 200px; }
-        .w-driver { width: 150px; }
-        .w-purpose { width: 350px; }
-        .w-auth { width: 110px; }
-        .w-odo { width: 100px; }
-        .w-dist { width: 80px; }
-        .w-fuel { width: 80px; }
-        .w-notes { width: 180px; }
+        /* Responsive Columns Widths */
+        .w-date { width: 110px; }
+        .w-time { width: 160px; }
+        .w-driver { width: 140px; }
+        .w-purpose { min-width: 250px; } /* Purpose gets most space */
+        .w-auth { width: 100px; }
+        .w-odo { width: 90px; }
+        .w-dist { width: 70px; }
+        .w-fuel { width: 75px; }
+        .w-notes { width: 140px; }
 
-        .ot-badge { font-size: 0.65rem; padding: 2px 5px; border-radius: 4px; font-weight: 800; display: inline-block; margin-top: 2px; }
+        .ot-badge { font-size: 0.65rem; padding: 2px 4px; border-radius: 4px; font-weight: 800; display: inline-block; margin-top: 2px; white-space: nowrap; }
         .ot-before { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
         .ot-after { background: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
-        .ot-money { font-size: 0.75rem; color: #059669; font-weight: 800; display: block; margin-top: 2px; }
 
-        /* PRINT ENGINE */
+        /* PRINT ENGINE - TOTAL FIX */
         @media print {
             @page { size: A4 landscape; margin: 5mm; }
             body { background: white; padding: 0; }
             .no-print { display: none !important; }
-            .table-wrapper { overflow: visible !important; box-shadow: none !important; }
-            #main-table { min-width: 100% !important; table-layout: fixed !important; border: 0.5pt solid black !important; }
+            .print-full { width: 100% !important; border: none !important; box-shadow: none !important; }
+            
+            table { width: 100% !important; table-layout: fixed !important; border: 0.5pt solid black !important; }
             th, td { border: 0.5pt solid black !important; padding: 2px !important; word-wrap: break-word; vertical-align: top !important; }
-            th { font-size: 7pt !important; background-color: #f8fafc !important; }
+            
+            th { font-size: 7pt !important; background-color: #f1f5f9 !important; text-transform: uppercase; }
             td { font-size: 7.5pt !important; }
+
             .input-box { display: none !important; }
             .print-text { display: block !important; font-weight: 600 !important; white-space: pre-wrap; text-transform: uppercase; }
-            .ot-money { color: black !important; border-top: 0.5pt dashed #000; }
-            .w-purpose { width: 22% !important; }
+            
+            /* Print Specific Widths to fit everything */
+            .w-date { width: 7%; }
+            .w-time { width: 11%; }
+            .w-driver { width: 9%; }
+            .w-purpose { width: 25%; }
+            .w-auth { width: 8%; }
+            .w-odo { width: 7%; }
+            .w-dist { width: 5%; }
+            .w-fuel { width: 5%; }
+            .w-notes { width: 10%; }
         }
 
         .print-text { display: none; }
         .corporate-header-print { display: none; }
-        @media print { .corporate-header-print { display: flex !important; align-items: center; border-bottom: 2pt solid black; margin-bottom: 10px; padding-bottom: 5px; } }
+        @media print { .corporate-header-print { display: flex !important; align-items: center; border-bottom: 1.5pt solid black; margin-bottom: 5px; } }
     </style>
 </head>
-<body class="p-2 md:p-6">
+<body class="p-2 md:p-4">
 
     <div class="max-w-[1900px] mx-auto print-full">
         
         <!-- PRINT HEADER -->
         <div class="corporate-header-print">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/2/26/Coat_of_arms_of_Malaysia.svg" style="width: 50px; height: 50px; margin-right: 20px;">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/2/26/Coat_of_arms_of_Malaysia.svg" style="width: 40px; height: 40px; margin-right: 15px;">
             <div>
-                <h2 style="font-size: 14pt; font-weight: 800; margin: 0; font-family: 'Space Grotesk';">LOG PERJALANAN KENDERAAN & TUNTUTAN KERJA LEBIH MASA</h2>
-                <p style="font-size: 9pt; margin: 0; font-weight: 600;">Bahagian Penguatkuasa • Pilot Intelligent v3.8.0</p>
+                <h2 style="font-size: 13pt; font-weight: 800; margin: 0;">LOG PERJALANAN KENDERAAN JABATAN</h2>
+                <p style="font-size: 8pt; margin: 0; font-weight: 600;">Bahagian Penguatkuasa • Sistem Pilot Intelligent v3.5.0</p>
             </div>
         </div>
 
         <!-- WEB HEADER -->
-        <header class="bg-slate-900 text-white p-4 md:p-6 rounded-2xl mb-6 flex flex-col lg:flex-row justify-between items-center no-print shadow-2xl border-b-4 border-blue-500 gap-4">
-            <div class="flex items-center gap-4">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/2/26/Coat_of_arms_of_Malaysia.svg" class="w-12 h-12 bg-white p-1 rounded-xl shadow-inner">
+        <header class="bg-slate-900 text-white p-4 rounded-xl mb-4 flex flex-col lg:flex-row justify-between items-center no-print shadow-lg border-b-4 border-blue-500 gap-4">
+            <div class="flex items-center gap-3">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/2/26/Coat_of_arms_of_Malaysia.svg" class="w-10 h-10 bg-white p-1 rounded-lg">
                 <div>
-                    <h1 class="text-xl md:text-2xl font-bold font-heading uppercase tracking-tighter">Pilot <span class="text-blue-400">Intelligent</span></h1>
-                    <p class="text-[9px] text-slate-400 font-bold uppercase tracking-widest">Smart Logistics & Fleet Analytics</p>
+                    <h1 class="text-lg font-bold font-heading uppercase tracking-tight">Pilot <span class="text-blue-400">Intelligent</span></h1>
+                    <p class="text-[8px] text-slate-400 font-bold uppercase tracking-widest">Fleet Management System</p>
                 </div>
             </div>
 
-            <div class="bg-slate-800 px-6 py-2 rounded-2xl border border-slate-700 text-center lg:text-right">
-                <p id="live-date" class="text-[10px] font-black text-blue-400 uppercase">Memuatkan Tarikh...</p>
-                <p id="live-clock" class="text-xl font-bold font-heading leading-none">00:00:00 AM</p>
+            <div class="flex items-center gap-4 bg-slate-800 px-4 py-2 rounded-xl border border-slate-700">
+                <div class="text-right">
+                    <p id="live-date" class="text-[9px] font-black text-blue-400 uppercase">Memuatkan...</p>
+                    <p id="live-clock" class="text-md font-bold font-heading leading-none">00:00:00 AM</p>
+                </div>
             </div>
 
-            <div class="flex items-center gap-4">
-                <button id="login-btn" onclick="loginGoogle()" class="bg-blue-600 hover:bg-blue-500 px-6 py-2 rounded-xl font-bold text-sm shadow-lg transition-all active:scale-95">LOGIN GOOGLE</button>
-                <div id="user-profile" class="hidden flex items-center gap-3 bg-slate-800 p-1 pr-4 rounded-full border border-slate-700">
-                    <img id="u-avatar" class="w-10 h-10 rounded-full border-2 border-blue-500">
-                    <button onclick="logout()" class="text-[10px] text-red-400 font-black hover:text-red-300">LOGOUT</button>
+            <div class="flex gap-3">
+                <button id="login-btn" onclick="loginGoogle()" class="bg-blue-600 px-5 py-2 rounded-lg font-bold text-xs shadow-md active:scale-95 transition">LOGIN GOOGLE</button>
+                <div id="user-profile" class="hidden flex items-center gap-3">
+                    <img id="u-avatar" class="w-8 h-8 rounded-full border border-slate-600">
+                    <button onclick="logout()" class="text-[10px] text-red-400 font-bold underline">LOGOUT</button>
                 </div>
             </div>
         </header>
 
         <!-- INFO BAR -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-6 no-print">
-            <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
-                <label class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Bulan Rekod</label>
-                <input type="month" id="m-month" class="w-full font-bold text-lg outline-none text-blue-600" onchange="sync()">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4 no-print">
+            <div class="bg-white p-3 rounded-lg border border-slate-200 shadow-sm">
+                <label class="text-[9px] font-bold text-slate-400 uppercase">Bulan Rekod</label>
+                <input type="month" id="m-month" class="w-full font-bold text-sm outline-none text-blue-600" onchange="sync()">
             </div>
-            <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
-                <label class="text-[10px] font-bold text-slate-400 uppercase block mb-1">No. Pendaftaran</label>
-                <input type="text" id="m-plate" class="w-full font-bold text-lg uppercase outline-none" placeholder="VNC 974" onchange="sync()">
+            <div class="bg-white p-3 rounded-lg border border-slate-200 shadow-sm">
+                <label class="text-[9px] font-bold text-slate-400 uppercase">No. Pendaftaran</label>
+                <input type="text" id="m-plate" class="w-full font-bold text-sm uppercase outline-none" placeholder="VNC 974" onchange="sync()">
             </div>
-            <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
-                <label class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Odo Awal</label>
-                <input type="number" id="m-odo-start" class="w-full font-black text-xl outline-none" oninput="calcLogic(); sync()">
+            <div class="bg-white p-3 rounded-lg border border-slate-200 shadow-sm">
+                <label class="text-[9px] font-bold text-slate-400 uppercase">Odo Awal</label>
+                <input type="number" id="m-odo-start" class="w-full font-black text-lg outline-none" oninput="calcLogic(); sync()">
             </div>
-            <div class="bg-white p-4 rounded-2xl border-2 border-green-500 shadow-md">
-                <label class="text-[10px] font-bold text-green-600 uppercase block mb-1">Gaji Pokok (RM)</label>
-                <input type="number" id="m-salary" class="w-full font-black text-xl outline-none" placeholder="0.00" oninput="calcLogic(); sync()">
-                <div id="salary-plus-imbuhan" class="text-[10px] font-bold text-blue-600 mt-1 bg-blue-50 px-2 py-1 rounded inline-block">+ ITP/ITKA/BISH (RM765)</div>
-            </div>
-            <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
-                <label class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Unit / Bahagian</label>
-                <input type="text" id="m-unit" class="w-full font-bold text-lg uppercase outline-none" placeholder="PENGUATKUASA" onchange="sync()">
+            <div class="bg-white p-3 rounded-lg border border-slate-200 shadow-sm">
+                <label class="text-[9px] font-bold text-slate-400 uppercase">Unit/Bahagian</label>
+                <input type="text" id="m-unit" class="w-full font-bold text-sm uppercase outline-none" placeholder="PENGUATKUASA" onchange="sync()">
             </div>
         </div>
 
         <!-- MAIN TABLE -->
-        <div class="table-wrapper">
+        <div class="glass-card shadow-xl rounded-xl overflow-hidden print-full">
             <table id="main-table">
-                <thead class="bg-slate-900 text-white uppercase text-[10px] font-heading">
+                <thead class="bg-slate-900 text-white uppercase text-[9px] font-heading">
                     <tr>
-                        <th class="w-date p-3">Tarikh</th>
-                        <th class="w-time p-3">Waktu Tugas & Masa</th>
-                        <th class="w-driver p-3">Pemandu</th>
-                        <th class="w-purpose p-3">Tujuan & Destinasi</th>
-                        <th class="w-auth p-3">Pelulus</th>
-                        <th class="w-auth p-3">Pengguna</th>
-                        <th class="w-odo p-3">Odo Akhir</th>
-                        <th class="w-dist p-3">Jarak</th>
-                        <th class="w-fuel p-3">RM</th>
-                        <th class="w-fuel p-3">Ltr</th>
-                        <th class="w-notes p-3">Catatan</th>
-                        <th class="no-print" style="width: 50px;"></th>
+                        <th class="w-date p-2">Tarikh</th>
+                        <th class="w-time p-2">Waktu Tugas & Masa</th>
+                        <th class="w-driver p-2">Pemandu</th>
+                        <th class="w-purpose p-2">Tujuan & Destinasi</th>
+                        <th class="w-auth p-2">Pelulus</th>
+                        <th class="w-auth p-2">Pengguna</th>
+                        <th class="w-odo p-2">Odo Akhir</th>
+                        <th class="w-dist p-2">Jarak</th>
+                        <th class="w-fuel p-2">RM</th>
+                        <th class="w-fuel p-2">Ltr</th>
+                        <th class="w-notes p-2">Catatan</th>
+                        <th class="no-print" style="width: 40px;"></th>
                     </tr>
                 </thead>
                 <tbody id="log-body" class="bg-white"></tbody>
             </table>
         </div>
 
-        <button onclick="addRow()" class="no-print w-full mt-6 bg-slate-900 text-white py-4 rounded-2xl font-bold shadow-xl flex justify-center items-center gap-3 hover:bg-blue-600 transition-all active:scale-[0.98] uppercase tracking-wider">
-            <i data-lucide="plus-circle" class="w-6 h-6"></i> TAMBAH REKOD PERJALANAN BARU
+        <button onclick="addRow()" class="no-print w-full mt-4 bg-slate-900 text-white py-3 rounded-xl font-bold shadow-lg flex justify-center items-center gap-2 hover:bg-blue-600 transition-all uppercase text-sm">
+            <i data-lucide="plus-circle" class="w-4 h-4"></i> Tambah Rekod Perjalanan
         </button>
 
         <!-- SUMMARY -->
-        <div class="grid grid-cols-2 lg:grid-cols-5 gap-4 mt-8 print-full">
-            <div class="bg-white p-5 rounded-2xl shadow-lg border-t-4 border-slate-300 text-center">
-                <p class="text-[10px] font-bold text-slate-400 uppercase">Jarak (KM)</p>
-                <h3 id="sum-dist" class="text-2xl font-black">0</h3>
+        <div class="grid grid-cols-4 gap-3 mt-6 print-full">
+            <div class="bg-white p-3 rounded-xl shadow-sm border-t-4 border-blue-500 text-center">
+                <p class="text-[9px] font-bold text-slate-400">JARAK (KM)</p>
+                <h3 id="sum-dist" class="text-xl font-black">0</h3>
             </div>
-            <div class="bg-white p-5 rounded-2xl shadow-lg border-t-4 border-slate-300 text-center">
-                <p class="text-[10px] font-bold text-slate-400 uppercase">Minyak (LTR)</p>
-                <h3 id="sum-liter" class="text-2xl font-black">0</h3>
+            <div class="bg-white p-3 rounded-xl shadow-sm border-t-4 border-blue-500 text-center">
+                <p class="text-[9px] font-bold text-slate-400">MINYAK (LTR)</p>
+                <h3 id="sum-liter" class="text-xl font-black">0</h3>
             </div>
-            <div class="bg-white p-5 rounded-2xl shadow-lg border-t-4 border-green-500 text-center">
-                <p class="text-[10px] font-bold text-green-600 uppercase">Anggaran OT (RM)</p>
-                <h3 id="sum-ot-pay" class="text-2xl font-black text-green-600">0.00</h3>
+            <div class="bg-white p-3 rounded-xl shadow-sm border-t-4 border-blue-500 text-center">
+                <p class="text-[9px] font-bold text-slate-400">KOS (RM)</p>
+                <h3 id="sum-rm" class="text-xl font-black">0</h3>
             </div>
-            <div class="bg-white p-5 rounded-2xl shadow-lg border-t-4 border-blue-500 text-center">
-                <p class="text-[10px] font-bold text-blue-600 uppercase">Gaji + Imbuhan</p>
-                <h3 id="sum-salary-fix" class="text-2xl font-black text-blue-600">0.00</h3>
-            </div>
-            <div class="bg-white p-5 rounded-2xl shadow-lg border-t-4 border-purple-600 text-center col-span-2 lg:col-span-1">
-                <p class="text-[10px] font-bold text-purple-600 uppercase">Grand Total (Est)</p>
-                <h3 id="sum-grand-total" class="text-2xl font-black text-purple-600">0.00</h3>
+            <div class="bg-white p-3 rounded-xl shadow-sm border-t-4 border-blue-500 text-center">
+                <p class="text-[9px] font-bold text-slate-400">KM/LTR</p>
+                <h3 id="sum-rate" class="text-xl font-black text-blue-600">0.00</h3>
             </div>
         </div>
 
         <div class="fixed bottom-6 right-6 no-print">
-            <button onclick="window.print()" class="bg-blue-600 text-white p-5 rounded-full shadow-2xl hover:scale-110 transition-all flex items-center gap-2 font-bold border-4 border-white">
+            <button onclick="window.print()" class="bg-blue-600 text-white p-4 rounded-full shadow-2xl hover:scale-105 transition-all flex items-center gap-2 font-bold border-4 border-white">
                 <i data-lucide="printer"></i> <span>CETAK LOG</span>
             </button>
         </div>
@@ -230,78 +222,92 @@
             return `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth()+1).padStart(2, '0')}/${d.getFullYear()}\n(${days[d.getDay()]})`;
         }
 
-        function adjustHeight(el) { el.style.height = "auto"; el.style.height = (el.scrollHeight) + "px"; }
+        function adjustHeight(el) { 
+            el.style.height = "auto"; 
+            el.style.height = (el.scrollHeight) + "px"; 
+        }
 
         function addRow(v = {}) {
             const tr = document.createElement('tr');
             tr.className = "border-b border-slate-200 hover:bg-slate-50 transition-colors";
             tr.innerHTML = `
-                <td class="w-date p-2">
+                <td class="w-date p-1">
                     <div class="input-box"><input type="date" value="${v.tarikhRaw||''}" class="row-input date-input"></div>
                     <span class="print-text text-center">${formatDisplayDate(v.tarikhRaw)}</span>
                 </td>
-                <td class="w-time p-2">
+                <td class="w-time p-1">
                     <div class="input-box flex flex-col gap-1">
-                        <select class="row-input shift-select text-[10px] bg-slate-100 rounded border p-1">
-                            <option value="07:30-16:30" ${v.shiftRaw=='07:30-16:30'?'selected':''}>WBF: 07:30 - 16:30</option>
-                            <option value="08:00-17:00" ${v.shiftRaw=='08:00-17:00'?'selected':''}>WBF: 08:00 - 17:00</option>
-                            <option value="08:30-17:30" ${v.shiftRaw=='08:30-17:30'?'selected':''}>WBF: 08:30 - 17:30</option>
-                            <option value="09:00-18:00" ${v.shiftRaw=='09:00-18:00'?'selected':''}>WBF: 09:00 - 18:00</option>
+                        <select class="row-input shift-select text-[10px] bg-slate-100 rounded border">
+                            <option value="07:30-16:30" ${v.shiftRaw=='07:30-16:30'?'selected':''}>WBF: 07:30AM-04:30PM</option>
+                            <option value="08:00-17:00" ${v.shiftRaw=='08:00-17:00'?'selected':''}>WBF: 08:00AM-05:00PM</option>
+                            <option value="08:30-17:30" ${v.shiftRaw=='08:30-17:30'?'selected':''}>WBF: 08:30AM-05:30PM</option>
+                            <option value="09:00-18:00" ${v.shiftRaw=='09:00-18:00'?'selected':''}>WBF: 09:00AM-06:00PM</option>
                         </select>
                         <div class="flex gap-1">
-                            <input type="time" value="${v.mulaRaw||''}" class="row-input t-mula border-b text-[11px] bg-white">
-                            <input type="time" value="${v.hinggaRaw||''}" class="row-input t-hingga border-b text-[11px] bg-white">
+                            <input type="time" value="${v.mulaRaw||''}" class="row-input t-mula border-b text-[11px]">
+                            <input type="time" value="${v.hinggaRaw||''}" class="row-input t-hingga border-b text-[11px]">
                         </div>
                     </div>
                     <div class="text-center">
-                        <span class="print-text text-[7.5pt] font-bold">${to12h(v.mulaRaw)} - ${to12h(v.hinggaRaw)}</span>
+                        <span class="print-text text-[8pt] font-bold">${to12h(v.mulaRaw)} - ${to12h(v.hinggaRaw)}</span>
                         <div class="ot-container"></div>
                     </div>
                 </td>
-                <td class="w-driver p-2">
+                <td class="w-driver p-1">
                     <div class="input-box"><textarea class="row-input uppercase font-bold" oninput="adjustHeight(this)">${v.pemandu||''}</textarea></div>
                     <span class="print-text">${v.pemandu||''}</span>
                 </td>
-                <td class="w-purpose p-2">
+                <td class="w-purpose p-1">
                     <div class="input-box"><textarea class="row-input uppercase text-blue-700 font-bold leading-tight" oninput="adjustHeight(this)">${v.tujuan||''}</textarea></div>
                     <span class="print-text">${v.tujuan||''}</span>
                 </td>
-                <td class="w-auth p-2 text-center">
+                <td class="w-auth p-1 text-center">
                     <div class="input-box"><textarea class="row-input uppercase text-center" oninput="adjustHeight(this)">${v.pelulus||''}</textarea></div>
                     <span class="print-text">${v.pelulus||''}</span>
                 </td>
-                <td class="w-auth p-2 text-center">
+                <td class="w-auth p-1 text-center">
                     <div class="input-box"><textarea class="row-input uppercase text-center" oninput="adjustHeight(this)">${v.pengguna||''}</textarea></div>
                     <span class="print-text">${v.pengguna||''}</span>
                 </td>
-                <td class="w-odo p-2 text-center">
+                <td class="w-odo p-1 text-center">
                     <div class="input-box"><input type="number" value="${v.odo||''}" class="row-input odo-val font-black text-blue-600 text-center"></div>
-                    <span class="print-text font-black text-center">${v.odo||''}</span>
+                    <span class="print-text font-black">${v.odo||''}</span>
                 </td>
-                <td class="w-dist p-2 text-center">
+                <td class="w-dist p-1 text-center">
                     <div class="input-box"><input type="number" value="${v.jarak||''}" class="row-input dist-val font-black bg-slate-100 text-center" readonly></div>
-                    <span class="print-text font-black text-center">${v.jarak||''}</span>
+                    <span class="print-text font-black">${v.jarak||''}</span>
                 </td>
-                <td class="w-fuel p-2 text-center">
+                <td class="w-fuel p-1 text-center">
                     <div class="input-box"><input type="number" step="0.01" value="${v.resit||''}" class="row-input rm-val text-center"></div>
-                    <span class="print-text text-center">${v.resit||''}</span>
+                    <span class="print-text">${v.resit||''}</span>
                 </td>
-                <td class="w-fuel p-2 text-center">
+                <td class="w-fuel p-1 text-center">
                     <div class="input-box"><input type="number" step="0.01" value="${v.liter||''}" class="row-input liter-val text-center"></div>
-                    <span class="print-text text-center">${v.liter||''}</span>
+                    <span class="print-text">${v.liter||''}</span>
                 </td>
-                <td class="w-notes p-2">
+                <td class="w-notes p-1">
                     <div class="input-box"><textarea class="row-input italic text-slate-500 text-[10px]" oninput="adjustHeight(this)">${v.arahan||''}</textarea></div>
                     <span class="print-text italic text-[7pt]">${v.arahan||''}</span>
                 </td>
-                <td class="no-print p-2 text-center">
-                    <button onclick="this.closest('tr').remove();calcLogic();sync()" class="text-red-400 hover:text-red-600 p-2"><i data-lucide="trash-2" class="w-5 h-5"></i></button>
+                <td class="no-print p-1 text-center">
+                    <button onclick="this.closest('tr').remove();calcLogic();sync()" class="text-red-400 hover:text-red-600 p-1"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
                 </td>
             `;
             document.getElementById('log-body').appendChild(tr);
             lucide.createIcons();
+            
+            // Re-trigger height adjustment for loaded data
             setTimeout(() => { tr.querySelectorAll('textarea').forEach(tx => adjustHeight(tx)); }, 50);
-            tr.querySelectorAll('input, textarea, select').forEach(el => { el.oninput = () => { calcLogic(); sync(); }; });
+
+            tr.querySelectorAll('input, textarea, select').forEach(el => {
+                el.oninput = () => { 
+                    if(el.classList.contains('date-input')) tr.querySelector('.w-date .print-text').innerText = formatDisplayDate(el.value);
+                    if(el.classList.contains('t-mula') || el.classList.contains('t-hingga')) {
+                        tr.querySelector('.w-time .print-text').innerText = `${to12h(tr.querySelector('.t-mula').value)} - ${to12h(tr.querySelector('.t-hingga').value)}`;
+                    }
+                    calcLogic(); sync(); 
+                };
+            });
             calcLogic();
         }
 
@@ -319,21 +325,13 @@
 
         function calcLogic() {
             let prev = Number(document.getElementById('m-odo-start').value) || 0;
-            let basicSalary = Number(document.getElementById('m-salary').value) || 0;
-            
-            // Imbuhan: 300 (ITP) + 115 (ITKA) + 350 (BISH) = 765
-            const totalAllowance = 765;
-            const grossBase = basicSalary + totalAllowance;
-            const hourlyRate = (basicSalary * 12) / 2504;
-            
-            let td = 0, tl = 0, totalOTRM = 0;
-
-            document.getElementById('salary-plus-imbuhan').innerText = basicSalary > 0 ? `Total: RM ${grossBase.toFixed(2)}` : "+ ITP/ITKA/BISH (RM765)";
+            let td = 0, tl = 0, trm = 0;
 
             document.querySelectorAll('#log-body tr').forEach(row => {
                 const odo = Number(row.querySelector('.odo-val').value);
                 const distField = row.querySelector('.dist-val');
                 const distSpan = row.querySelector('.w-dist .print-text');
+                
                 if(odo > 0) { 
                     const currentDist = odo - prev;
                     distField.value = currentDist; distSpan.innerText = currentDist;
@@ -341,42 +339,31 @@
                 } else { distField.value = ""; distSpan.innerText = ""; }
                 
                 tl += Number(row.querySelector('.liter-val').value) || 0;
+                trm += Number(row.querySelector('.rm-val').value) || 0;
 
+                // OT LOGIC
                 const shiftVal = row.querySelector('.shift-select').value;
                 const [sStartStr, sEndStr] = shiftVal.split('-');
                 const sStart = getMinutes(sStartStr);
                 const sEnd = getMinutes(sEndStr);
                 const mula = getMinutes(row.querySelector('.t-mula').value);
                 const hingga = getMinutes(row.querySelector('.t-hingga').value);
-                
                 const otContainer = row.querySelector('.ot-container');
                 otContainer.innerHTML = "";
-                let rowOTMinutes = 0;
 
                 if(mula && mula < sStart) {
-                    const diff = sStart - mula; rowOTMinutes += diff;
+                    const diff = sStart - mula;
                     otContainer.innerHTML += `<span class="ot-badge ot-before">AWAL: -${formatDuration(diff)}</span>`;
                 }
                 if(hingga && hingga > sEnd) {
-                    const diff = hingga - sEnd; rowOTMinutes += diff;
+                    const diff = hingga - sEnd;
                     otContainer.innerHTML += `<span class="ot-badge ot-after">OT: +${formatDuration(diff)}</span>`;
                 }
-
-                if(rowOTMinutes > 0 && hourlyRate > 0) {
-                    const rowPay = (rowOTMinutes / 60) * hourlyRate;
-                    totalOTRM += rowPay;
-                    otContainer.innerHTML += `<span class="ot-money">EST: RM ${rowPay.toFixed(2)}</span>`;
-                }
-
-                row.querySelector('.w-date .print-text').innerText = formatDisplayDate(row.querySelector('.date-input').value);
-                row.querySelector('.w-time .print-text').innerText = `${to12h(row.querySelector('.t-mula').value)} - ${to12h(row.querySelector('.t-hingga').value)}`;
             });
 
             document.getElementById('sum-dist').innerText = td;
             document.getElementById('sum-liter').innerText = tl.toFixed(2);
-            document.getElementById('sum-ot-pay').innerText = totalOTRM.toFixed(2);
-            document.getElementById('sum-salary-fix').innerText = grossBase.toFixed(2);
-            document.getElementById('sum-grand-total').innerText = (grossBase + totalOTRM).toFixed(2);
+            document.getElementById('sum-rm').innerText = trm.toFixed(2);
             document.getElementById('sum-rate').innerText = tl > 0 ? (td/tl).toFixed(2) : "0.00";
         }
 
@@ -401,7 +388,7 @@
                 });
             });
             await db.collection("logs_v32").doc(currentUser.uid).set({
-                meta: { month:document.getElementById('m-month').value, plate:document.getElementById('m-plate').value, odo:document.getElementById('m-odo-start').value, unit:document.getElementById('m-unit').value, salary:document.getElementById('m-salary').value },
+                meta: { month:document.getElementById('m-month').value, plate:document.getElementById('m-plate').value, odo:document.getElementById('m-odo-start').value, unit:document.getElementById('m-unit').value },
                 logs: logs
             });
         }
@@ -414,10 +401,8 @@
                 document.getElementById('m-plate').value = d.meta.plate || '';
                 document.getElementById('m-odo-start').value = d.meta.odo || ''; 
                 document.getElementById('m-unit').value = d.meta.unit || '';
-                document.getElementById('m-salary').value = d.meta.salary || '';
                 document.getElementById('log-body').innerHTML = ""; 
                 if(d.logs?.length > 0) d.logs.forEach(l => addRow(l)); else addRow();
-                calcLogic();
             } else { addRow(); }
         }
 

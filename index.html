@@ -4,7 +4,7 @@
     <script async src="https://pagead2.googlesyndication.com/pagead/js/ads=google.js?client=ca-pub-5395525176253885" crossorigin="anonymous"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pilot Intelligent v3.2.6</title>
+    <title>Pilot Intelligent v3.2.7</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
@@ -17,83 +17,99 @@
         :root { --blue-corp: #1e3a8a; }
         body { font-family: 'Poppins', sans-serif; background: #f1f5f9; color: #1e293b; line-height: 1.2; }
 
+        /* Standardize fonts for all inputs */
+        input, textarea, button, select {
+            font-family: 'Poppins', sans-serif !important;
+        }
+
         .pixar-card { background: white; border-radius: 0.75rem; border: 1px solid rgba(0,0,0,0.1); }
         .row-input { 
             font-size: 0.75rem; width: 100%; border: none; background: transparent; 
             padding: 4px; outline: none; resize: none; overflow: hidden; display: block;
         }
 
-        /* HIDE BROWSER UI ELEMENTS */
         input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
         input[type=number] { -moz-appearance: textfield; }
 
-        /* PRINT ENGINE v3.2.6 */
+        /* PRINT ENGINE v3.2.7 - OPTIMIZED */
         @media print {
             @page { 
                 size: A4 landscape; 
-                margin: 5mm; 
+                margin: 8mm 5mm; 
             }
             body { background: white !important; padding: 0 !important; margin: 0 !important; }
             .no-print { display: none !important; }
-            .print-full { width: 100% !important; border: none !important; box-shadow: none !important; }
+            .print-full { width: 100% !important; border: none !important; box-shadow: none !important; margin: 0 !important; }
             
             .corporate-header-print {
                 display: flex !important;
                 align-items: center;
-                border-bottom: 1.5pt solid black;
+                border-bottom: 2pt solid black;
                 padding-bottom: 5px;
-                margin-bottom: 8px;
+                margin-bottom: 10px;
             }
 
             table { 
                 width: 100% !important; 
                 table-layout: fixed !important; 
-                border-collapse: collapse !important; 
+                border-collapse: collapse !important;
+                border: 1pt solid black !important;
             }
             
             th, td { 
                 border: 0.5pt solid black !important; 
-                padding: 2px !important; 
+                padding: 1.5px 2px !important; 
                 word-wrap: break-word !important;
                 vertical-align: top !important;
-                font-size: 6.5pt !important; /* Smaller text for print */
                 color: black !important;
+                line-height: 1.1 !important;
             }
 
-            th { background-color: #f3f4f6 !important; font-weight: bold; text-transform: uppercase; font-size: 6pt !important; }
+            th { 
+                background-color: #e5e7eb !important; 
+                font-weight: bold !important; 
+                text-transform: uppercase; 
+                font-size: 5.5pt !important; 
+            }
 
-            /* STRICT COLUMN WIDTHS (Total 100%) */
-            .col-date { width: 7.5%; }
-            .col-time { width: 4%; }
+            /* COLUMN WIDTHS FOR PRINT */
+            .col-date { width: 7%; }
+            .col-time { width: 4.5%; }
             .col-driver { width: 9%; }
-            .col-purpose { width: 42%; } /* Massive space for destination */
-            .col-auth { width: 7%; }
+            .col-purpose { width: 32%; } /* Ruang besar untuk destinasi */
+            .col-auth { width: 8.5%; }
             .col-odo { width: 6%; }
             .col-dist { width: 4.5%; }
-            .col-fuel { width: 3.5%; }
-            .col-notes { width: 5%; }
+            .col-fuel { width: 4%; }
+            .col-notes { width: 8%; }
 
-            /* FORCE TEXTAREA TO SHOW ALL CONTENT */
+            /* FORCE ALL TEXT TO SHOW */
             textarea.row-input, input.row-input { 
+                font-size: 6pt !important;
                 height: auto !important; 
-                min-height: unset !important;
+                min-height: 10px !important;
                 overflow: visible !important;
                 display: block !important;
                 white-space: pre-wrap !important; 
-                font-size: 7pt !important;
-                line-height: 1.1 !important;
-                appearance: none !important;
+                border: none !important;
+                padding: 0 !important;
+                margin: 0 !important;
             }
 
-            /* Hide browser UI icons on print */
+            .signature-section { 
+                page-break-inside: avoid; 
+                margin-top: 15px;
+                display: grid !important;
+                grid-template-cols: 1fr 1fr !important;
+                gap: 20px;
+            }
+
+            /* Hide date/time browser icons */
             input[type="date"]::-webkit-calendar-picker-indicator,
             input[type="time"]::-webkit-calendar-picker-indicator {
                 display: none !important;
                 -webkit-appearance: none;
             }
-
-            tr { page-break-inside: avoid; }
-            .signature-section { page-break-inside: avoid; margin-top: 10px; }
         }
 
         .corporate-header-print { display: none; }
@@ -103,12 +119,12 @@
 
     <div class="max-w-[1600px] mx-auto print-full">
         
-        <!-- PRINT HEADER -->
+        <!-- PRINT HEADER (Only visible during print) -->
         <div class="corporate-header-print">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/2/26/Coat_of_arms_of_Malaysia.svg" style="width: 45px; height: 45px; margin-right: 15px;">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/2/26/Coat_of_arms_of_Malaysia.svg" style="width: 50px; height: 50px; margin-right: 15px;">
             <div style="flex-grow: 1;">
-                <h2 style="font-size: 12pt; font-weight: bold; margin: 0;">LOG PERJALANAN KENDERAAN JABATAN</h2>
-                <h3 style="font-size: 8pt; margin: 0;">Sistem Pilot Intelligent Veterinar (Universal Logistics)</h3>
+                <h2 style="font-size: 14pt; font-weight: 800; margin: 0; color: black;">LOG PERJALANAN KENDERAAN JABATAN</h2>
+                <h3 style="font-size: 9pt; margin: 0; color: #333;">Sistem Pilot Intelligent Veterinar (Universal Logistics)</h3>
             </div>
         </div>
 
@@ -117,7 +133,7 @@
             <div class="flex items-center gap-4">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/2/26/Coat_of_arms_of_Malaysia.svg" class="w-10 h-10">
                 <div>
-                    <h1 class="text-lg font-black text-blue-900">PILOT INTELLIGENT v3.2.6</h1>
+                    <h1 class="text-lg font-black text-blue-900">PILOT INTELLIGENT v3.2.7</h1>
                     <p class="text-[8px] font-bold text-blue-500 tracking-widest uppercase">Logistik Kenderaan Rasmi</p>
                 </div>
             </div>
@@ -167,9 +183,7 @@
                             <th class="col-fuel">RM</th><th class="col-fuel">Liter</th>
                         </tr>
                     </thead>
-                    <tbody id="log-body" class="bg-white">
-                        <!-- Rows are added here -->
-                    </tbody>
+                    <tbody id="log-body" class="bg-white"></tbody>
                 </table>
             </div>
             <div class="p-3 bg-gray-50 flex justify-between no-print">
@@ -181,21 +195,19 @@
             </div>
         </div>
 
-        <!-- FOOTER SUMMARY & SIGNATURE -->
+        <!-- SUMMARY & SIGNATURE -->
         <div class="signature-section grid grid-cols-1 lg:grid-cols-2 gap-4 print-full">
-            <!-- Summary Table -->
             <div class="pixar-card border-t-2 border-green-600 p-2 shadow-sm">
-                <table class="w-full text-center">
+                <table class="w-full text-center border-none !border-0">
                     <tr class="text-[7px] font-bold text-gray-400 uppercase">
-                        <td>Jarak (KM)</td><td>Liter (L)</td><td>Kos (RM)</td><td>Kadar KM/L</td>
+                        <td class="!border-0">Jarak (KM)</td><td class="!border-0">Liter (L)</td><td class="!border-0">Kos (RM)</td><td class="!border-0">Kadar KM/L</td>
                     </tr>
-                    <tr class="text-base font-black">
-                        <td id="sum-dist">0</td><td id="sum-liter">0</td><td id="sum-rm">0</td><td id="sum-rate" class="text-green-700">0.00</td>
+                    <tr class="text-sm font-black">
+                        <td id="sum-dist" class="!border-0">0</td><td id="sum-liter" class="!border-0">0</td><td id="sum-rm" class="!border-0">0</td><td id="sum-rate" class="text-green-700 !border-0">0.00</td>
                     </tr>
                 </table>
             </div>
 
-            <!-- Signature Section -->
             <div class="pixar-card border-t-2 border-gray-400 p-2 shadow-sm">
                 <p class="text-[7px] font-bold text-gray-400 uppercase mb-2">Pengesahan Pegawai Kenderaan / Ketua Unit:</p>
                 <div class="border-b border-black w-full mb-1">
@@ -244,7 +256,7 @@
             `;
             document.getElementById('log-body').appendChild(tr);
             
-            // Initial auto-height for loaded data
+            // Re-adjust height for all textareas
             setTimeout(() => { tr.querySelectorAll('textarea').forEach(tx => adjustHeight(tx)); }, 100);
 
             tr.querySelectorAll('input, textarea').forEach(i => {
@@ -309,7 +321,7 @@
                 document.getElementById('m-odo-start').value = d.meta.odo || ''; 
                 document.getElementById('auth-name').value = d.meta.aN || '';
                 document.getElementById('log-body').innerHTML = ""; 
-                if(d.logs) d.logs.forEach(l => addRow(l)); else addRow();
+                if(d.logs && d.logs.length > 0) d.logs.forEach(l => addRow(l)); else addRow();
                 calcLogic();
             } else { addRow(); }
         }

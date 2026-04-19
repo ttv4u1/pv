@@ -4,7 +4,7 @@
     <script async src="https://pagead2.googlesyndication.com/pagead/js/ads=google.js?client=ca-pub-5395525176253885" crossorigin="anonymous"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pilot Intelligent v3.2.9</title>
+    <title>Pilot Intelligent v3.3.0</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -15,114 +15,120 @@
 
     <style>
         :root { --blue-corp: #1e3a8a; }
-        body { font-family: 'Poppins', sans-serif; background: #f1f5f9; color: #1e293b; }
+        body { font-family: 'Poppins', sans-serif; background: #f8fafc; color: #1e293b; -webkit-font-smoothing: antialiased; }
 
-        /* WEBVIEW OPTIMIZATION */
+        /* WEBVIEW RESPONSIVE FONT - BIGGER & CLEARER */
         .row-input { 
-            font-size: 0.85rem; width: 100%; border: none; background: transparent; 
-            padding: 6px 2px; outline: none; resize: none; overflow: hidden; display: block;
+            font-size: 1rem; /* Responsive sizing */
+            width: 100%; border: none; background: transparent; 
+            padding: 10px 5px; outline: none; resize: none; overflow: hidden; display: block;
+            font-weight: 500;
         }
-        .pixar-card { background: white; border-radius: 0.75rem; border: 1px solid rgba(0,0,0,0.1); }
+        @media (max-width: 768px) {
+            .row-input { font-size: 0.95rem; padding: 12px 5px; }
+        }
 
-        /* PRINT ENGINE v3.2.9 */
+        .pixar-card { background: white; border-radius: 1rem; border: 1px solid rgba(0,0,0,0.08); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
+
+        /* PRINT ENGINE v3.3.0 */
         @media print {
-            @page { size: A4 landscape; margin: 5mm; }
-            body { background: white !important; }
+            @page { size: A4 landscape; margin: 6mm 5mm; }
+            body { background: white !important; font-size: 7pt; }
             .no-print { display: none !important; }
             .print-full { width: 100% !important; border: none !important; box-shadow: none !important; margin: 0 !important; }
             
-            table { width: 100% !important; table-layout: fixed !important; border-collapse: collapse !important; }
+            table { width: 100% !important; table-layout: fixed !important; border-collapse: collapse !important; border: 0.8pt solid black !important; }
             th, td { 
-                border: 0.5pt solid black !important; padding: 2px !important; 
+                border: 0.5pt solid black !important; padding: 3px 2px !important; 
                 word-wrap: break-word !important; vertical-align: top !important;
-                font-size: 6pt !important; line-height: 1.1 !important;
+                font-size: 6.8pt !important; line-height: 1.2 !important;
+                color: black !important;
             }
 
-            /* COLUMN WIDTHS - ACCURATE MEASUREMENT */
-            .col-date { width: 7.5%; }    /* Muat-muat Tarikh + Hari */
-            .col-time { width: 9%; }      /* Gabungan Mula - Hingga */
-            .col-driver { width: 9%; }
-            .col-purpose { width: 44%; }   /* Ruang paling besar */
-            .col-auth { width: 7%; }
+            th { background-color: #f1f5f9 !important; font-weight: 800 !important; text-transform: uppercase; font-size: 6pt !important; }
+
+            /* OPTIMIZED PRINT COLUMNS */
+            .col-date { width: 8.5%; }    /* Fit Date + Day */
+            .col-time { width: 13%; }     /* Space for 12h AM/PM (00:00 AM - 00:00 PM) */
+            .col-driver { width: 10%; }
+            .col-purpose { width: 38.5%; } /* Still the biggest */
+            .col-auth { width: 7.5%; }
             .col-odo { width: 6%; }
             .col-dist { width: 4%; }
             .col-fuel { width: 3.5%; }
-            .col-notes { width: 6%; }
+            .col-notes { width: 5%; }
 
-            /* Textarea Auto-Expand in Print */
+            /* Auto-Expand Content */
             textarea.row-input { 
-                height: auto !important; 
-                overflow: visible !important; 
-                display: block !important;
-                white-space: pre-wrap !important;
+                height: auto !important; overflow: visible !important; display: block !important;
+                white-space: pre-wrap !important; font-size: 6.8pt !important;
             }
 
-            /* Hide Inputs, Show Display Spans */
             .input-box { display: none !important; }
-            .print-text { display: block !important; }
+            .print-text { display: block !important; font-weight: 600; }
             
             input[type="date"]::-webkit-calendar-picker-indicator,
             input[type="time"]::-webkit-calendar-picker-indicator { display: none !important; }
         }
 
-        .print-text { display: none; font-weight: 600; text-transform: uppercase; }
+        .print-text { display: none; text-transform: uppercase; }
         .corporate-header-print { display: none; }
-        @media print { .corporate-header-print { display: flex !important; align-items: center; border-bottom: 2pt solid black; margin-bottom: 5px; } }
+        @media print { .corporate-header-print { display: flex !important; align-items: center; border-bottom: 2pt solid black; margin-bottom: 8px; padding-bottom: 5px; } }
     </style>
 </head>
-<body class="p-2 md:p-4">
+<body class="p-3 md:p-6">
 
     <div class="max-w-[1600px] mx-auto print-full">
         
         <!-- PRINT HEADER -->
         <div class="corporate-header-print">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/2/26/Coat_of_arms_of_Malaysia.svg" style="width: 40px; height: 40px; margin-right: 15px;">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/2/26/Coat_of_arms_of_Malaysia.svg" style="width: 45px; height: 45px; margin-right: 18px;">
             <div>
-                <h2 style="font-size: 11pt; font-weight: bold; margin: 0;">LOG PERJALANAN KENDERAAN JABATAN</h2>
-                <p style="font-size: 7pt; margin: 0;">Sistem Pilot Intelligent Veterinar v3.2.9</p>
+                <h2 style="font-size: 13pt; font-weight: 800; margin: 0; letter-spacing: -0.5px;">LOG PERJALANAN KENDERAAN JABATAN</h2>
+                <p style="font-size: 8pt; margin: 0; color: #333;">Universal Logistics Intelligence System • Pilot v3.3.0</p>
             </div>
         </div>
 
         <!-- SCREEN HEADER -->
-        <header class="pixar-card p-4 mb-4 flex flex-col lg:flex-row items-center justify-between no-print border-b-4 border-blue-900 gap-4 shadow-md">
+        <header class="pixar-card p-5 mb-6 flex flex-col lg:flex-row items-center justify-between no-print border-b-4 border-blue-900 gap-4 shadow-lg">
             <div class="flex items-center gap-4">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/2/26/Coat_of_arms_of_Malaysia.svg" class="w-10 h-10">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/2/26/Coat_of_arms_of_Malaysia.svg" class="w-12 h-12">
                 <div>
-                    <h1 class="text-lg font-black text-blue-900">PILOT INTELLIGENT v3.2.9</h1>
-                    <p class="text-[8px] font-bold text-blue-500 tracking-widest uppercase">Universal Logistics System</p>
+                    <h1 class="text-xl font-black text-blue-950 uppercase tracking-tighter">Pilot Intelligent <span class="text-blue-600">v3.3.0</span></h1>
+                    <p class="text-[10px] font-bold text-slate-400 tracking-[0.2em] uppercase">Sistem Logistik Veterinar</p>
                 </div>
             </div>
             <div id="auth-area" class="flex items-center gap-3">
-                <button id="login-btn" onclick="loginGoogle()" class="bg-blue-900 text-white px-5 py-2 rounded-full text-xs font-bold shadow-lg">GOOGLE LOGIN</button>
-                <div id="user-profile" class="hidden flex items-center gap-2">
-                    <img id="u-avatar" class="w-8 h-8 rounded-full border">
-                    <button onclick="logout()" class="text-[10px] text-red-500 font-bold">Logout</button>
+                <button id="login-btn" onclick="loginGoogle()" class="bg-blue-900 text-white px-6 py-3 rounded-xl text-sm font-bold shadow-blue-200 shadow-xl active:scale-95 transition">GOOGLE LOGIN</button>
+                <div id="user-profile" class="hidden flex items-center gap-3">
+                    <img id="u-avatar" class="w-10 h-10 rounded-full border-2 border-blue-100">
+                    <button onclick="logout()" class="text-xs text-red-500 font-black uppercase underline">Keluar</button>
                 </div>
             </div>
         </header>
 
         <!-- INFO KENDERAAN -->
-        <div class="pixar-card overflow-hidden mb-4 border-t-4 border-blue-600 print-full shadow-sm">
-            <div class="grid grid-cols-2 lg:grid-cols-4 text-[10px]">
-                <div class="p-2 border-r border-b lg:border-b-0"><label class="text-gray-400 font-bold uppercase">Bulan/Tahun</label>
-                    <input type="month" id="m-month" class="w-full font-bold outline-none" onchange="sync()"></div>
-                <div class="p-2 border-r border-b lg:border-b-0"><label class="text-gray-400 font-bold uppercase">Model</label>
-                    <input type="text" id="m-type" class="w-full font-bold uppercase outline-none" onchange="sync()"></div>
-                <div class="p-2 border-r"><label class="text-gray-400 font-bold uppercase">No. Plate</label>
-                    <input type="text" id="m-plate" class="w-full font-bold uppercase outline-none" onchange="sync()"></div>
-                <div class="p-2"><label class="text-gray-400 font-bold uppercase">Unit/Bahagian</label>
-                    <input type="text" id="m-unit" class="w-full font-bold uppercase outline-none" onchange="sync()"></div>
+        <div class="pixar-card overflow-hidden mb-6 border-t-4 border-blue-500 print-full">
+            <div class="grid grid-cols-2 lg:grid-cols-4 text-sm">
+                <div class="p-4 border-r border-b lg:border-b-0"><label class="text-[10px] text-slate-400 font-black uppercase block mb-1">Bulan / Tahun</label>
+                    <input type="month" id="m-month" class="w-full font-bold outline-none text-blue-900" onchange="sync()"></div>
+                <div class="p-4 border-r border-b lg:border-b-0"><label class="text-[10px] text-slate-400 font-black uppercase block mb-1">Model Kenderaan</label>
+                    <input type="text" id="m-type" class="w-full font-bold uppercase outline-none" placeholder="Cth: Toyota Hilux" onchange="sync()"></div>
+                <div class="p-4 border-r"><label class="text-[10px] text-slate-400 font-black uppercase block mb-1">No. Pendaftaran</label>
+                    <input type="text" id="m-plate" class="w-full font-bold uppercase outline-none text-blue-600" placeholder="JXX 1234" onchange="sync()"></div>
+                <div class="p-4"><label class="text-[10px] text-slate-400 font-black uppercase block mb-1">Unit / Bahagian</label>
+                    <input type="text" id="m-unit" class="w-full font-bold uppercase outline-none" placeholder="Unit Pentadbiran" onchange="sync()"></div>
             </div>
         </div>
 
-        <!-- JADUAL LOG -->
-        <div class="pixar-card overflow-hidden mb-4 border-t-4 border-blue-900 shadow-xl print-full">
+        <!-- MAIN TABLE -->
+        <div class="pixar-card overflow-hidden mb-6 border-t-4 border-blue-950 shadow-2xl print-full">
             <div class="overflow-x-auto">
                 <table id="main-table">
-                    <thead class="bg-blue-900 text-white text-[8px] uppercase">
+                    <thead class="bg-blue-950 text-white text-[10px] uppercase">
                         <tr>
                             <th rowspan="2" class="col-date">Tarikh</th>
-                            <th rowspan="2" class="col-time">Masa (Mula-Hingga)</th>
+                            <th rowspan="2" class="col-time">Masa (12H AM/PM)</th>
                             <th rowspan="2" class="col-driver">Pemandu</th>
                             <th rowspan="2" class="col-purpose">Tujuan / Destinasi & Urusan Rasmi</th>
                             <th rowspan="2" class="col-auth">Pelulus</th>
@@ -131,47 +137,45 @@
                             <th rowspan="2" class="col-dist">Jarak</th>
                             <th colspan="2" class="col-fuel">Bahan Api</th>
                             <th rowspan="2" class="col-notes">Catatan</th>
-                            <th rowspan="2" class="no-print" style="width: 30px;"></th>
+                            <th rowspan="2" class="no-print" style="width: 45px;"></th>
                         </tr>
-                        <tr class="bg-blue-800">
+                        <tr class="bg-blue-900">
                             <th class="col-fuel">RM</th><th class="col-fuel">Ltr</th>
                         </tr>
                     </thead>
-                    <tbody id="log-body" class="bg-white">
-                        <!-- JS injects rows -->
-                    </tbody>
+                    <tbody id="log-body" class="bg-white"></tbody>
                 </table>
             </div>
-            <div class="p-3 bg-gray-50 flex justify-between no-print">
-                <button onclick="addRow()" class="bg-blue-900 text-white px-5 py-2 rounded-lg text-xs font-bold hover:bg-black transition">+ TAMBAH REKOD</button>
-                <div class="flex items-center gap-2">
-                    <span class="text-[10px] font-bold text-gray-500 uppercase">Odo Awal:</span>
-                    <input type="number" id="m-odo-start" class="border rounded px-2 py-1 w-24 font-black text-blue-900 text-xs" oninput="calcLogic(); sync()">
+            <div class="p-5 bg-slate-50 flex justify-between items-center no-print border-t">
+                <button onclick="addRow()" class="bg-blue-950 text-white px-8 py-3 rounded-2xl text-sm font-bold hover:bg-black shadow-lg transition active:scale-95">+ TAMBAH REKOD BARU</button>
+                <div class="flex items-center gap-3">
+                    <span class="text-xs font-black text-slate-400 uppercase">Odo Awal:</span>
+                    <input type="number" id="m-odo-start" class="border-2 border-slate-200 rounded-xl px-4 py-2 w-32 font-black text-blue-900 text-lg focus:border-blue-500 outline-none" oninput="calcLogic(); sync()">
                 </div>
             </div>
         </div>
 
-        <!-- RINGKASAN & PENGESAHAN -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 print-full">
-            <div class="pixar-card border-t-2 border-green-600 p-3 shadow-sm">
-                <div class="grid grid-cols-4 text-center">
-                    <div><p class="text-[7px] font-bold text-gray-400 uppercase">Jarak</p><p id="sum-dist" class="text-sm font-black">0</p></div>
-                    <div><p class="text-[7px] font-bold text-gray-400 uppercase">Liter</p><p id="sum-liter" class="text-sm font-black">0</p></div>
-                    <div><p class="text-[7px] font-bold text-gray-400 uppercase">Kos (RM)</p><p id="sum-rm" class="text-sm font-black">0</p></div>
-                    <div><p class="text-[7px] font-bold text-gray-400 uppercase">KM/L</p><p id="sum-rate" class="text-sm font-black text-green-700">0.00</p></div>
+        <!-- SUMMARY & SIGNATURE -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 print-full">
+            <div class="pixar-card border-t-4 border-emerald-500 p-5">
+                <div class="grid grid-cols-4 text-center gap-2">
+                    <div><p class="text-[9px] font-black text-slate-400 uppercase">Jarak (KM)</p><p id="sum-dist" class="text-xl font-black">0</p></div>
+                    <div><p class="text-[9px] font-black text-slate-400 uppercase">Liter (L)</p><p id="sum-liter" class="text-xl font-black">0</p></div>
+                    <div><p class="text-[9px] font-black text-slate-400 uppercase">Kos (RM)</p><p id="sum-rm" class="text-xl font-black">0</p></div>
+                    <div><p class="text-[9px] font-black text-slate-400 uppercase">Kadar KM/L</p><p id="sum-rate" class="text-xl font-black text-emerald-600">0.00</p></div>
                 </div>
             </div>
-            <div class="pixar-card border-t-2 border-gray-400 p-3 shadow-sm">
-                <p class="text-[7px] font-bold text-gray-400 uppercase mb-2">Pengesahan:</p>
-                <textarea id="auth-name" placeholder="NAMA & JAWATAN" class="row-input font-bold uppercase text-[9px] h-6"></textarea>
-                <p class="text-[7px] uppercase font-bold text-gray-500 mt-2">Tarikh:</p>
+            <div class="pixar-card border-t-4 border-slate-300 p-5">
+                <p class="text-[9px] font-black text-slate-400 uppercase mb-4">Pengesahan Pegawai / Ketua Unit:</p>
+                <textarea id="auth-name" placeholder="NAMA & JAWATAN" class="row-input font-bold uppercase text-sm h-10 border-b-2 border-slate-900 mb-2"></textarea>
+                <p class="text-[10px] font-bold text-slate-500">Tarikh:</p>
             </div>
         </div>
 
-        <!-- BUTANG CETAK -->
-        <div class="fixed bottom-6 right-6 no-print">
-            <button onclick="window.print()" class="bg-rose-600 text-white px-6 py-3 rounded-full shadow-2xl hover:scale-105 transition flex items-center gap-2 font-bold text-sm">
-                <i data-lucide="printer"></i> CETAK LOG
+        <!-- PRINT BUTTON -->
+        <div class="fixed bottom-10 right-10 no-print">
+            <button onclick="window.print()" class="bg-rose-600 text-white px-8 py-5 rounded-3xl shadow-2xl shadow-rose-200 hover:scale-110 transition-all flex items-center gap-3 font-black text-sm">
+                <i data-lucide="printer"></i> CETAK LOG PERJALANAN
             </button>
         </div>
     </div>
@@ -182,19 +186,22 @@
         const auth = firebase.auth(); const db = firebase.firestore(); const provider = new firebase.auth.GoogleAuthProvider();
         let currentUser = null;
 
-        function getDayMalay(dateStr) {
-            if(!dateStr) return "";
-            const days = ["AHAD", "ISN", "SEL", "RAB", "KHA", "JUM", "SAB"];
-            const d = new Date(dateStr);
-            return isNaN(d) ? "" : days[d.getDay()];
+        function to12h(t) {
+            if(!t) return "--:--";
+            let [h, m] = t.split(':');
+            h = parseInt(h);
+            const ampm = h >= 12 ? 'PM' : 'AM';
+            h = h % 12 || 12;
+            return `${String(h).padStart(2,'0')}:${m} ${ampm}`;
         }
 
         function formatDisplayDate(dateStr) {
             if(!dateStr) return "";
+            const days = ["AHAD", "ISNIN", "SELASA", "RABU", "KHAMIS", "JUMAAT", "SABTU"];
             const d = new Date(dateStr);
             const day = String(d.getDate()).padStart(2, '0');
             const month = String(d.getMonth() + 1).padStart(2, '0');
-            return `${day}/${month} (${getDayMalay(dateStr)})`;
+            return `${day}/${month} (${days[d.getDay()]})`;
         }
 
         function adjustHeight(el) {
@@ -214,18 +221,18 @@
                         <input type="time" value="${v.mulaRaw||''}" class="row-input t-mula">
                         <input type="time" value="${v.hinggaRaw||''}" class="row-input t-hingga">
                     </div>
-                    <span class="print-text time-display text-center">${v.mulaRaw||'--'} - ${v.hinggaRaw||'--'}</span>
+                    <span class="print-text time-display text-center whitespace-nowrap">${to12h(v.mulaRaw)} - ${to12h(v.hinggaRaw)}</span>
                 </td>
                 <td class="col-driver"><textarea class="row-input uppercase font-semibold" oninput="adjustHeight(this)">${v.pemandu||''}</textarea></td>
-                <td class="col-purpose"><textarea class="row-input uppercase text-blue-900 leading-tight" oninput="adjustHeight(this)">${v.tujuan||''}</textarea></td>
+                <td class="col-purpose"><textarea class="row-input uppercase text-blue-900 leading-tight font-medium" oninput="adjustHeight(this)">${v.tujuan||''}</textarea></td>
                 <td class="col-auth"><textarea class="row-input uppercase text-center" oninput="adjustHeight(this)">${v.pelulus||''}</textarea></td>
                 <td class="col-auth"><textarea class="row-input uppercase text-center" oninput="adjustHeight(this)">${v.pengguna||''}</textarea></td>
-                <td class="col-odo"><input type="number" value="${v.odo||''}" class="row-input odo-val font-bold text-center"></td>
-                <td class="col-dist"><input type="number" value="${v.jarak||''}" class="row-input dist-val text-center font-bold bg-gray-50" readonly></td>
+                <td class="col-odo"><input type="number" value="${v.odo||''}" class="row-input odo-val font-black text-center"></td>
+                <td class="col-dist"><input type="number" value="${v.jarak||''}" class="row-input dist-val text-center font-black bg-slate-50" readonly></td>
                 <td class="col-fuel"><input type="number" step="0.01" value="${v.resit||''}" class="row-input rm-val text-center"></td>
                 <td class="col-fuel"><input type="number" step="0.01" value="${v.liter||''}" class="row-input liter-val text-center"></td>
-                <td class="col-notes"><textarea class="row-input italic text-gray-400" oninput="adjustHeight(this)">${v.arahan||''}</textarea></td>
-                <td class="no-print text-center"><button onclick="this.closest('tr').remove();calcLogic();sync()" class="text-red-400 font-bold text-lg">×</button></td>
+                <td class="col-notes"><textarea class="row-input italic text-slate-400" oninput="adjustHeight(this)">${v.arahan||''}</textarea></td>
+                <td class="no-print text-center"><button onclick="this.closest('tr').remove();calcLogic();sync()" class="text-red-400 hover:text-red-600 font-bold text-xl p-2">×</button></td>
             `;
             document.getElementById('log-body').appendChild(tr);
             
@@ -233,13 +240,9 @@
 
             tr.querySelectorAll('input, textarea').forEach(i => {
                 i.oninput = (e) => { 
-                    if(e.target.classList.contains('date-input')) {
-                        tr.querySelector('.date-display').innerText = formatDisplayDate(e.target.value);
-                    }
+                    if(e.target.classList.contains('date-input')) tr.querySelector('.date-display').innerText = formatDisplayDate(e.target.value);
                     if(e.target.classList.contains('t-mula') || e.target.classList.contains('t-hingga')) {
-                        const m = tr.querySelector('.t-mula').value;
-                        const h = tr.querySelector('.t-hingga').value;
-                        tr.querySelector('.time-display').innerText = `${m||'--'} - ${h||'--'}`;
+                        tr.querySelector('.time-display').innerText = `${to12h(tr.querySelector('.t-mula').value)} - ${to12h(tr.querySelector('.t-hingga').value)}`;
                     }
                     if(e.target.tagName === 'TEXTAREA') adjustHeight(e.target);
                     calcLogic(); sync(); 
@@ -305,7 +308,7 @@
             } else { addRow(); }
         }
 
-        async function loginGoogle() { const res = await auth.signInWithPopup(provider); currentUser = res.user; updateUI(); loadData(); }
+        async function loginGoogle() { try { const res = await auth.signInWithPopup(provider); currentUser = res.user; updateUI(); loadData(); } catch(e) {} }
         function logout() { auth.signOut().then(() => location.reload()); }
         function updateUI() { if(currentUser) { document.getElementById('login-btn').classList.add('hidden'); document.getElementById('user-profile').classList.remove('hidden'); document.getElementById('u-avatar').src = currentUser.photoURL; } }
         auth.onAuthStateChanged(user => { if(user) { currentUser = user; updateUI(); loadData(); } });

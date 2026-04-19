@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pilot Intelligent Veterinar v1.2.0</title>
+    
+    <!-- Libraries -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+    <!-- Export Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+
+    <style>
+        :root {
+            --glass: rgba(255, 255, 255, 0.8);
+            --accent: #0ea5e9;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #eef2f7;
+            background-image: url('https://upload.wikimedia.org/wikipedia/commons/2/26/Coat_of_arms_of_Malaysia.svg');
+            background-repeat: no-repeat;
+            background-position: center;
+            background-attachment: fixed;
+            background-size: 50%;
+            min-height: 100vh;
+        }
+
+        /* Glassmorphism Effect */
+        .glass-card {
+            background: var(--glass);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
+            border-radius: 1.5rem;
+        }
+
+        .header-font { font-family: 'Orbitron', sans-serif; }
+
+        /* 3D Pixar Style Button Effect */
+        .btn-3d {
+            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 4px 0 #0369a1;
+        }
+        .btn-3d:active {
+            transform: translateY(4px);
+            box-shadow: none;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+
+        .status-sync {
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+    </style>
+</head>
+<body class="p-4 lg:p-10">
+
+    <div class="max-w-7xl mx-auto">
+        
+        <!-- TOP NAVBAR / HEADER -->
+        <header class="glass-card p-6 mb-8 flex flex-col md:flex-row items-center justify-between gap-6">
+            <div class="flex items-center gap-4">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/2/26/Coat_of_arms_of_Malaysia.svg" class="w-16 h-16 drop-shadow-lg" alt="Jata Negara">
+                <div class="w-16 h-16 rounded-full bg-blue-600 flex items-center justify-center border-2 border-white shadow-lg">
+                    <i data-lucide="activity" class="text-white w-8 h-8"></i>
+                </div>
+            </div>
+
+            <div class="text-center">
+                <h1 class="header-font text-2xl md:text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-800 to-cyan-500">
+                    PILOT INTELLIGENT VETERINAR
+                </h1>
+                <p class="text-xs tracking-[0.3em] font-bold text-gray-500">PENGURUSAN LOG KENDERAAN RASMI</p>
+                <span class="text-[10px] bg-black text-white px-2 py-0.5 rounded-full mt-2 inline-block">v1.2.0 - FIREBASE LIVE</span>
+            </div>
+
+            <div id="auth-section">
+                <button onclick="loginGoogle()" class="flex items-center gap-3 bg-white border border-gray-300 px-6 py-2.5 rounded-full shadow-sm hover:bg-gray-50 transition-all font-semibold btn-3d" style="box-shadow: 0 4px 0 #ddd;">
+                    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" class="w-5 h-5">
+                    Log Masuk Google
+                </button>
+            </div>
+            <div id="user-info" class="hidden flex items-center gap-3">
+                <div class="text-right">
+                    <p id="user-name" class="font-bold text-sm"></p>
+                    <button onclick="logout()" class="text-xs text-red-500 underline">Log Keluar</button>
+                </div>
+                <img id="user-photo" src="" class="w-12 h-12 rounded-full border-2 border-blue-500 shadow-md">
+            </div>
+        </header>
+
+        <!-- FORM INFO KENDERAAN -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8 glass-card p-6">
+            <div class="space-y-1">
+                <label class="text-[10px] font-bold text-blue-600 uppercase">Bulan/Tahun</label>
+                <input type="month" id="meta-month" class="w-full bg-white/50 border-0 rounded-lg p-2 focus:ring-2 ring-blue-400 outline-none" onchange="syncToFirebase()">
+            </div>
+            <div class="space-y-1">
+                <label class="text-[10px] font-bold text-blue-600 uppercase">Jenis Kenderaan</label>
+                <input type="text" id="meta-type" placeholder="Contoh: Hilux" class="w-full bg-white/50 border-0 rounded-lg p-2 focus:ring-2 ring-blue-400 outline-none" onchange="syncToFirebase()">
+            </div>
+            <div class="space-y-1">
+                <label class="text-[10px] font-bold text-blue-600 uppercase">No. Pendaftaran</label>
+                <input type="text" id="meta-plate" placeholder="VAB 123" class="w-full bg-white/50 border-0 rounded-lg p-2 focus:ring-2 ring-blue-400 outline-none" onchange="syncToFirebase()">
+            </div>
+            <div class="space-y-1">
+                <label class="text-[10px] font-bold text-blue-600 uppercase">Bahagian Unit</label>
+                <input type="text" id="meta-unit" placeholder="Unit Veterinar" class="w-full bg-white/50 border-0 rounded-lg p-2 focus:ring-2 ring-blue-400 outline-none" onchange="syncToFirebase()">
+            </div>
+        </div>
+
+        <!-- MAIN DATA TABLE -->
+        <div class="glass-card overflow-hidden mb-8">
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead class="bg-gray-800 text-white">
+                        <tr>
+                            <th class="p-4 text-left">Tarikh</th>
+                            <th class="p-4 text-left">Masa (M-H)</th>
+                            <th class="p-4 text-left">Pemandu</th>
+                            <th class="p-4 text-left">Tujuan/Destinasi</th>
+                            <th class="p-4 text-left">Odo (KM)</th>
+                            <th class="p-4 text-left">Jarak</th>
+                            <th class="p-4 text-left">RM</th>
+                            <th class="p-4 text-left">Liter</th>
+                            <th class="p-4 text-center">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="main-table-body">
+                        <!-- Rows dynamically added -->
+                    </tbody>
+                </table>
+            </div>
+            <div class="p-4 border-t border-gray-100 flex justify-between items-center">
+                <button onclick="addRow()" class="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg font-bold btn-3d">
+                    <i data-lucide="plus-circle" class="w-5 h-5"></i> Tambah Baris
+                </button>
+                <p id="sync-status" class="text-xs text-gray-400 flex items-center gap-1 italic">
+                    <i data-lucide="cloud-check" class="w-4 h-4 text-green-500"></i> Auto-saved to Cloud
+                </p>
+            </div>
+        </div>
+
+        <!-- CALCULATIONS SECTION -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-10">
+            <!-- Stats Fuel -->
+            <div class="glass-card p-6 bg-gradient-to-br from-blue-50 to-white border-l-8 border-blue-500">
+                <h3 class="font-bold flex items-center gap-2 mb-4 text-blue-800">
+                    <i data-lucide="fuel" class="w-6 h-6"></i> KADAR BAHAN API
+                </h3>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <p class="text-[10px] text-gray-500 uppercase">Jarak (b)</p>
+                        <p id="stat-dist" class="text-xl font-bold">0 KM</p>
+                    </div>
+                    <div>
+                        <p class="text-[10px] text-gray-500 uppercase">Liter (c)</p>
+                        <p id="stat-liter" class="text-xl font-bold">0 L</p>
+                    </div>
+                    <div class="col-span-2 pt-2 border-t border-blue-100">
+                        <p class="text-[10px] text-blue-600 font-bold uppercase">Kadar Kegunaan (KM/L)</p>
+                        <p id="stat-rate" class="text-3xl font-black text-blue-700">0.00</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Salary Calculation -->
+            <div class="glass-card p-6 bg-gradient-to-br from-purple-50 to-white border-l-8 border-purple-500">
+                <h3 class="font-bold flex items-center gap-2 mb-4 text-purple-800">
+                    <i data-lucide="dollar-sign" class="w-6 h-6"></i> GAJI SEJAM (OT)
+                </h3>
+                <div class="space-y-4">
+                    <input type="number" id="gaji-pokok" placeholder="Gaji Pokok (RM)" class="w-full p-2 rounded-lg border-2 border-purple-100 outline-none" oninput="calcSalary(); syncToFirebase()">
+                    <div class="bg-purple-900 text-white p-4 rounded-xl">
+                        <p class="text-[10px] opacity-70">Formula: (Gaji*12)/2504</p>
+                        <p id="stat-gaji" class="text-3xl font-bold">RM 0.00</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Export Central -->
+            <div class="glass-card p-6 bg-gray-900 text-white shadow-2xl">
+                <h3 class="font-bold flex items-center gap-2 mb-4">
+                    <i data-lucide="download" class="w-6 h-6"></i> EXPORT DATA
+                </h3>
+                <div class="grid grid-cols-2 gap-2">
+                    <button onclick="exportToExcel()" class="bg-green-600 p-2 rounded-lg text-xs font-bold hover:bg-green-500">EXCEL</button>
+                    <button onclick="exportData('word')" class="bg-blue-600 p-2 rounded-lg text-xs font-bold hover:bg-blue-500">WORD/DOC</button>
+                    <button onclick="exportData('text')" class="bg-gray-700 p-2 rounded-lg text-xs font-bold hover:bg-gray-600">NOTEPAD++</button>
+                    <button onclick="window.print()" class="bg-red-600 p-2 rounded-lg text-xs font-bold hover:bg-red-500">PRINT/PDF</button>
+                </div>
+                <p class="text-[9px] mt-4 opacity-50 text-center italic">Supported formats: Word, Excel, AccessDB, PPT, Mobile Notes.</p>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // === 1. FIREBASE CONFIGURATION ===
+        const firebaseConfig = {
+            apiKey: "AIzaSyDdCwKNCx0nA1cZirGrw1UYvtumALluVXw",
+            authDomain: "pilot-veterinar.firebaseapp.com",
+            projectId: "pilot-veterinar",
+            storageBucket: "pilot-veterinar.firebasestorage.app",
+            messagingSenderId: "559136368070",
+            appId: "1:559136368070:web:8aaa2dcb804c73f10cbec7"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+        const provider = new firebase.auth.GoogleAuthProvider();
+
+        let currentUser = null;
+
+        // === 2. AUTHENTICATION LOGIC ===
+        async function loginGoogle() {
+            try {
+                const result = await auth.signInWithPopup(provider);
+                currentUser = result.user;
+                updateAuthUI();
+                loadData();
+            } catch (error) { console.error(error); }
+        }
+
+        function logout() {
+            auth.signOut().then(() => location.reload());
+        }
+
+        function updateAuthUI() {
+            if (currentUser) {
+                document.getElementById('auth-section').classList.add('hidden');
+                document.getElementById('user-info').classList.remove('hidden');
+                document.getElementById('user-name').innerText = currentUser.displayName;
+                document.getElementById('user-photo').src = currentUser.photoURL;
+            }
+        }
+
+        auth.onAuthStateChanged(user => {
+            if (user) { currentUser = user; updateAuthUI(); loadData(); }
+        });
+
+        // === 3. CORE LOGIC & SYNC ===
+        function addRow(data = {}) {
+            const tbody = document.getElementById('main-table-body');
+            const tr = document.createElement('tr');
+            tr.className = "hover:bg-blue-50/50 border-b border-gray-100 transition-colors";
+            
+            tr.innerHTML = `
+                <td class="p-2"><input type="date" value="${data.tarikh || ''}" class="w-full bg-transparent outline-none row-input"></td>
+                <td class="p-2 flex gap-1">
+                    <input type="time" value="${data.mula || ''}" class="w-1/2 bg-transparent outline-none row-input">
+                    <input type="time" value="${data.hingga || ''}" class="w-1/2 bg-transparent outline-none row-input">
+                </td>
+                <td class="p-2"><input type="text" value="${data.pemandu || ''}" class="w-full bg-transparent outline-none row-input"></td>
+                <td class="p-2"><input type="text" value="${data.tujuan || ''}" class="w-full bg-transparent outline-none row-input"></td>
+                <td class="p-2"><input type="number" value="${data.odo || ''}" class="w-20 bg-transparent outline-none row-input odo-val"></td>
+                <td class="p-2"><input type="number" value="${data.jarak || ''}" class="w-16 bg-transparent outline-none row-input dist-val font-bold"></td>
+                <td class="p-2"><input type="number" value="${data.rm || ''}" class="w-16 bg-transparent outline-none row-input rm-val"></td>
+                <td class="p-2"><input type="number" value="${data.liter || ''}" class="w-16 bg-transparent outline-none row-input liter-val"></td>
+                <td class="p-2 text-center">
+                    <button onclick="this.parentElement.parentElement.remove(); syncToFirebase()" class="text-red-400 hover:text-red-600"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                </td>
+            `;
+            tbody.appendChild(tr);
+            lucide.createIcons();
+            attachInputListeners();
+        }
+
+        function attachInputListeners() {
+            document.querySelectorAll('.row-input').forEach(input => {
+                input.oninput = () => {
+                    calculateAll();
+                    syncToFirebase();
+                };
+            });
+        }
+
+        function calculateAll() {
+            let totalDist = 0;
+            let totalLiter = 0;
+            let totalRM = 0;
+
+            document.querySelectorAll('.dist-val').forEach(i => totalDist += Number(i.value));
+            document.querySelectorAll('.liter-val').forEach(i => totalLiter += Number(i.value));
+            document.querySelectorAll('.rm-val').forEach(i => totalRM += Number(i.value));
+
+            document.getElementById('stat-dist').innerText = totalDist + " KM";
+            document.getElementById('stat-liter').innerText = totalLiter + " L";
+            
+            const rate = totalLiter > 0 ? (totalDist / totalLiter).toFixed(2) : "0.00";
+            document.getElementById('stat-rate').innerText = rate;
+            calcSalary();
+        }
+
+        function calcSalary() {
+            const gaji = document.getElementById('gaji-pokok').value;
+            if (gaji) {
+                const perHour = (gaji * 12) / 2504;
+                document.getElementById('stat-gaji').innerText = "RM " + perHour.toFixed(2);
+            }
+        }
+
+        // === 4. FIREBASE DATA PERSISTENCE ===
+        let syncTimeout;
+        async function syncToFirebase() {
+            if (!currentUser) return;
+            
+            document.getElementById('sync-status').classList.add('status-sync');
+            document.getElementById('sync-status').innerHTML = `<i data-lucide="refresh-cw" class="w-4 h-4 text-blue-500 animate-spin"></i> Syncing...`;
+
+            clearTimeout(syncTimeout);
+            syncTimeout = setTimeout(async () => {
+                const logs = [];
+                document.querySelectorAll('#main-table-body tr').forEach(row => {
+                    const inputs = row.querySelectorAll('input');
+                    logs.push({
+                        tarikh: inputs[0].value, mula: inputs[1].value, hingga: inputs[2].value,
+                        pemandu: inputs[3].value, tujuan: inputs[4].value, odo: inputs[5].value,
+                        jarak: inputs[6].value, rm: inputs[7].value, liter: inputs[8].value
+                    });
+                });
+
+                const data = {
+                    meta: {
+                        month: document.getElementById('meta-month').value,
+                        type: document.getElementById('meta-type').value,
+                        plate: document.getElementById('meta-plate').value,
+                        unit: document.getElementById('meta-unit').value,
+                        gaji: document.getElementById('gaji-pokok').value
+                    },
+                    logs: logs,
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                };
+
+                await db.collection("logs").doc(currentUser.uid).set(data);
+                document.getElementById('sync-status').classList.remove('status-sync');
+                document.getElementById('sync-status').innerHTML = `<i data-lucide="cloud-check" class="w-4 h-4 text-green-500"></i> Data Secured in Firebase`;
+                lucide.createIcons();
+            }, 1000);
+        }
+
+        async function loadData() {
+            const doc = await db.collection("logs").doc(currentUser.uid).get();
+            if (doc.exists) {
+                const data = doc.data();
+                document.getElementById('meta-month').value = data.meta.month;
+                document.getElementById('meta-type').value = data.meta.type;
+                document.getElementById('meta-plate').value = data.meta.plate;
+                document.getElementById('meta-unit').value = data.meta.unit;
+                document.getElementById('gaji-pokok').value = data.meta.gaji;
+                
+                document.getElementById('main-table-body').innerHTML = "";
+                data.logs.forEach(log => addRow(log));
+                calculateAll();
+            } else {
+                addRow();
+            }
+        }
+
+        // === 5. EXPORT ENGINE ===
+        function exportToExcel() {
+            const wb = XLSX.utils.book_new();
+            const table = document.querySelector("table");
+            const ws = XLSX.utils.table_to_sheet(table);
+            XLSX.utils.book_append_sheet(wb, ws, "Log Kenderaan");
+            XLSX.writeFile(wb, `Veterinar_Log_${document.getElementById('meta-plate').value}.xlsx`);
+        }
+
+        function exportData(format) {
+            let text = `PILOT INTELLIGENT VETERINAR - LOG KENDERAAN\n`;
+            text += `No Plat: ${document.getElementById('meta-plate').value}\n`;
+            text += `Jarak: ${document.getElementById('stat-dist').innerText}\n`;
+            text += `Kadar Bahan Api: ${document.getElementById('stat-rate').innerText} KM/L\n\n`;
+            
+            const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
+            saveAs(blob, `Log_Veterinar.${format === 'text' ? 'txt' : 'doc'}`);
+        }
+
+        // Init
+        window.onload = () => { lucide.createIcons(); };
+    </script>
+</body>
+</html>

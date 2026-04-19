@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pilot Intelligent Veterinar v1.6.0</title>
+    <title>Pilot Intelligent Veterinar v1.7.0</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
@@ -17,15 +17,17 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
 
     <style>
+        :root { --glass: rgba(255, 255, 255, 0.94); }
+        
         @media screen {
             body {
                 font-family: 'Poppins', sans-serif;
                 background: #f1f5f9 url('https://upload.wikimedia.org/wikipedia/commons/2/26/Coat_of_arms_of_Malaysia.svg') no-repeat center fixed;
-                background-size: 40%;
+                background-size: 35%;
                 min-height: 100vh;
             }
             .glass-card {
-                background: rgba(255, 255, 255, 0.95);
+                background: var(--glass);
                 backdrop-filter: blur(12px);
                 border: 1px solid rgba(255, 255, 255, 0.7);
                 box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
@@ -33,41 +35,67 @@
             }
         }
 
-        /* PRINT SETTINGS (PDF LANDSCAPE FIX) */
+        /* PDF & PRINT LANDSCAPE ENGINE */
         @media print {
-            @page { size: landscape; margin: 0.5cm; }
-            body { background: white !important; font-size: 8pt !important; -webkit-print-color-adjust: exact; }
-            .no-print, #auth-area, #user-area, .btn-action-col, button { display: none !important; }
-            .glass-card { border: none !important; box-shadow: none !important; background: white !important; padding: 0 !important; }
-            table { width: 100% !important; border-collapse: collapse !important; table-layout: fixed; }
-            th, td { border: 1px solid black !important; padding: 4px !important; color: black !important; word-wrap: break-word; }
-            th { background-color: #f3f4f6 !important; }
-            .header-font { color: black !important; }
-            input { border: none !important; background: transparent !important; width: 100% !important; }
+            @page { size: A4 landscape; margin: 5mm; }
+            body { background: white !important; -webkit-print-color-adjust: exact; padding: 0 !important; }
+            .no-print, button, .btn-action-col { display: none !important; }
+            .glass-card { border: none !important; box-shadow: none !important; background: white !important; width: 100% !important; margin: 0 !important; }
+            
+            table { 
+                width: 100% !important; 
+                table-layout: fixed !important; 
+                border-collapse: collapse !important; 
+                border: 1.5px solid black !important;
+            }
+            th, td { 
+                border: 1px solid black !important; 
+                padding: 3px !important; 
+                font-size: 7pt !important; 
+                color: black !important; 
+                word-wrap: break-word !important; 
+                white-space: normal !important; 
+                overflow: hidden !important;
+            }
+            th { background-color: #f2f2f2 !important; font-weight: bold !important; text-align: center !important; }
+            input { border: none !important; background: transparent !important; width: 100% !important; font-size: 7pt !important; }
+            .header-font { color: #1e3a8a !important; font-size: 18pt !important; }
         }
 
         .header-font { font-family: 'Orbitron', sans-serif; }
         .btn-3d { transition: all 0.2s; box-shadow: 0 4px 0 #0369a1; }
         .btn-3d:active { transform: translateY(2px); box-shadow: 0 1px 0 #0369a1; }
         
-        table th { font-size: 0.65rem; padding: 8px 4px; border: 1px solid #cbd5e1; }
-        table td { border: 1px solid #e2e8f0; }
-        .row-input { font-size: 0.7rem; width: 100%; background: transparent; padding: 4px; outline: none; }
+        /* Web Table Appearance */
+        table th { font-size: 0.65rem; padding: 10px 4px; border: 1px solid #cbd5e1; text-transform: uppercase; }
+        table td { border: 1px solid #e2e8f0; height: 50px; }
+        .row-input { font-size: 0.75rem; width: 100%; height: 100%; background: transparent; padding: 4px; outline: none; }
         .row-input:focus { background: #eff6ff; }
+        
+        /* Column Width Definitions for Web and Print */
+        .col-tarikh { width: 85px; }
+        .col-masa { width: 65px; }
+        .col-pemandu { width: 120px; }
+        .col-tujuan { width: auto; min-width: 200px; }
+        .col-tt { width: 100px; }
+        .col-odo { width: 80px; }
+        .col-jarak { width: 70px; }
+        .col-rm { width: 110px; }
+        .col-liter { width: 70px; }
+        .col-arahan { width: 180px; }
     </style>
 </head>
 <body class="p-2 lg:p-6">
 
-    <div class="max-w-[1700px] mx-auto">
+    <div class="max-w-[1750px] mx-auto">
         
         <!-- HEADER -->
-        <header class="glass-card p-6 mb-6 flex flex-col lg:flex-row items-center justify-between gap-6 border-b-8 border-blue-900">
-            <div class="flex items-center gap-4">
+        <header class="glass-card p-6 mb-6 flex flex-col lg:flex-row items-center justify-between border-b-8 border-blue-900">
+            <div class="flex items-center gap-5">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/2/26/Coat_of_arms_of_Malaysia.svg" class="w-20 h-20">
-                <div class="h-16 w-1 bg-blue-900 rounded hidden lg:block"></div>
                 <div class="text-left">
-                    <h1 class="header-font text-2xl lg:text-3xl font-black text-blue-900 leading-none">PILOT INTELLIGENT VETERINAR</h1>
-                    <p class="text-[10px] font-bold text-blue-500 uppercase tracking-widest mt-1">Sistem Log Kenderaan Digital Rasmi</p>
+                    <h1 class="header-font text-2xl lg:text-3xl font-black text-blue-900 leading-none uppercase">PILOT INTELLIGENT VETERINAR</h1>
+                    <p class="text-[10px] font-bold text-blue-500 uppercase tracking-widest mt-1">Sistem Log Kenderaan Digital Rasmi - v1.7.0</p>
                 </div>
             </div>
 
@@ -80,98 +108,104 @@
             <div id="user-area" class="hidden no-print flex items-center gap-4 bg-blue-50 p-2 rounded-2xl border border-blue-100">
                 <div class="text-right">
                     <p id="u-name" class="font-bold text-xs text-blue-900"></p>
-                    <button onclick="logout()" class="text-[9px] text-red-500 font-bold">LOG KELUAR</button>
+                    <button onclick="logout()" class="text-[9px] text-red-500 font-bold uppercase tracking-tighter">Log Keluar</button>
                 </div>
-                <img id="u-photo" src="" class="w-10 h-10 rounded-full border-2 border-white shadow">
+                <img id="u-photo" src="" class="w-12 h-12 rounded-full border-2 border-white shadow-lg">
             </div>
         </header>
 
         <!-- META DATA -->
-        <div class="grid grid-cols-2 lg:grid-cols-5 gap-4 mb-6 glass-card p-6 no-print">
-            <div><label class="text-[9px] font-bold text-gray-400 uppercase">Bulan/Tahun</label>
-                <input type="month" id="m-month" class="w-full p-2 rounded border border-gray-200 outline-none" onchange="sync()"></div>
-            <div><label class="text-[9px] font-bold text-gray-400 uppercase">No. Plat</label>
-                <input type="text" id="m-plate" placeholder="VAB 1234" class="w-full p-2 rounded border border-gray-200 outline-none" onchange="sync()"></div>
-            <div><label class="text-[9px] font-bold text-gray-400 uppercase">Bahagian/Unit</label>
-                <input type="text" id="m-unit" placeholder="Unit" class="w-full p-2 rounded border border-gray-200 outline-none" onchange="sync()"></div>
-            <div class="bg-amber-50 p-2 rounded border border-amber-200">
-                <label class="text-[9px] font-bold text-amber-600 uppercase">Odo Awal (KM)</label>
-                <input type="number" id="m-odo-start" class="w-full p-2 rounded border-2 border-amber-300 font-bold" oninput="calculateAutoDistances(); sync()">
+        <div class="grid grid-cols-2 lg:grid-cols-5 gap-4 mb-6 glass-card p-6 no-print border-l-8 border-amber-400">
+            <div><label class="text-[9px] font-black text-gray-400 uppercase">Bulan/Tahun</label>
+                <input type="month" id="m-month" class="w-full p-2 rounded border border-gray-300 font-bold" onchange="sync()"></div>
+            <div><label class="text-[9px] font-black text-gray-400 uppercase">No. Pendaftaran</label>
+                <input type="text" id="m-plate" placeholder="VAB 1234" class="w-full p-2 rounded border border-gray-300 font-bold" onchange="sync()"></div>
+            <div><label class="text-[9px] font-black text-gray-400 uppercase">Bahagian/Unit</label>
+                <input type="text" id="m-unit" placeholder="Unit" class="w-full p-2 rounded border border-gray-300 font-bold" onchange="sync()"></div>
+            <div class="bg-amber-100 p-2 rounded-xl">
+                <label class="text-[9px] font-black text-amber-700 uppercase">Odometer Awal (KM)</label>
+                <input type="number" id="m-odo-start" class="w-full p-2 rounded border-2 border-amber-400 font-black text-amber-900" oninput="calculateAutoDistances(); sync()">
             </div>
             <div class="flex items-end pb-2">
-                <div id="sync-icon" class="text-[9px] font-bold text-gray-400 uppercase flex items-center gap-2">
-                    <i data-lucide="cloud-check" class="w-3 h-3 text-green-500"></i> Cloud Sync Active
+                <div id="sync-icon" class="text-[9px] font-black text-blue-400 uppercase flex items-center gap-2">
+                    <i data-lucide="refresh-cw" class="w-4 h-4"></i> Cloud Ready
                 </div>
             </div>
         </div>
 
         <!-- MAIN TABLE -->
-        <div class="glass-card overflow-hidden mb-6 shadow-xl">
+        <div class="glass-card overflow-hidden mb-6 shadow-2xl">
             <div class="overflow-x-auto">
                 <table id="main-log-table" class="w-full border-collapse bg-white">
-                    <thead class="bg-gray-100 text-gray-800">
+                    <thead class="bg-blue-900 text-white">
                         <tr>
-                            <th rowspan="2" class="w-24">Tarikh</th>
+                            <th rowspan="2" class="col-tarikh">Tarikh</th>
                             <th colspan="2">Masa</th>
-                            <th rowspan="2" class="w-32">Nama Pemandu</th>
-                            <th rowspan="2" class="w-56">Tujuan / Destinasi</th>
-                            <th rowspan="2" class="w-28">Nama T/Tangan Pelulus</th>
-                            <th rowspan="2" class="w-28">Nama T/Tangan Pengguna</th>
-                            <th rowspan="2" class="w-20">Odometer (KM)</th>
-                            <th rowspan="2" class="w-16">Jarak (KM)</th>
-                            <th colspan="2">Pembelian Bahan Api</th>
-                            <th rowspan="2" class="w-48">Arahan Khas</th>
+                            <th rowspan="2" class="col-pemandu">Nama Pemandu</th>
+                            <th rowspan="2" class="col-tujuan">Tujuan / Destinasi</th>
+                            <th rowspan="2" class="col-tt">Nama T/Tangan Pelulus</th>
+                            <th rowspan="2" class="col-tt">Nama T/Tangan Pengguna</th>
+                            <th rowspan="2" class="col-odo bg-amber-700">Odometer (KM)</th>
+                            <th rowspan="2" class="col-jarak bg-blue-800">Jarak (KM)</th>
+                            <th colspan="2" class="bg-gray-800">Pembelian Bahan Api</th>
+                            <th rowspan="2" class="col-arahan">Arahan Khas</th>
                             <th rowspan="2" class="w-10 no-print btn-action-col">X</th>
                         </tr>
-                        <tr class="bg-gray-50">
-                            <th class="w-16">Mula</th>
-                            <th class="w-16">Hingga</th>
-                            <th class="w-28">No Resit & RM</th>
-                            <th class="w-16">Liter</th>
+                        <tr class="bg-blue-800 text-[9px]">
+                            <th class="col-masa">Mula</th>
+                            <th class="col-masa">Hingga</th>
+                            <th class="col-rm">No Resit & RM</th>
+                            <th class="col-liter">Liter</th>
                         </tr>
                     </thead>
                     <tbody id="log-body"></tbody>
                 </table>
             </div>
             <div class="p-4 bg-gray-50 flex justify-between no-print">
-                <button onclick="addRow()" class="bg-blue-900 text-white px-8 py-3 rounded-xl font-bold btn-3d flex items-center gap-2">
-                    <i data-lucide="plus-circle" class="w-5 h-5"></i> Tambah Perjalanan
+                <button onclick="addRow()" class="bg-blue-900 text-white px-8 py-3 rounded-2xl font-bold btn-3d flex items-center gap-2 uppercase text-sm">
+                    <i data-lucide="plus-circle" class="w-5 h-5"></i> Tambah Rekod Perjalanan
                 </button>
             </div>
         </div>
 
-        <!-- FOOTER & EXPORT -->
+        <!-- STATS & ACTIONS -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10 no-print">
-            <div class="glass-card p-6 border-l-8 border-blue-900">
-                <h3 class="font-bold text-xs text-blue-900 mb-4 uppercase tracking-widest">Analisis Bulanan</h3>
-                <div class="flex justify-between text-sm mb-2"><span>Total Jarak:</span> <span id="res-dist" class="font-bold">0</span> KM</div>
-                <div class="flex justify-between text-sm mb-2"><span>Total Liter:</span> <span id="res-liter" class="font-bold">0</span> L</div>
-                <div class="mt-2 p-2 bg-blue-900 text-white rounded-lg flex justify-between items-center">
-                    <span class="text-[10px]">KM / LITER</span>
-                    <span id="res-rate" class="text-xl font-black italic">0.00</span>
+            <div class="glass-card p-6 border-t-8 border-blue-900">
+                <h3 class="font-black text-xs text-blue-900 mb-4 uppercase tracking-widest flex items-center gap-2">
+                    <i data-lucide="bar-chart-3" class="w-4 h-4"></i> Analisis Bulanan
+                </h3>
+                <div class="space-y-2">
+                    <div class="flex justify-between text-sm"><span>Jarak (b):</span> <span id="res-dist" class="font-black text-blue-900">0</span> KM</div>
+                    <div class="flex justify-between text-sm"><span>Bahan Api (c):</span> <span id="res-liter" class="font-black text-blue-900">0</span> L</div>
+                    <div class="mt-4 p-3 bg-gradient-to-r from-blue-900 to-blue-700 text-white rounded-xl flex justify-between items-center shadow-lg">
+                        <span class="text-[9px] font-bold uppercase">Kadar (e) KM/L:</span>
+                        <span id="res-rate" class="text-3xl font-black italic">0.00</span>
+                    </div>
                 </div>
             </div>
 
-            <div class="glass-card p-6 border-l-8 border-purple-600">
-                <h3 class="font-bold text-xs text-purple-900 mb-4 uppercase tracking-widest">Kadar Gaji Sejam</h3>
-                <input type="number" id="g-pokok" placeholder="Gaji Pokok (RM)" class="w-full p-2 border rounded-lg mb-3 text-sm" oninput="calcOT(); sync()">
-                <div class="bg-purple-100 p-3 rounded-lg flex justify-between items-center text-purple-900">
-                    <span class="text-[10px] font-bold uppercase">Hasil:</span>
-                    <span id="res-ot" class="text-xl font-black">RM 0.00</span>
+            <div class="glass-card p-6 border-t-8 border-purple-600">
+                <h3 class="font-black text-xs text-purple-900 mb-4 uppercase tracking-widest flex items-center gap-2">
+                    <i data-lucide="banknote" class="w-4 h-4"></i> Gaji / OT
+                </h3>
+                <input type="number" id="g-pokok" placeholder="Gaji Pokok (RM)" class="w-full p-3 border-2 border-purple-100 rounded-xl mb-4 font-bold" oninput="calcOT(); sync()">
+                <div class="flex justify-between items-center bg-purple-50 p-4 rounded-xl">
+                    <span class="text-[10px] font-bold text-purple-700 uppercase">Gaji Sejam:</span>
+                    <span id="res-ot" class="text-2xl font-black text-purple-900">RM 0.00</span>
                 </div>
             </div>
 
-            <div class="glass-card p-6 bg-blue-950 text-white shadow-2xl">
-                <h3 class="font-bold text-xs mb-4 uppercase tracking-widest text-blue-300">Hub Eksport & Cetakan</h3>
-                <div class="grid grid-cols-2 gap-3">
-                    <button onclick="exportToExcel()" class="bg-green-600 p-3 rounded-xl font-bold text-xs flex items-center justify-center gap-2 hover:bg-green-500">
-                        <i data-lucide="sheet" class="w-4 h-4"></i> EXCEL PRO
+            <div class="glass-card p-6 bg-slate-900 text-white shadow-2xl">
+                <h3 class="font-black text-xs mb-6 uppercase tracking-widest text-blue-400">Pusat Eksport Digital</h3>
+                <div class="grid grid-cols-2 gap-4">
+                    <button onclick="exportToExcel()" class="bg-emerald-600 p-4 rounded-2xl font-bold text-xs flex items-center justify-center gap-2 hover:bg-emerald-500 shadow-lg btn-3d" style="box-shadow: 0 4px 0 #065f46;">
+                        <i data-lucide="file-spreadsheet" class="w-5 h-5"></i> EXCEL PRO
                     </button>
-                    <button onclick="window.print()" class="bg-red-600 p-3 rounded-xl font-bold text-xs flex items-center justify-center gap-2 hover:bg-red-500">
-                        <i data-lucide="printer" class="w-4 h-4"></i> PDF / CETAK
+                    <button onclick="window.print()" class="bg-rose-600 p-4 rounded-2xl font-bold text-xs flex items-center justify-center gap-2 hover:bg-rose-500 shadow-lg btn-3d" style="box-shadow: 0 4px 0 #9f1239;">
+                        <i data-lucide="printer" class="w-5 h-5"></i> CETAK PDF
                     </button>
                 </div>
-                <p class="text-[8px] text-blue-400 mt-4 text-center italic uppercase">Optimized for Landscape A4 Printing</p>
+                <p class="text-[8px] text-gray-500 mt-6 text-center italic uppercase font-bold tracking-widest">Landscape A4 High-Resolution Ready</p>
             </div>
         </div>
     </div>
@@ -190,28 +224,39 @@
         const auth = firebase.auth(); const db = firebase.firestore(); const provider = new firebase.auth.GoogleAuthProvider();
         let currentUser = null;
 
-        // === TABLE LOGIC ===
+        // === TABLE DYNAMICS ===
         function addRow(v = {}) {
             const tr = document.createElement('tr');
+            tr.className = "group transition-all";
             tr.innerHTML = `
-                <td class="p-1"><input type="date" value="${v.tarikh||''}" class="row-input sync-trigger"></td>
-                <td class="p-1"><input type="time" value="${v.mula||''}" class="row-input sync-trigger"></td>
-                <td class="p-1"><input type="time" value="${v.hingga||''}" class="row-input sync-trigger"></td>
-                <td class="p-1"><input type="text" value="${v.pemandu||''}" class="row-input sync-trigger font-bold uppercase"></td>
-                <td class="p-1"><input type="text" value="${v.tujuan||''}" class="row-input sync-trigger"></td>
-                <td class="p-1"><input type="text" value="${v.pelulus||''}" class="row-input sync-trigger"></td>
-                <td class="p-1"><input type="text" value="${v.pengguna||''}" class="row-input sync-trigger"></td>
-                <td class="p-1"><input type="number" value="${v.odo||''}" class="row-input odo-val font-bold text-center bg-amber-50"></td>
-                <td class="p-1"><input type="number" value="${v.jarak||''}" class="row-input dist-val font-black text-center bg-gray-50" readonly></td>
-                <td class="p-1"><input type="text" value="${v.resit||''}" class="row-input sync-trigger text-center"></td>
-                <td class="p-1"><input type="number" value="${v.liter||''}" class="row-input sync-trigger liter-val text-center font-bold"></td>
-                <td class="p-1"><input type="text" value="${v.arahan||''}" class="row-input sync-trigger italic"></td>
-                <td class="p-1 text-center no-print btn-action-col"><button onclick="this.closest('tr').remove();calculateAutoDistances();sync()" class="text-red-400"><i data-lucide="x-circle" class="w-4 h-4"></i></button></td>
+                <td class="p-0"><input type="date" value="${v.tarikh||''}" class="row-input sync-trigger"></td>
+                <td class="p-0"><input type="time" value="${v.mula||''}" class="row-input sync-trigger text-center"></td>
+                <td class="p-0"><input type="time" value="${v.hingga||''}" class="row-input sync-trigger text-center"></td>
+                <td class="p-0"><input type="text" value="${v.pemandu||''}" placeholder="NAMA" class="row-input sync-trigger font-bold uppercase"></td>
+                <td class="p-0"><textarea class="row-input sync-trigger text-xs resize-none overflow-hidden h-full" placeholder="DARI - KE / TUJUAN">${v.tujuan||''}</textarea></td>
+                <td class="p-0"><input type="text" value="${v.pelulus||''}" placeholder="PELULUS" class="row-input sync-trigger uppercase"></td>
+                <td class="p-0"><input type="text" value="${v.pengguna||''}" placeholder="PENGGUNA" class="row-input sync-trigger uppercase"></td>
+                <td class="p-0 bg-amber-50"><input type="number" value="${v.odo||''}" class="row-input odo-val font-black text-center text-amber-900"></td>
+                <td class="p-0 bg-blue-50"><input type="number" value="${v.jarak||''}" class="row-input dist-val font-black text-center text-blue-900" readonly></td>
+                <td class="p-0"><input type="text" value="${v.resit||''}" placeholder="RM0.00" class="row-input sync-trigger text-center font-bold"></td>
+                <td class="p-0"><input type="number" value="${v.liter||''}" class="row-input sync-trigger liter-val text-center font-black"></td>
+                <td class="p-0"><textarea class="row-input sync-trigger italic text-gray-500 text-xs resize-none overflow-hidden h-full" placeholder="CATATAN">${v.arahan||''}</textarea></td>
+                <td class="p-1 text-center no-print btn-action-col">
+                    <button onclick="this.closest('tr').remove();calculateAutoDistances();sync()" class="text-red-300 hover:text-red-600 transition-colors">
+                        <i data-lucide="trash-2" class="w-4 h-4"></i>
+                    </button>
+                </td>
             `;
             document.getElementById('log-body').appendChild(tr);
             lucide.createIcons();
+            
+            // Auto-resize textareas
+            tr.querySelectorAll('textarea').forEach(t => {
+                t.oninput = function() { this.style.height = 'auto'; this.style.height = this.scrollHeight + 'px'; sync(); };
+            });
+
             tr.querySelector('.odo-val').oninput = () => { calculateAutoDistances(); sync(); };
-            tr.querySelectorAll('.sync-trigger').forEach(i => i.oninput = () => { calcStats(); sync(); });
+            tr.querySelectorAll('.sync-trigger').forEach(i => i.onchange = () => { calcStats(); sync(); });
         }
 
         function calculateAutoDistances() {
@@ -239,26 +284,32 @@
             if(g) document.getElementById('res-ot').innerText = "RM " + ((g*12)/2504).toFixed(2);
         }
 
-        // === SYNC & AUTH ===
+        // === FIREBASE SYNC ===
         let timer;
         async function sync() {
             if(!currentUser) return;
+            const icon = document.getElementById('sync-icon');
+            icon.innerHTML = `<i data-lucide="refresh-cw" class="w-3 h-3 animate-spin text-blue-500"></i> Syncing...`;
+            lucide.createIcons();
+            
             clearTimeout(timer);
             timer = setTimeout(async () => {
                 const logs = [];
                 document.querySelectorAll('#log-body tr').forEach(r => {
-                    const i = r.querySelectorAll('input');
+                    const i = r.querySelectorAll('.row-input');
                     logs.push({tarikh:i[0].value,mula:i[1].value,hingga:i[2].value,pemandu:i[3].value,tujuan:i[4].value,pelulus:i[5].value,pengguna:i[6].value,odo:i[7].value,jarak:i[8].value,resit:i[9].value,liter:i[10].value,arahan:i[11].value});
                 });
-                await db.collection("logs_v16").doc(currentUser.uid).set({
+                await db.collection("logs_v17").doc(currentUser.uid).set({
                     meta: { month: document.getElementById('m-month').value, plate: document.getElementById('m-plate').value, unit: document.getElementById('m-unit').value, odoStart: document.getElementById('m-odo-start').value, gaji: document.getElementById('g-pokok').value },
                     logs: logs
                 });
-            }, 1000);
+                icon.innerHTML = `<i data-lucide="cloud-check" class="w-3 h-3 text-green-500"></i> Cloud Secured`;
+                lucide.createIcons();
+            }, 1200);
         }
 
         async function loadData() {
-            const doc = await db.collection("logs_v16").doc(currentUser.uid).get();
+            const doc = await db.collection("logs_v17").doc(currentUser.uid).get();
             if(doc.exists) {
                 const d = doc.data();
                 document.getElementById('m-month').value = d.meta.month; document.getElementById('m-plate').value = d.meta.plate; document.getElementById('m-unit').value = d.meta.unit; document.getElementById('m-odo-start').value = d.meta.odoStart; document.getElementById('g-pokok').value = d.meta.gaji;
@@ -273,33 +324,30 @@
         function updateUI() { if(currentUser) { document.getElementById('auth-area').classList.add('hidden'); document.getElementById('user-area').classList.remove('hidden'); document.getElementById('u-name').innerText = currentUser.displayName; document.getElementById('u-photo').src = currentUser.photoURL; } }
         auth.onAuthStateChanged(user => { if(user) { currentUser = user; updateUI(); loadData(); } });
 
-        // === EXCEL EXPORT PRO ===
+        // === EXCEL EXPORT (OPTIMIZED) ===
         function exportToExcel() {
             const table = document.getElementById('main-log-table');
             const ws = XLSX.utils.table_to_sheet(table);
 
-            // Setting Column Widths (PX) to avoid clipping in Excel
+            // Set Column Widths in PX for perfect fit
             ws['!cols'] = [
                 { wpx: 80 },  // Tarikh
-                { wpx: 60 },  // Masa Mula
-                { wpx: 60 },  // Masa Hingga
-                { wpx: 120 }, // Pemandu
-                { wpx: 250 }, // Tujuan
+                { wpx: 60 },  // Mula
+                { wpx: 60 },  // Hingga
+                { wpx: 130 }, // Pemandu
+                { wpx: 280 }, // Tujuan (Wide for wrap)
                 { wpx: 100 }, // Pelulus
                 { wpx: 100 }, // Pengguna
-                { wpx: 80 },  // Odo
-                { wpx: 60 },  // Jarak
-                { wpx: 120 }, // Resit & RM
-                { wpx: 60 },  // Liter
-                { wpx: 150 }, // Arahan
-                { wpx: 0 }    // Hide X Col
+                { wpx: 90 },  // Odo
+                { wpx: 80 },  // Jarak
+                { wpx: 120 }, // RM
+                { wpx: 70 },  // Liter
+                { wpx: 200 }  // Arahan
             ];
 
             const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, "Log Kenderaan");
-            
-            const filename = `Log_Veterinar_${document.getElementById('m-plate').value || 'System'}.xlsx`;
-            XLSX.writeFile(wb, filename);
+            XLSX.utils.book_append_sheet(wb, ws, "LOG KENDERAAN");
+            XLSX.writeFile(wb, `Veterinar_Log_${document.getElementById('m-plate').value || 'Report'}.xlsx`);
         }
 
         window.onload = () => { lucide.createIcons(); };

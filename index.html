@@ -29,7 +29,6 @@
         }
         .row-input:focus { background: #f8fafc; border-radius: 4px; }
 
-        /* Column Widths */
         .w-date { width: 120px; }
         .w-time { width: 140px; }
         .w-driver { width: 150px; }
@@ -58,7 +57,6 @@
             .input-box { display: none !important; }
             .print-text { display: block !important; }
             
-            /* Print Column Width Adjustments */
             .w-date { width: 9%; }
             .w-time { width: 11%; }
             .w-driver { width: 10%; }
@@ -80,7 +78,9 @@
         
         <!-- PRINT HEADER -->
         <div class="corporate-header-print">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/2/26/Coat_of_arms_of_Malaysia.svg" style="width: 60px; height: 60px; margin-right: 20px;">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/2/26/Coat_of_arms_of_Malaysia.svg" style="width: 60px; height: 60px; margin-right: 15px;">
+            <!-- Logo Jabatan Kedua (Gantikan URL ini dengan logo jabatan anda) -->
+            <img src="https://github.com/ttv4u1/KP/raw/main/DVS.svg" style="width: 60px; height: 60px; margin-right: 20px;">
             <div>
                 <h2 style="font-size: 16pt; font-weight: 800; margin: 0;" class="font-heading uppercase">Log Perjalanan Kenderaan Jabatan</h2>
                 <p style="font-size: 10pt; margin: 0; font-weight: 600;">Bahagian Penguatkuasa • Pilot Intelligent v3.3.7</p>
@@ -90,7 +90,10 @@
         <!-- WEB HEADER -->
         <header class="bg-slate-900 text-white p-4 md:p-5 rounded-2xl mb-6 flex flex-col lg:flex-row justify-between items-center no-print shadow-xl border-b-4 border-blue-500 gap-4">
             <div class="flex items-center gap-4">
-                <div class="bg-white p-2 rounded-xl"><img src="https://upload.wikimedia.org/wikipedia/commons/2/26/Coat_of_arms_of_Malaysia.svg" class="w-8 h-8 md:w-10 md:h-10"></div>
+                <div class="flex gap-2 bg-white p-2 rounded-xl">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/2/26/Coat_of_arms_of_Malaysia.svg" class="w-8 h-8 md:w-10 md:h-10">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c4/Logo_Jabatan_Veterinar_Malaysia.png/800px-Logo_Jabatan_Veterinar_Malaysia.png" class="w-8 h-8 md:w-10 md:h-10">
+                </div>
                 <div>
                     <h1 class="text-lg md:text-xl font-bold font-heading tracking-tight uppercase">Pilot <span class="text-blue-400">Intelligent</span></h1>
                     <p class="text-[8px] md:text-[9px] text-slate-400 font-bold uppercase tracking-widest">Enterprise Logistics Dashboard</p>
@@ -115,7 +118,7 @@
         </header>
 
         <!-- INFO BAR -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mb-6 no-print">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 mb-6 no-print">
             <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm">
                 <label class="text-[9px] font-bold text-slate-400 uppercase">Bulan Rekod</label>
                 <input type="month" id="m-month" class="w-full font-bold text-base md:text-lg outline-none text-blue-600" onchange="sync()">
@@ -130,7 +133,13 @@
             </div>
             <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm">
                 <label class="text-[9px] font-bold text-slate-400 uppercase">Bahagian / Unit</label>
-                <input type="text" id="m-unit" class="w-full font-bold text-base md:text-lg uppercase outline-none" placeholder="BAHAGIAN PENGUATKUASA" onchange="sync()">
+                <input type="text" id="m-unit" class="w-full font-bold text-base md:text-lg uppercase outline-none" placeholder="UNIT LOGISTIK" onchange="sync()">
+            </div>
+            <!-- ADDED: GAJI SEJAM CALCULATION -->
+            <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm">
+                <label class="text-[9px] font-bold text-slate-400 uppercase">Gaji Pokok (RM)</label>
+                <input type="number" id="m-salary" class="w-full font-bold text-base md:text-lg outline-none" placeholder="0.00" oninput="calcWage(); sync()">
+                <p id="wage-result" class="text-[10px] font-bold text-emerald-600 mt-1 uppercase italic tracking-tighter">Kadar/Jam: RM 0.00</p>
             </div>
         </div>
 
@@ -204,6 +213,13 @@
             document.getElementById('live-clock').innerText = now.toLocaleTimeString('ms-MY', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true }).toUpperCase();
         }
         setInterval(updateClock, 1000);
+
+        // NEW: Wage Calculation Logic
+        function calcWage() {
+            const gaji = Number(document.getElementById('m-salary').value) || 0;
+            const kadarJam = (gaji * 12) / 2504;
+            document.getElementById('wage-result').innerText = `Kadar/Jam: RM ${kadarJam.toFixed(2)}`;
+        }
 
         function to12h(t) {
             if(!t) return "--:--";
@@ -284,7 +300,6 @@
             document.getElementById('log-body').appendChild(tr);
             lucide.createIcons();
             
-            // Re-sync all print spans and height on input
             tr.querySelectorAll('input, textarea').forEach(input => {
                 input.addEventListener('input', (e) => {
                     const row = e.target.closest('tr');
@@ -306,7 +321,6 @@
                 });
             });
 
-            // Initial height & span sync for loaded data
             setTimeout(() => {
                 tr.querySelectorAll('textarea').forEach(tx => adjustHeight(tx));
             }, 50);
@@ -353,8 +367,11 @@
             });
             await db.collection("logs_v32").doc(currentUser.uid).set({
                 meta: { 
-                    month:document.getElementById('m-month').value, plate:document.getElementById('m-plate').value, 
-                    odo:document.getElementById('m-odo-start').value, unit:document.getElementById('m-unit').value 
+                    month:document.getElementById('m-month').value, 
+                    plate:document.getElementById('m-plate').value, 
+                    odo:document.getElementById('m-odo-start').value, 
+                    unit:document.getElementById('m-unit').value,
+                    salary:document.getElementById('m-salary').value // Sync Gaji
                 },
                 logs: logs
             });
@@ -368,6 +385,9 @@
                 document.getElementById('m-plate').value = d.meta.plate || '';
                 document.getElementById('m-odo-start').value = d.meta.odo || ''; 
                 document.getElementById('m-unit').value = d.meta.unit || '';
+                document.getElementById('m-salary').value = d.meta.salary || ''; // Load Gaji
+                calcWage(); // Refresh calculation
+                
                 document.getElementById('log-body').innerHTML = ""; 
                 if(d.logs && d.logs.length > 0) d.logs.forEach(l => addRow(l)); else addRow();
                 calcLogic();

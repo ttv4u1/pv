@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Pilot Intelligent v3.3.7</title>
+    <title>Pilot Intelligent v3.4</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
@@ -79,7 +79,6 @@
         <!-- PRINT HEADER -->
         <div class="corporate-header-print">
             <img src="https://upload.wikimedia.org/wikipedia/commons/2/26/Coat_of_arms_of_Malaysia.svg" style="width: 60px; height: 60px; margin-right: 15px;">
-            <!-- Logo Jabatan Kedua (Gantikan URL ini dengan logo jabatan anda) -->
             <img src="https://github.com/ttv4u1/KP/raw/main/DVS.svg" style="width: 60px; height: 60px; margin-right: 20px;">
             <div>
                 <h2 style="font-size: 16pt; font-weight: 800; margin: 0;" class="font-heading uppercase">Log Perjalanan Kenderaan Jabatan</h2>
@@ -135,11 +134,15 @@
                 <label class="text-[9px] font-bold text-slate-400 uppercase">Bahagian / Unit</label>
                 <input type="text" id="m-unit" class="w-full font-bold text-base md:text-lg uppercase outline-none" placeholder="UNIT LOGISTIK" onchange="sync()">
             </div>
-            <!-- ADDED: GAJI SEJAM CALCULATION -->
+            
+            <!-- SECTION GAJI DIKEMASKINI -->
             <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm">
                 <label class="text-[9px] font-bold text-slate-400 uppercase">Gaji Pokok (RM)</label>
                 <input type="number" id="m-salary" class="w-full font-bold text-base md:text-lg outline-none" placeholder="0.00" oninput="calcWage(); sync()">
-                <p id="wage-result" class="text-[10px] font-bold text-emerald-600 mt-1 uppercase italic tracking-tighter">Kadar/Jam: RM 0.00</p>
+                <div id="wage-result" class="mt-1 leading-tight">
+                    <p class="text-[9px] font-bold text-slate-500 uppercase">Jumlah (+ RM765): <span id="total-with-allowance" class="text-slate-700">RM 0.00</span></p>
+                    <p id="hourly-rate" class="text-[10px] font-black text-emerald-600 uppercase italic tracking-tighter">Kadar/Jam: RM 0.00</p>
+                </div>
             </div>
         </div>
 
@@ -214,11 +217,15 @@
         }
         setInterval(updateClock, 1000);
 
-        // NEW: Wage Calculation Logic
+        // PENGIRAAN GAJI DIKEMASKINI (GAJI POKOK + 765)
         function calcWage() {
-            const gaji = Number(document.getElementById('m-salary').value) || 0;
-            const kadarJam = (gaji * 12) / 2504;
-            document.getElementById('wage-result').innerText = `Kadar/Jam: RM ${kadarJam.toFixed(2)}`;
+            const gajiPokok = Number(document.getElementById('m-salary').value) || 0;
+            const elaun = 765;
+            const jumlahGaji = gajiPokok > 0 ? gajiPokok + elaun : 0;
+            const kadarJam = (jumlahGaji * 12) / 2504;
+            
+            document.getElementById('total-with-allowance').innerText = `RM ${jumlahGaji.toFixed(2)}`;
+            document.getElementById('hourly-rate').innerText = `Kadar/Jam: RM ${kadarJam.toFixed(2)}`;
         }
 
         function to12h(t) {
@@ -371,7 +378,7 @@
                     plate:document.getElementById('m-plate').value, 
                     odo:document.getElementById('m-odo-start').value, 
                     unit:document.getElementById('m-unit').value,
-                    salary:document.getElementById('m-salary').value // Sync Gaji
+                    salary:document.getElementById('m-salary').value 
                 },
                 logs: logs
             });
@@ -385,8 +392,8 @@
                 document.getElementById('m-plate').value = d.meta.plate || '';
                 document.getElementById('m-odo-start').value = d.meta.odo || ''; 
                 document.getElementById('m-unit').value = d.meta.unit || '';
-                document.getElementById('m-salary').value = d.meta.salary || ''; // Load Gaji
-                calcWage(); // Refresh calculation
+                document.getElementById('m-salary').value = d.meta.salary || ''; 
+                calcWage(); 
                 
                 document.getElementById('log-body').innerHTML = ""; 
                 if(d.logs && d.logs.length > 0) d.logs.forEach(l => addRow(l)); else addRow();

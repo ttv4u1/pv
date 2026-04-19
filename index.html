@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Pilot Intelligent v3.4</title>
+    <title>Pilot Intelligent v3.5</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
@@ -70,6 +70,9 @@
 
         .corporate-header-print { display: none; }
         @media print { .corporate-header-print { display: flex !important; align-items: center; border-bottom: 2pt solid black; margin-bottom: 10px; padding-bottom: 10px; } }
+        
+        /* Modal Style untuk Jadual */
+        #schedule-modal { transition: opacity 0.3s ease; }
     </style>
 </head>
 <body class="p-2 md:p-6">
@@ -90,7 +93,7 @@
         <header class="bg-slate-900 text-white p-4 md:p-5 rounded-2xl mb-6 flex flex-col lg:flex-row justify-between items-center no-print shadow-xl border-b-4 border-blue-500 gap-4">
             <div class="flex items-center gap-4">
                 <div class="flex gap-2 bg-white p-2 rounded-xl">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/2/26/Coat_of_arms_of_Malaysia.svg" class="w-8 h-8 md:w-10 md:_h-10">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/2/26/Coat_of_arms_of_Malaysia.svg" class="w-8 h-8 md:w-10 md:h-10">
                     <img src="https://github.com/ttv4u1/KP/raw/main/DVS.svg" class="w-8 h-8 md:w-10 md:h-10">
                 </div>
                 <div>
@@ -108,6 +111,9 @@
             </div>
 
             <div class="flex gap-4">
+                <button onclick="toggleScheduleModal()" class="bg-emerald-600 hover:bg-emerald-700 px-5 py-2 rounded-xl font-bold text-xs md:text-sm shadow-lg active:scale-95 transition flex items-center gap-2">
+                    <i data-lucide="calendar"></i> JADUAL AKAN DATANG
+                </button>
                 <button id="login-btn" onclick="loginGoogle()" class="bg-blue-600 hover:bg-blue-700 px-5 py-2 rounded-xl font-bold text-xs md:text-sm shadow-lg active:scale-95 transition">LOGIN GOOGLE</button>
                 <div id="user-profile" class="hidden flex items-center gap-3">
                     <img id="u-avatar" class="w-8 h-8 md:w-10 md:h-10 rounded-full border-2 border-slate-700">
@@ -135,6 +141,7 @@
                 <input type="text" id="m-unit" class="w-full font-bold text-base md:text-lg uppercase outline-none" placeholder="UNIT LOGISTIK" onchange="sync()">
             </div>
             
+            <!-- SECTION GAJI DIKEMASKINI -->
             <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm">
                 <label class="text-[9px] font-bold text-slate-400 uppercase">Gaji Pokok (RM)</label>
                 <input type="number" id="m-salary" class="w-full font-bold text-base md:text-lg outline-none" placeholder="0.00" oninput="calcWage(); sync()">
@@ -192,34 +199,6 @@
             </div>
         </div>
 
-        <!-- NEW: SECTION JADUAL AKAN DATANG -->
-        <div class="mt-12 no-print">
-            <div class="flex items-center gap-3 mb-4">
-                <i data-lucide="calendar" class="text-blue-600 w-6 h-6"></i>
-                <h2 class="text-xl font-bold font-heading uppercase tracking-tight">Jadual Perjalanan Akan Datang</h2>
-            </div>
-            <div class="bg-white rounded-2xl shadow-xl overflow-hidden border border-slate-200">
-                <div class="overflow-x-auto">
-                    <table class="min-w-full">
-                        <thead class="bg-slate-100 text-[10px] font-black uppercase text-slate-600">
-                            <tr>
-                                <th class="px-4 py-3 text-left">Tarikh Mula & Hingga</th>
-                                <th class="px-4 py-3 text-left">Masa Mula & Hingga</th>
-                                <th class="px-4 py-3 text-left">Destinasi / Tempat</th>
-                                <th class="px-4 py-3 text-center" style="width: 50px;">Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody id="schedule-body">
-                            <!-- Rows inserted here -->
-                        </tbody>
-                    </table>
-                </div>
-                <button onclick="addScheduleRow()" class="w-full p-4 text-sm font-bold text-blue-600 hover:bg-blue-50 transition-colors flex justify-center items-center gap-2 border-t border-slate-100">
-                    <i data-lucide="plus" class="w-4 h-4"></i> TAMBAH JADUAL BARU
-                </button>
-            </div>
-        </div>
-
         <!-- FAB PRINT -->
         <div class="fixed bottom-6 right-6 no-print z-50">
             <button onclick="window.print()" class="bg-blue-600 text-white p-4 md:p-5 rounded-full shadow-2xl hover:scale-110 active:scale-90 transition-all flex items-center gap-2 font-bold border-4 border-white">
@@ -229,11 +208,55 @@
 
     </div>
 
+    <!-- MODAL JADUAL (FUTURE SCHEDULES) -->
+    <div id="schedule-modal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-[100] hidden flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-2xl rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+            <div class="bg-slate-900 p-6 text-white flex justify-between items-center">
+                <div class="flex items-center gap-3">
+                    <i data-lucide="calendar-clock" class="text-emerald-400"></i>
+                    <h2 class="font-heading font-bold text-xl uppercase tracking-tight">Jadual Perjalanan</h2>
+                </div>
+                <button onclick="toggleScheduleModal()" class="text-slate-400 hover:text-white"><i data-lucide="x"></i></button>
+            </div>
+            
+            <div class="p-6 bg-slate-50 border-b">
+                <div class="grid grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label class="text-[10px] font-bold text-slate-400 uppercase">Tarikh Mula</label>
+                        <input type="date" id="s-start-date" class="w-full p-2 rounded-lg border focus:ring-2 focus:ring-emerald-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-bold text-slate-400 uppercase">Tarikh Hingga</label>
+                        <input type="date" id="s-end-date" class="w-full p-2 rounded-lg border focus:ring-2 focus:ring-emerald-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-bold text-slate-400 uppercase">Masa Mula</label>
+                        <input type="time" id="s-start-time" class="w-full p-2 rounded-lg border focus:ring-2 focus:ring-emerald-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-bold text-slate-400 uppercase">Masa Hingga</label>
+                        <input type="time" id="s-end-time" class="w-full p-2 rounded-lg border focus:ring-2 focus:ring-emerald-500 outline-none">
+                    </div>
+                </div>
+                <div class="mb-4">
+                    <label class="text-[10px] font-bold text-slate-400 uppercase">Lokasi / Destinasi</label>
+                    <input type="text" id="s-location" class="w-full p-2 rounded-lg border focus:ring-2 focus:ring-emerald-500 outline-none" placeholder="Cth: Putrajaya - HQ">
+                </div>
+                <button onclick="addSchedule()" class="w-full bg-emerald-600 text-white font-bold py-3 rounded-xl hover:bg-emerald-700 transition active:scale-95 shadow-lg">SIMPAN JADUAL</button>
+            </div>
+
+            <div id="schedule-list" class="overflow-y-auto p-4 space-y-3 bg-white flex-1">
+                <!-- List items here -->
+            </div>
+        </div>
+    </div>
+
     <script>
         const firebaseConfig = { apiKey: "AIzaSyDdCwKNCx0nA1cZirGrw1UYvtumALluVXw", authDomain: "pilot-veterinar.firebaseapp.com", projectId: "pilot-veterinar", storageBucket: "pilot-veterinar.firebasestorage.app", messagingSenderId: "559136368070", appId: "1:559136368070:web:8aaa2dcb804c73f10cbec7" };
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth(); const db = firebase.firestore(); const provider = new firebase.auth.GoogleAuthProvider();
         let currentUser = null;
+        let futureSchedules = [];
 
         function updateClock() {
             const now = new Date();
@@ -244,11 +267,13 @@
         }
         setInterval(updateClock, 1000);
 
+        // PENGIRAAN GAJI DIKEMASKINI (GAJI POKOK + 765)
         function calcWage() {
             const gajiPokok = Number(document.getElementById('m-salary').value) || 0;
             const elaun = 765;
             const jumlahGaji = gajiPokok > 0 ? gajiPokok + elaun : 0;
             const kadarJam = (jumlahGaji * 12) / 2504;
+            
             document.getElementById('total-with-allowance').innerText = `RM ${jumlahGaji.toFixed(2)}`;
             document.getElementById('hourly-rate').innerText = `Kadar/Jam: RM ${kadarJam.toFixed(2)}`;
         }
@@ -336,6 +361,7 @@
                 input.addEventListener('input', (e) => {
                     const row = e.target.closest('tr');
                     const span = e.target.parentElement.nextElementSibling;
+                    
                     if(e.target.classList.contains('date-input')) {
                         row.querySelector('.w-date .print-text').innerText = formatDisplayDate(e.target.value);
                     } else if(e.target.classList.contains('t-mula') || e.target.classList.contains('t-hingga')) {
@@ -345,64 +371,16 @@
                     } else if (span && span.classList.contains('print-text')) {
                         span.innerText = e.target.value;
                     }
+
                     if(e.target.tagName === 'TEXTAREA') adjustHeight(e.target);
                     calcLogic(); 
                     sync();
                 });
             });
-            setTimeout(() => { tr.querySelectorAll('textarea').forEach(tx => adjustHeight(tx)); }, 50);
-        }
 
-        // --- NEW FUNCTIONS FOR SCHEDULE ---
-        function addScheduleRow(s = {}) {
-            const tbody = document.getElementById('schedule-body');
-            const tr = document.createElement('tr');
-            tr.className = "border-b border-slate-50";
-            tr.innerHTML = `
-                <td class="p-2">
-                    <div class="flex gap-2">
-                        <input type="date" value="${s.startD || ''}" class="s-startD w-full p-2 border rounded-lg text-xs font-bold">
-                        <input type="date" value="${s.endD || ''}" class="s-endD w-full p-2 border rounded-lg text-xs font-bold">
-                    </div>
-                </td>
-                <td class="p-2">
-                    <div class="flex gap-2">
-                        <input type="time" value="${s.startT || ''}" class="s-startT w-full p-2 border rounded-lg text-xs">
-                        <input type="time" value="${s.endT || ''}" class="s-endT w-full p-2 border rounded-lg text-xs">
-                    </div>
-                </td>
-                <td class="p-2">
-                    <input type="text" value="${s.loc || ''}" placeholder="Isi Tempat / Destinasi..." class="s-loc w-full p-2 border rounded-lg text-sm font-bold uppercase">
-                </td>
-                <td class="p-2 text-center">
-                    <button onclick="this.closest('tr').remove();sync()" class="text-red-400 hover:text-red-600"><i data-lucide="x-circle"></i></button>
-                </td>
-            `;
-            tbody.appendChild(tr);
-            lucide.createIcons();
-            tr.querySelectorAll('input').forEach(i => i.addEventListener('change', sync));
-        }
-
-        function checkNotifications(schedules) {
-            if (!("Notification" in window)) return;
-            
-            const today = new Date();
-            const tomorrow = new Date(today);
-            tomorrow.setDate(tomorrow.getDate() + 1);
-            const tomorrowStr = tomorrow.toISOString().split('T')[0];
-
-            schedules.forEach(s => {
-                if (s.startD === tomorrowStr) {
-                    if (Notification.permission === "granted") {
-                        new Notification("PERINGATAN JADUAL", {
-                            body: `Esok ada perjalanan ke: ${s.loc || 'Destinasi Belum Ditetapkan'} jam ${to12h(s.startT)}`,
-                            icon: "https://github.com/ttv4u1/KP/raw/main/DVS.svg"
-                        });
-                    } else if (Notification.permission !== "denied") {
-                        Notification.requestPermission();
-                    }
-                }
-            });
+            setTimeout(() => {
+                tr.querySelectorAll('textarea').forEach(tx => adjustHeight(tx));
+            }, 50);
         }
 
         function calcLogic() {
@@ -412,13 +390,16 @@
                 const odo = Number(row.querySelector('.odo-val').value);
                 const distField = row.querySelector('.dist-val');
                 const distSpan = row.querySelector('.w-dist .print-text');
+                
                 if(odo > 0 && odo > prev) { 
                     const currentDist = odo - prev;
                     distField.value = currentDist; 
                     distSpan.innerText = currentDist;
                     prev = odo; td += currentDist; 
                 } else { 
-                    distField.value = ""; distSpan.innerText = ""; if(odo > 0) prev = odo;
+                    distField.value = ""; 
+                    distSpan.innerText = ""; 
+                    if(odo > 0) prev = odo;
                 }
                 tl += Number(row.querySelector('.liter-val').value) || 0;
                 trm += Number(row.querySelector('.rm-val').value) || 0;
@@ -441,18 +422,6 @@
                     resit:i[9].value, liter:i[10].value, arahan:i[11].value
                 });
             });
-
-            const schedules = [];
-            document.querySelectorAll('#schedule-body tr').forEach(r => {
-                schedules.push({
-                    startD: r.querySelector('.s-startD').value,
-                    endD: r.querySelector('.s-endD').value,
-                    startT: r.querySelector('.s-startT').value,
-                    endT: r.querySelector('.s-endT').value,
-                    loc: r.querySelector('.s-loc').value
-                });
-            });
-
             await db.collection("logs_v32").doc(currentUser.uid).set({
                 meta: { 
                     month:document.getElementById('m-month').value, 
@@ -462,7 +431,7 @@
                     salary:document.getElementById('m-salary').value 
                 },
                 logs: logs,
-                schedules: schedules
+                futureSchedules: futureSchedules // Simpan jadual sekali
             });
         }
 
@@ -475,26 +444,112 @@
                 document.getElementById('m-odo-start').value = d.meta.odo || ''; 
                 document.getElementById('m-unit').value = d.meta.unit || '';
                 document.getElementById('m-salary').value = d.meta.salary || ''; 
-                calcWage(); 
+                futureSchedules = d.futureSchedules || [];
                 
+                calcWage(); 
+                renderScheduleList();
+                checkScheduleAlerts();
+
                 document.getElementById('log-body').innerHTML = ""; 
                 if(d.logs && d.logs.length > 0) d.logs.forEach(l => addRow(l)); else addRow();
-
-                document.getElementById('schedule-body').innerHTML = "";
-                if(d.schedules && d.schedules.length > 0) {
-                    d.schedules.forEach(s => addScheduleRow(s));
-                    checkNotifications(d.schedules);
-                }
                 calcLogic();
             } else { addRow(); }
         }
 
-        async function loginGoogle() { try { const res = await auth.signInWithPopup(provider); currentUser = res.user; updateUI(); loadData(); Notification.requestPermission(); } catch(e) {} }
+        // --- FUNGSI JADUAL BARU ---
+        function toggleScheduleModal() {
+            const m = document.getElementById('schedule-modal');
+            m.classList.toggle('hidden');
+        }
+
+        function addSchedule() {
+            const sDate = document.getElementById('s-start-date').value;
+            const eDate = document.getElementById('s-end-date').value;
+            const sTime = document.getElementById('s-start-time').value;
+            const eTime = document.getElementById('s-end-time').value;
+            const loc = document.getElementById('s-location').value;
+
+            if(!sDate || !loc) { alert("Sila isi Tarikh Mula dan Lokasi!"); return; }
+
+            futureSchedules.push({ id: Date.now(), sDate, eDate, sTime, eTime, loc });
+            
+            // Reset fields
+            document.getElementById('s-start-date').value = "";
+            document.getElementById('s-end-date').value = "";
+            document.getElementById('s-start-time').value = "";
+            document.getElementById('s-end-time').value = "";
+            document.getElementById('s-location').value = "";
+
+            renderScheduleList();
+            sync();
+        }
+
+        function renderScheduleList() {
+            const list = document.getElementById('schedule-list');
+            list.innerHTML = "";
+            
+            // Sort by date
+            futureSchedules.sort((a,b) => new Date(a.sDate) - new Date(b.sDate));
+
+            futureSchedules.forEach(s => {
+                const item = document.createElement('div');
+                item.className = "p-4 bg-slate-50 border border-slate-200 rounded-2xl flex justify-between items-center group";
+                item.innerHTML = `
+                    <div>
+                        <p class="text-[10px] font-black text-blue-600 uppercase">${formatDisplayDate(s.sDate)} ${s.eDate ? 'hingga ' + formatDisplayDate(s.eDate) : ''}</p>
+                        <p class="text-xs font-bold text-slate-800 uppercase mt-1">${s.loc}</p>
+                        <p class="text-[10px] text-slate-500 font-semibold">${to12h(s.sTime)} - ${to12h(s.eTime)}</p>
+                    </div>
+                    <button onclick="removeSchedule(${s.id})" class="text-slate-300 hover:text-red-500 transition"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                `;
+                list.appendChild(item);
+            });
+            lucide.createIcons();
+        }
+
+        function removeSchedule(id) {
+            futureSchedules = futureSchedules.filter(s => s.id !== id);
+            renderScheduleList();
+            sync();
+        }
+
+        function checkScheduleAlerts() {
+            const tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            const tomorrowStr = tomorrow.toISOString().split('T')[0];
+
+            const alerts = futureSchedules.filter(s => s.sDate === tomorrowStr);
+            
+            if(alerts.length > 0) {
+                // Browser Notification
+                if (Notification.permission === "granted") {
+                    alerts.forEach(a => {
+                        new Notification("PERINGATAN JADUAL ESOK", {
+                            body: `Destinasi: ${a.loc}\nMasa: ${to12h(a.sTime)}`,
+                            icon: 'https://github.com/ttv4u1/KP/raw/main/DVS.svg'
+                        });
+                    });
+                } else if (Notification.permission !== "denied") {
+                    Notification.requestPermission();
+                }
+                
+                // On-screen Alert
+                let msg = "JADUAL UNTUK ESOK:\n";
+                alerts.forEach(a => msg += `• ${a.loc} (${to12h(a.sTime)})\n`);
+                setTimeout(() => alert(msg), 1000);
+            }
+        }
+
+        async function loginGoogle() { try { const res = await auth.signInWithPopup(provider); currentUser = res.user; updateUI(); loadData(); } catch(e) {} }
         function logout() { auth.signOut().then(() => location.reload()); }
         function updateUI() { if(currentUser) { document.getElementById('login-btn').classList.add('hidden'); document.getElementById('user-profile').classList.remove('hidden'); document.getElementById('u-avatar').src = currentUser.photoURL; } }
         
         auth.onAuthStateChanged(user => { if(user) { currentUser = user; updateUI(); loadData(); } });
-        window.onload = () => { lucide.createIcons(); updateClock(); };
+        window.onload = () => { 
+            lucide.createIcons(); 
+            updateClock(); 
+            if (Notification.permission !== "granted") Notification.requestPermission();
+        };
     </script>
 </body>
 </html>

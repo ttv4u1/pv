@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pilot Intelligent Veterinar v3.0.0</title>
+    <title>Pilot Intelligent v3.1.0</title>
     
-    <!-- UI & Icons -->
+    <!-- UI Framework & Fonts -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
     
-    <!-- Export Engines -->
+    <!-- Unified Export Engines -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
@@ -21,12 +21,12 @@
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 
     <style>
-        :root { --blue-corp: #1e3a8a; --gold-3d: #fbbf24; }
+        :root { --blue-corp: #1e3a8a; --blue-sub: #254b9d; --amber-pixar: #f59e0b; }
         
         body {
             font-family: 'Poppins', sans-serif;
             background: #f1f5f9 url('https://upload.wikimedia.org/wikipedia/commons/2/26/Coat_of_arms_of_Malaysia.svg') no-repeat center fixed;
-            background-size: 30%;
+            background-size: 35%;
             min-height: 100vh;
         }
 
@@ -34,126 +34,141 @@
             background: rgba(255, 255, 255, 0.98);
             backdrop-filter: blur(25px);
             border: 1px solid rgba(255, 255, 255, 0.5);
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
             border-radius: 1.5rem;
         }
 
         .header-font { font-family: 'Orbitron', sans-serif; letter-spacing: 1px; }
 
-        /* 3D Pixar Style Buttons */
+        /* 3D Pixar Button Style */
         .btn-3d {
             transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: 0 5px 0 #1e3a8a;
+            box-shadow: 0 6px 0 var(--blue-corp);
         }
         .btn-3d:active {
-            transform: translateY(3px);
-            box-shadow: 0 1px 0 #1e3a8a;
+            transform: translateY(4px);
+            box-shadow: 0 2px 0 var(--blue-corp);
         }
 
-        /* Real-time Clock Widget */
+        /* Real-time Widget */
         .clock-widget {
-            background: linear-gradient(135deg, #1e3a8a, #2563eb);
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
             color: white;
-            padding: 10px 20px;
-            border-radius: 1rem;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
+            padding: 12px 24px;
+            border-radius: 1.25rem;
+            box-shadow: 0 10px 20px rgba(30, 58, 138, 0.3);
             border: 2px solid rgba(255,255,255,0.2);
         }
 
-        /* Input Styling */
-        .row-input { font-size: 0.75rem; width: 100%; border: none; background: transparent; padding: 8px; outline: none; transition: 0.2s; }
+        /* Table Input & Sentence Wrap */
+        .row-input { font-size: 0.75rem; width: 100%; border: none; background: transparent; padding: 10px; outline: none; transition: 0.2s; }
         .row-input:focus { background: rgba(30, 58, 138, 0.05); }
-        
-        textarea.row-input { resize: none; overflow: hidden; min-height: 45px; }
+        textarea.row-input { resize: none; overflow: hidden; min-height: 50px; line-height: 1.4; }
 
+        /* ULTIMATE PRINT / PDF SETTINGS */
         @media print {
-            @page { size: A4 landscape; margin: 3mm; }
+            @page { size: A4 landscape; margin: 5mm; }
+            body { background: white !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; padding: 0 !important; }
             .no-print { display: none !important; }
-            body { background: white !important; -webkit-print-color-adjust: exact; padding: 0 !important; }
-            table { width: 100% !important; border: 1.5pt solid black !important; table-layout: fixed; }
-            th, td { border: 1pt solid black !important; font-size: 6.8pt !important; padding: 3px; word-wrap: break-word; white-space: pre-wrap; }
-            th { background-color: #1e3a8a !important; color: white !important; }
+            
+            /* Background Watermark in PDF */
+            body::before {
+                content: ""; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+                background-image: url('https://upload.wikimedia.org/wikipedia/commons/2/26/Coat_of_arms_of_Malaysia.svg');
+                background-repeat: no-repeat; background-position: center; background-size: 400px; opacity: 0.08; z-index: -1;
+            }
+
+            .print-full { width: 100% !important; margin: 0 !important; border: none !important; box-shadow: none !important; background: transparent !important; }
+            
+            table { width: 100% !important; border-collapse: collapse !important; border: 1.5pt solid black !important; table-layout: fixed; }
+            th, td { border: 0.5pt solid black !important; font-size: 6.5pt !important; padding: 4px !important; word-wrap: break-word; white-space: pre-wrap; vertical-align: top; }
+            th { background-color: #1e3a8a !important; color: white !important; font-weight: bold !important; text-transform: uppercase; }
+            .bg-odo-print { background-color: #f97316 !important; -webkit-print-color-adjust: exact; }
+            .bg-jr-print { background-color: #1e3a8a !important; -webkit-print-color-adjust: exact; }
+            
+            header { display: flex !important; border-bottom: 4px solid #1e3a8a !important; padding-bottom: 10px; }
+            .summary-section { page-break-inside: avoid; border-top: 4px solid #16a34a !important; }
         }
 
-        /* Column Config */
-        .w-dt { width: 105px; }
-        .w-tm { width: 85px; }
-        .w-pm { width: 140px; }
-        .w-tj { width: auto; min-width: 250px; }
-        .w-od { width: 90px; }
-        .w-jr { width: 75px; }
-        .w-rs { width: 120px; }
+        /* Column Logic */
+        .w-tarikh { width: 95px; }
+        .w-masa { width: 75px; }
+        .w-pemandu { width: 140px; }
+        .w-tujuan { width: auto; min-width: 250px; }
+        .w-odo { width: 90px; }
+        .w-jarak { width: 75px; }
+        .w-ak { width: 180px; }
     </style>
 </head>
 <body class="p-2 lg:p-6">
 
-    <div class="max-w-[1920px] mx-auto">
+    <div class="max-w-[1920px] mx-auto print-full">
         
         <!-- HEADER KORPORAT -->
         <header class="pixar-card p-6 mb-6 flex flex-col lg:flex-row items-center justify-between border-b-8 border-blue-900 no-print">
             <div class="flex items-center gap-6">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/2/26/Coat_of_arms_of_Malaysia.svg" class="w-16 h-16 drop-shadow-xl" alt="Jata Negara">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/2/26/Coat_of_arms_of_Malaysia.svg" class="w-16 h-16 drop-shadow-xl" alt="Jata">
                 <div>
                     <h1 class="header-font text-2xl lg:text-3xl font-black text-blue-900 leading-none">PILOT INTELLIGENT VETERINAR</h1>
-                    <p class="text-[9px] font-bold text-blue-500 uppercase tracking-widest mt-1">SISTEM LOG DIGITAL v3.0.0 - LIVE PRECISION</p>
+                    <p class="text-[9px] font-bold text-blue-500 uppercase tracking-widest mt-1">Sistem Log & Penyata Rasmi Jabatan - v3.1.0</p>
                 </div>
             </div>
 
-            <!-- LIVE CLOCK & DAY WIDGET -->
-            <div class="clock-widget text-center my-4 lg:my-0 shadow-lg">
-                <div id="live-day" class="text-[10px] font-black tracking-[0.3em] opacity-80">-- LOADING --</div>
-                <div id="live-time" class="text-xl font-bold leading-none">00:00:00 AM</div>
+            <!-- LIVE CLOCK -->
+            <div class="clock-widget text-center shadow-xl">
+                <div id="live-day" class="text-[10px] font-black tracking-[0.4em] uppercase opacity-80">Memuatkan...</div>
+                <div id="live-time" class="text-xl font-bold">00:00:00 AM</div>
                 <div id="live-date" class="text-[9px] font-bold mt-1 opacity-70">00/00/0000</div>
             </div>
 
-            <div id="auth-section">
-                <button id="login-btn" onclick="loginGoogle()" class="bg-blue-900 text-white px-8 py-3 rounded-full font-bold btn-3d uppercase text-xs">Login Staf Google</button>
-                <div id="user-profile" class="hidden flex items-center gap-4 bg-blue-50 p-1 pr-6 rounded-full border border-blue-200">
-                    <img id="u-avatar" class="w-10 h-10 rounded-full border-2 border-white shadow-sm">
+            <div id="auth-area" class="flex items-center gap-4">
+                <button id="login-btn" onclick="loginGoogle()" class="bg-blue-900 text-white px-8 py-3 rounded-full font-bold btn-3d text-xs">LOGIN STAF</button>
+                <div id="user-profile" class="hidden flex items-center gap-4 bg-white p-1 pr-6 rounded-full border shadow-inner">
+                    <img id="u-avatar" class="w-12 h-12 rounded-full border-2 border-blue-900">
                     <div class="text-left">
                         <p id="u-name" class="text-[10px] font-bold text-blue-900 uppercase"></p>
-                        <button onclick="logout()" class="text-[8px] text-red-500 font-bold underline">LOG KELUAR</button>
+                        <button onclick="logout()" class="text-[8px] text-red-500 font-bold underline uppercase">Log Keluar</button>
                     </div>
                 </div>
             </div>
         </header>
 
-        <!-- HEADER DATA (IMAGE REPLICA) -->
-        <div class="pixar-card overflow-hidden mb-6 border-t-8 border-blue-600">
+        <!-- SECTION 1: BUTIR KENDERAAN (AS PER IMAGE) -->
+        <div class="pixar-card overflow-hidden mb-6 border-t-8 border-blue-600 print-full">
             <div class="bg-blue-900 p-2 text-center text-white font-black text-sm tracking-widest uppercase">Butir-Butir Penggunaan Kenderaan</div>
-            <div class="grid grid-cols-1 md:grid-cols-4 border-b no-print">
-                <div class="p-4 border-r"><label class="text-[9px] font-black text-gray-400 uppercase mb-1">Bulan/Tahun</label>
+            <div class="grid grid-cols-2 lg:grid-cols-4 border-b">
+                <div class="p-4 border-r"><label class="text-[9px] font-black text-gray-400 uppercase mb-1 block">Bulan/Tahun</label>
                     <input type="month" id="m-month" class="w-full font-bold text-blue-900 outline-none" onchange="sync()"></div>
-                <div class="p-4 border-r"><label class="text-[9px] font-black text-gray-400 uppercase mb-1">Jenis Kenderaan</label>
-                    <input type="text" id="m-type" placeholder="Toyota Hilux" class="w-full font-bold text-blue-900 outline-none" onchange="sync()"></div>
-                <div class="p-4 border-r"><label class="text-[9px] font-black text-gray-400 uppercase mb-1">No. Pendaftaran</label>
-                    <input type="text" id="m-plate" placeholder="VAB 1234" class="w-full font-bold text-blue-900 outline-none uppercase" onchange="sync()"></div>
-                <div class="p-4"><label class="text-[9px] font-black text-gray-400 uppercase mb-1">Bahagian Unit</label>
-                    <input type="text" id="m-unit" placeholder="Unit Veterinar" class="w-full font-bold text-blue-900 outline-none" onchange="sync()"></div>
+                <div class="p-4 border-r"><label class="text-[9px] font-black text-gray-400 uppercase mb-1 block">Jenis Kenderaan</label>
+                    <input type="text" id="m-type" placeholder="Model" class="w-full font-bold text-blue-900 outline-none" onchange="sync()"></div>
+                <div class="p-4 border-r"><label class="text-[9px] font-black text-gray-400 uppercase mb-1 block">No. Pendaftaran</label>
+                    <input type="text" id="m-plate" placeholder="No Plat" class="w-full font-bold text-blue-900 outline-none uppercase" onchange="sync()"></div>
+                <div class="p-4"><label class="text-[9px] font-black text-gray-400 uppercase mb-1 block">Bahagian Unit</label>
+                    <input type="text" id="m-unit" placeholder="Unit" class="w-full font-bold text-blue-900 outline-none" onchange="sync()"></div>
             </div>
         </div>
 
-        <!-- MAIN TABLE -->
-        <div class="pixar-card overflow-hidden mb-6 shadow-2xl border-t-8 border-blue-900">
+        <!-- SECTION 2: LOG PERJALANAN -->
+        <div class="pixar-card overflow-hidden mb-6 border-t-8 border-blue-900 shadow-2xl print-full">
             <div class="overflow-x-auto">
                 <table id="main-table">
-                    <thead>
+                    <thead class="bg-blue-900 text-white">
                         <tr>
-                            <th rowspan="2" class="w-dt">Tarikh</th>
+                            <th rowspan="2" class="w-tarikh">Tarikh</th>
                             <th colspan="2" class="bg-blue-800">Masa</th>
-                            <th rowspan="2" class="w-pm">Nama Pemandu</th>
-                            <th rowspan="2" class="w-tj">Tujuan / Destinasi</th>
+                            <th rowspan="2" class="w-pemandu">Pemandu</th>
+                            <th rowspan="2" class="w-tujuan">Tujuan / Destinasi</th>
                             <th rowspan="2" class="w-[110px]">Pelulus</th>
                             <th rowspan="2" class="w-[110px]">Pengguna</th>
-                            <th rowspan="2" class="w-od bg-orange-600">Odometer</th>
-                            <th rowspan="2" class="w-jr bg-blue-700">Jarak</th>
+                            <th rowspan="2" class="w-odo bg-orange-600 bg-odo-print">Odometer</th>
+                            <th rowspan="2" class="w-jarak bg-blue-700 bg-jr-print">Jarak</th>
                             <th colspan="2" class="bg-gray-800">Bahan Api</th>
-                            <th rowspan="2" class="w-[180px]">Arahan Khas</th>
+                            <th rowspan="2" class="w-ak">Arahan Khas</th>
                             <th rowspan="2" class="w-[45px] no-print">X</th>
                         </tr>
                         <tr class="bg-blue-800 text-[9px]">
-                            <th class="w-tm">Mula</th><th class="w-tm">Hingga</th>
-                            <th class="w-rs">RM/Resit</th><th class="w-[65px]">Liter</th>
+                            <th class="w-masa">Mula</th><th class="w-masa">Hingga</th>
+                            <th class="w-[120px]">Resit & RM</th><th class="w-[65px]">Liter</th>
                         </tr>
                     </thead>
                     <tbody id="log-body" class="bg-white"></tbody>
@@ -161,7 +176,7 @@
             </div>
             <div class="p-6 bg-gray-50 flex justify-between no-print">
                 <button onclick="addRow()" class="bg-blue-900 text-white px-10 py-3 rounded-2xl font-bold btn-3d flex items-center gap-2">
-                    <i data-lucide="calendar-plus"></i> TAMBAH PERJALANAN
+                    <i data-lucide="plus-circle"></i> TAMBAH PERJALANAN
                 </button>
                 <div class="flex items-center gap-3 bg-amber-50 px-5 rounded-2xl border border-amber-200">
                     <label class="text-[10px] font-black text-amber-700 uppercase">Odo Awal Semasa:</label>
@@ -170,13 +185,13 @@
             </div>
         </div>
 
-        <!-- ANALISIS ANALYTIK MINYAK -->
-        <div class="pixar-card overflow-hidden mb-10 border-t-8 border-green-600">
-            <div class="bg-green-50 p-2 text-center border-b font-black text-xs tracking-widest text-green-900 uppercase italic">Kadar Kegunaan Bahan Api Bulanan</div>
+        <!-- SECTION 3: PENYATA BAHAN API (OFFICIAL STYLE) -->
+        <div class="pixar-card overflow-hidden mb-10 border-t-8 border-green-600 summary-section print-full">
+            <div class="bg-green-50 p-2 text-center border-b font-black text-xs tracking-widest text-green-900 uppercase italic">Kadar Kegunaan Bahan Api Bulanan (Penyata Rasmi)</div>
             <div class="overflow-x-auto">
                 <table class="!border-0">
                     <tr class="bg-gray-50 font-bold uppercase text-[9px] text-gray-500">
-                        <th>Bulan (a)</th><th>Jarak (b)</th><th>Penggunaan (c)</th><th>Pembelian (d)</th><th>Kadar (KM/L) (e)</th><th class="w-1/4">Pengesahan</th>
+                        <th>Bulan (a)</th><th>Jarak (KM) (b)</th><th>Penggunaan (c)</th><th>Pembelian (d)</th><th>Kadar KM/L (e)</th><th class="w-1/4">Pengesahan Rasmi</th>
                     </tr>
                     <tr class="bg-white">
                         <td id="sum-month" class="font-bold">--</td>
@@ -193,33 +208,34 @@
                         <td id="sum-rm" class="font-bold text-orange-600 text-lg">RM 0.00</td>
                         <td id="sum-rate" class="font-black text-4xl text-green-700 italic">0.00</td>
                         <td class="text-left p-3">
-                            <input type="text" id="auth-name" placeholder="T/Tangan & Nama:" class="row-input font-bold uppercase p-0 border-b mb-1" oninput="sync()">
-                            <input type="text" id="auth-post" placeholder="Jawatan:" class="row-input p-0 border-b" oninput="sync()">
+                            <textarea id="auth-name" placeholder="T/Tangan & Nama Pegawai:" class="row-input font-bold uppercase p-0 border-b mb-1 auto-expand" oninput="sync()"></textarea>
+                            <textarea id="auth-post" placeholder="Jawatan:" class="row-input p-0 border-b auto-expand" oninput="sync()"></textarea>
                         </td>
                     </tr>
                 </table>
             </div>
         </div>
 
-        <!-- EXPORT HUB -->
+        <!-- SECTION 4: EXPORT HUB & SALARY -->
         <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-10 no-print">
             <div class="pixar-card p-6 border-l-8 border-purple-600 flex flex-col justify-center">
-                <h3 class="font-black text-xs text-purple-900 mb-4 uppercase">Kadar Gaji Sejam</h3>
+                <h3 class="font-black text-xs text-purple-900 mb-4 uppercase">Gaji Sejam</h3>
                 <input type="number" id="g-pokok" placeholder="Gaji Pokok (RM)" class="w-full p-3 border-2 border-purple-100 rounded-xl mb-4 font-bold text-lg" oninput="calcLogic(); sync()">
-                <div class="bg-purple-900 text-white p-4 rounded-2xl flex justify-between items-center shadow-lg">
+                <div class="p-4 bg-purple-900 text-white rounded-2xl flex justify-between items-center shadow-lg">
                     <span class="text-[9px] font-bold opacity-60">RM/SEJAM:</span>
                     <span id="res-ot" class="text-2xl font-black italic">RM 0.00</span>
                 </div>
             </div>
 
+            <!-- THE UNIVERSAL HUB -->
             <div class="pixar-card p-6 bg-slate-900 text-white col-span-3 shadow-2xl">
-                <h3 class="font-black text-xs mb-6 uppercase text-cyan-400 text-center tracking-[0.4em]">Universal Responsive Export Center</h3>
+                <h3 class="font-black text-xs mb-6 uppercase text-cyan-400 text-center tracking-[0.4em]">Universal Global Export Hub</h3>
                 <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
-                    <button onclick="exportUniversal('excel')" class="bg-emerald-600 p-4 rounded-2xl font-bold text-[10px] flex flex-col items-center gap-2 btn-3d" style="box-shadow: 0 5px 0 #064e3b;"><i data-lucide="file-spreadsheet"></i> EXCEL PRO</button>
-                    <button onclick="exportUniversal('word')" class="bg-blue-600 p-4 rounded-2xl font-bold text-[10px] flex flex-col items-center gap-2 btn-3d" style="box-shadow: 0 5px 0 #1e3a8a;"><i data-lucide="file-text"></i> WORD DOC</button>
+                    <button onclick="exportFull('excel')" class="bg-emerald-600 p-4 rounded-2xl font-bold text-[10px] flex flex-col items-center gap-2 btn-3d" style="box-shadow: 0 5px 0 #064e3b;"><i data-lucide="file-spreadsheet"></i> EXCEL PRO</button>
+                    <button onclick="exportFull('word')" class="bg-blue-600 p-4 rounded-2xl font-bold text-[10px] flex flex-col items-center gap-2 btn-3d" style="box-shadow: 0 5px 0 #1e3a8a;"><i data-lucide="file-text"></i> WORD DOC</button>
                     <button onclick="exportPPT()" class="bg-orange-600 p-4 rounded-2xl font-bold text-[10px] flex flex-col items-center gap-2 btn-3d" style="box-shadow: 0 5px 0 #9a3412;"><i data-lucide="presentation"></i> PPT SLIDE</button>
-                    <button onclick="exportUniversal('csv')" class="bg-purple-600 p-4 rounded-2xl font-bold text-[10px] flex flex-col items-center gap-2 btn-3d" style="box-shadow: 0 5px 0 #581c87;"><i data-lucide="database"></i> ACCESS DB</button>
-                    <button onclick="shareToMobile()" class="bg-amber-600 p-4 rounded-2xl font-bold text-[10px] flex flex-col items-center gap-2 btn-3d" style="box-shadow: 0 5px 0 #92400e;"><i data-lucide="smartphone"></i> NOTES HUB</button>
+                    <button onclick="exportFull('notepad++')" class="bg-gray-700 p-4 rounded-2xl font-bold text-[10px] flex flex-col items-center gap-2 btn-3d" style="box-shadow: 0 5px 0 #1f2937;"><i data-lucide="code-2"></i> NP++ / TEXT</button>
+                    <button onclick="shareToMobile()" class="bg-amber-600 p-4 rounded-2xl font-bold text-[10px] flex flex-col items-center gap-2 btn-3d" style="box-shadow: 0 5px 0 #92400e;"><i data-lucide="smartphone"></i> MOBILE NOTES</button>
                     <button onclick="window.print()" class="bg-rose-600 p-4 rounded-2xl font-bold text-[10px] flex flex-col items-center gap-2 btn-3d" style="box-shadow: 0 5px 0 #881337;"><i data-lucide="printer"></i> PDF PRINT</button>
                 </div>
             </div>
@@ -227,42 +243,31 @@
     </div>
 
     <script>
-        // === REAL-TIME CLOCK LOGIC ===
+        // === REAL-TIME ENGINE ===
         function updateClock() {
             const now = new Date();
             const days = ['AHAD', 'ISNIN', 'SELASA', 'RABU', 'KHAMIS', 'JUMAAT', 'SABTU'];
-            const dayName = days[now.getDay()];
-            const timeStr = now.toLocaleTimeString('ms-MY', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true }).toUpperCase();
-            const dateStr = now.toLocaleDateString('ms-MY');
-
-            document.getElementById('live-day').innerText = dayName;
-            document.getElementById('live-time').innerText = timeStr;
-            document.getElementById('live-date').innerText = dateStr;
+            document.getElementById('live-day').innerText = days[now.getDay()];
+            document.getElementById('live-time').innerText = now.toLocaleTimeString('ms-MY', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true }).toUpperCase();
+            document.getElementById('live-date').innerText = now.toLocaleDateString('ms-MY');
         }
-        setInterval(updateClock, 1000);
-        updateClock();
+        setInterval(updateClock, 1000); updateClock();
 
         // === HELPERS ===
         function fDate(d) { if(!d) return ""; const [y,m,day]=d.split('-'); return `${day}/${m}/${y}`; }
-        function fTime(t) { 
-            if(!t) return ""; 
-            let [h,m]=t.split(':'); h=parseInt(h); 
-            const ap=h>=12?'PM':'AM'; 
-            h=h%12||12; 
-            return `${h.toString().padStart(2,'0')}:${m} ${ap}`; 
-        }
+        function fTime(t) { if(!t) return ""; let [h,m]=t.split(':'); h=parseInt(h); const ap=h>=12?'PM':'AM'; h=h%12||12; return `${h.toString().padStart(2,'0')}:${m} ${ap}`; }
+        function autoHeight(el) { el.style.height = 'auto'; el.style.height = el.scrollHeight + 'px'; }
 
-        // === FIREBASE ===
+        // === FIREBASE & DATA ===
         const firebaseConfig = { apiKey: "AIzaSyDdCwKNCx0nA1cZirGrw1UYvtumALluVXw", authDomain: "pilot-veterinar.firebaseapp.com", projectId: "pilot-veterinar", storageBucket: "pilot-veterinar.firebasestorage.app", messagingSenderId: "559136368070", appId: "1:559136368070:web:8aaa2dcb804c73f10cbec7" };
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth(); const db = firebase.firestore(); const provider = new firebase.auth.GoogleAuthProvider();
         let currentUser = null; let logsData = [];
 
-        // === ENGINE ===
         function addRow(v = {}) {
             const tr = document.createElement('tr');
             tr.innerHTML = `
-                <td class="p-0"><input type="date" value="${v.tarikhRaw||''}" class="row-input cell-sync text-center"></td>
+                <td class="p-0 text-center"><input type="date" value="${v.tarikhRaw||''}" class="row-input cell-sync text-center"></td>
                 <td class="p-0"><input type="time" value="${v.mulaRaw||''}" class="row-input cell-sync text-center"></td>
                 <td class="p-0"><input type="time" value="${v.hinggaRaw||''}" class="row-input cell-sync text-center"></td>
                 <td class="p-0"><textarea class="row-input cell-sync font-bold uppercase text-center auto-expand">${v.pemandu||''}</textarea></td>
@@ -271,19 +276,18 @@
                 <td class="p-0"><textarea class="row-input cell-sync uppercase text-center auto-expand">${v.pengguna||''}</textarea></td>
                 <td class="p-0 bg-amber-50"><input type="number" value="${v.odo||''}" class="row-input odo-val font-black text-amber-900 text-center"></td>
                 <td class="p-0 bg-blue-50"><input type="number" value="${v.jarak||''}" class="row-input dist-val font-black text-blue-900 text-center" readonly></td>
-                <td class="p-0"><textarea class="row-input cell-sync text-center font-bold auto-expand" placeholder="RM">${v.resit||''}</textarea></td>
+                <td class="p-0"><textarea class="row-input cell-sync text-center font-bold auto-expand">${v.resit||''}</textarea></td>
                 <td class="p-0"><input type="number" value="${v.liter||''}" class="row-input liter-val font-black text-center"></td>
                 <td class="p-0"><textarea class="row-input cell-sync italic text-gray-500 auto-expand">${v.arahan||''}</textarea></td>
-                <td class="no-print text-center p-2"><button onclick="this.closest('tr').remove();calcLogic();sync()" class="text-red-400 hover:text-red-600"><i data-lucide="trash-2" class="w-5 h-5"></i></button></td>
+                <td class="no-print text-center p-2"><button onclick="this.closest('tr').remove();calcLogic();sync()" class="text-red-400 hover:text-red-600 transition-colors"><i data-lucide="trash-2" class="w-5 h-5"></i></button></td>
             `;
             document.getElementById('log-body').appendChild(tr);
             lucide.createIcons();
             
-            tr.querySelectorAll('textarea.auto-expand').forEach(t => {
-                t.oninput = () => { t.style.height = 'auto'; t.style.height = t.scrollHeight + 'px'; sync(); };
-                setTimeout(()=> t.style.height = t.scrollHeight + 'px', 100);
+            tr.querySelectorAll('textarea').forEach(t => { 
+                t.oninput = () => { autoHeight(t); sync(); };
+                setTimeout(()=> autoHeight(t), 100);
             });
-
             tr.querySelectorAll('.row-input, textarea').forEach(i => {
                 i.oninput = () => { if(i.classList.contains('odo-val') || i.classList.contains('liter-val')) calcLogic(); sync(); };
             });
@@ -312,6 +316,7 @@
             if(g) document.getElementById('res-ot').innerText = "RM " + ((g*12)/2504).toFixed(2);
         }
 
+        // === PERSISTENCE & SYNC ===
         let timer;
         async function sync() {
             if(!currentUser) return;
@@ -320,17 +325,10 @@
                 const logs = [];
                 document.querySelectorAll('#log-body tr').forEach(r => {
                     const inputs = r.querySelectorAll('input, textarea');
-                    logs.push({
-                        tarikhRaw:inputs[0].value, tarikh:fDate(inputs[0].value),
-                        mulaRaw:inputs[1].value, mula:fTime(inputs[1].value),
-                        hinggaRaw:inputs[2].value, hingga:fTime(inputs[2].value),
-                        pemandu:inputs[3].value, tujuan:inputs[4].value, pelulus:inputs[5].value,
-                        pengguna:inputs[6].value, odo:inputs[7].value, jarak:inputs[8].value,
-                        resit:inputs[9].value, liter:inputs[10].value, arahan:inputs[11].value
-                    });
+                    logs.push({tarikhRaw:inputs[0].value,tarikh:fDate(inputs[0].value),mulaRaw:inputs[1].value,mula:fTime(inputs[1].value),hinggaRaw:inputs[2].value,hingga:fTime(inputs[2].value),pemandu:inputs[3].value,tujuan:inputs[4].value,pelulus:inputs[5].value,pengguna:inputs[6].value,odo:inputs[7].value,jarak:inputs[8].value,resit:inputs[9].value,liter:inputs[10].value,arahan:inputs[11].value});
                 });
                 logsData = logs;
-                await db.collection("logs_v30").doc(currentUser.uid).set({
+                await db.collection("logs_v31").doc(currentUser.uid).set({
                     meta: { month:document.getElementById('m-month').value, type:document.getElementById('m-type').value, plate:document.getElementById('m-plate').value, unit:document.getElementById('m-unit').value, odo:document.getElementById('m-odo-start').value, gaji:document.getElementById('g-pokok').value, bPrev:document.getElementById('c-prev').value, bTank:document.getElementById('c-tank').value, aN:document.getElementById('auth-name').value, aP:document.getElementById('auth-post').value },
                     logs: logs
                 });
@@ -338,7 +336,7 @@
         }
 
         async function loadData() {
-            const doc = await db.collection("logs_v30").doc(currentUser.uid).get();
+            const doc = await db.collection("logs_v31").doc(currentUser.uid).get();
             if(doc.exists) {
                 const d = doc.data();
                 document.getElementById('m-month').value = d.meta.month; document.getElementById('m-plate').value = d.meta.plate; document.getElementById('m-odo-start').value = d.meta.odo; document.getElementById('g-pokok').value = d.meta.gaji;
@@ -347,6 +345,7 @@
                 document.getElementById('auth-name').value = d.meta.aN; document.getElementById('auth-post').value = d.meta.aP;
                 document.getElementById('log-body').innerHTML = ""; d.logs.forEach(l => addRow(l));
                 logsData = d.logs; calcLogic();
+                document.querySelectorAll('textarea').forEach(t => autoHeight(t));
             } else { addRow(); }
         }
 
@@ -355,17 +354,77 @@
         function updateUI() { if(currentUser) { document.getElementById('login-btn').classList.add('hidden'); document.getElementById('user-profile').classList.remove('hidden'); document.getElementById('u-avatar').src = currentUser.photoURL; document.getElementById('u-name').innerText = currentUser.displayName; } }
         auth.onAuthStateChanged(user => { if(user) { currentUser = user; updateUI(); loadData(); } });
 
-        // === UNIVERSAL EXPORTS HUB ===
-        function exportUniversal(format) {
-            const m = document.getElementById('m-plate').value || 'LOG';
-            const data = [["LOG VETERINAR DIGITAL v3.0"],[`PLATE: ${m}`, `BULAN: ${document.getElementById('m-month').value}`],[],["Tarikh","Mula","Hingga","Pemandu","Tujuan","Pelulus","Pengguna","Odo","Jarak","RM","Liter","Arahan"]].concat(logsData.map(l=>[l.tarikh,l.mula,l.hingga,l.pemandu,l.tujuan,l.pelulus,l.pengguna,l.odo,l.jarak,l.resit,l.liter,l.arahan]));
-            if(format==='excel') { const ws=XLSX.utils.aoa_to_sheet(data); ws['!cols']=[{wpx:80},{wpx:70},{wpx:70},{wpx:120},{wpx:400},{wpx:120},{wpx:120},{wpx:100},{wpx:80},{wpx:120},{wpx:70},{wpx:300}]; const wb=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb,ws,"Log"); XLSX.writeFile(wb, `Laporan_${m}.xlsx`); }
-            else if(format==='word') { let h=`<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word'><head><meta charset='utf-8'></head><body><h1>LOG PERJALANAN - ${m}</h1><table border='1'>`; data.forEach(r=>{h+=`<tr>${r.map(c=>`<td>${c}</td>`).join('')}</tr>`}); saveAs(new Blob(['\ufeff',h+"</table></body></html>"],{type:'application/msword'}),`Log_${m}.doc`); }
-            else if(format==='csv') { let csv=data.map(r=>r.join(',')).join('\n'); saveAs(new Blob([csv],{type:"text/csv"}),`Laporan_DB_${m}.csv`); }
+        // === THE ULTIMATE EXPORT HUB LOGIC ===
+
+        function exportFull(format) {
+            const plate = document.getElementById('m-plate').value || 'LOG';
+            
+            // Construction of Universal Dataset
+            const dataHeader = [
+                ["PILOT INTELLIGENT VETERINAR - LAPORAN LOG KENDERAAN RASMI"],
+                [`NO PLAT: ${plate}`, `BULAN: ${document.getElementById('m-month').value}`, `UNIT: ${document.getElementById('m-unit').value}`],
+                ["JENIS KENDERAAN:", document.getElementById('m-type').value],
+                [],
+                ["TARIKH", "MULA", "HINGGA", "PEMANDU", "TUJUAN / DESTINASI", "PELULUS", "PENGGUNA", "ODO (KM)", "JARAK", "RM", "LITER", "ARAHAN KHAS"]
+            ];
+
+            const tableRows = logsData.map(l => [l.tarikh, l.mula, l.hingga, l.pemandu, l.tujuan, l.pelulus, l.pengguna, l.odo, l.jarak, l.resit, l.liter, l.arahan]);
+            
+            const dataSummary = [
+                [], ["--- PENYATA KADAR KEGUNAAN BAHAN API BULANAN ---"],
+                ["JUMLAH JARAK (b)", "PENGGUNAAN (c)", "PEMBELIAN (d)", "KADAR KM/L (e)"],
+                [document.getElementById('sum-dist').innerText, document.getElementById('sum-liter').innerText, document.getElementById('sum-rm').innerText, document.getElementById('sum-rate').innerText],
+                [], ["DISAHKAN OLEH:", document.getElementById('auth-name').value, "JAWATAN:", document.getElementById('auth-post').value]
+            ];
+
+            const fullDataset = dataHeader.concat(tableRows).concat(dataSummary);
+
+            if(format === 'excel') {
+                const ws = XLSX.utils.aoa_to_sheet(fullDataset);
+                ws['!cols'] = [{wpx:85},{wpx:70},{wpx:70},{wpx:150},{wpx:400},{wpx:120},{wpx:120},{wpx:100},{wpx:80},{wpx:120},{wpx:70},{wpx:250}];
+                const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "Laporan");
+                XLSX.writeFile(wb, `Laporan_Veterinar_${plate}.xlsx`);
+            } 
+            else if (format === 'word') {
+                let html = `<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word'><head><meta charset='utf-8'></head><body>`;
+                html += `<h1 style='color:#1e3a8a'>LAPORAN LOG VETERINAR - ${plate}</h1><table border='1' style='border-collapse:collapse;width:100%'>`;
+                fullDataset.forEach(row => { html += `<tr>${row.map(cell => `<td style='padding:5px'>${cell}</td>`).join('')}</tr>`; });
+                html += `</table></body></html>`;
+                saveAs(new Blob(['\ufeff', html], { type: 'application/msword' }), `Laporan_Word_${plate}.doc`);
+            }
+            else if (format === 'notepad++') {
+                let txt = `PILOT INTELLIGENT VETERINAR LOG [${plate}]\n`;
+                txt += `=================================================\n`;
+                logsData.forEach(l => {
+                    txt += `TRIP: ${l.tarikh} | ${l.mula}-${l.hingga}\n`;
+                    txt += `DRIVER: ${l.pemandu}\n`;
+                    txt += `DEST : ${l.tujuan}\n`;
+                    txt += `DIST : ${l.jarak} KM\n`;
+                    txt += `-------------------------------------------------\n`;
+                });
+                saveAs(new Blob([txt], {type:"text/plain"}), `Log_Text_${plate}.txt`);
+            }
         }
 
-        function exportPPT() { let ppt=new PptxGenJS(); logsData.slice(0,10).forEach(l=>{ let s=ppt.addSlide(); s.addText(`TRIP: ${l.tarikh} (${l.pemandu})`,{x:0.5,y:0.5,fontSize:22,bold:true,color:'1E3A8A'}); s.addText(`Masa: ${l.mula} - ${l.hingga}\nJarak: ${l.jarak}KM\nTujuan: ${l.tujuan}`,{x:0.5,y:1.5,fontSize:18}); }); ppt.writeFile({fileName:`Log_Slides.pptx`}); }
-        async function shareToMobile() { const msg=`LOG VETERINAR: ${document.getElementById('m-plate').value}\nTotal Jarak: ${document.getElementById('sum-dist').innerText}`; if(navigator.share) await navigator.share({title:'Log',text:msg}); else alert("Use Notepad export."); }
+        function exportPPT() {
+            let ppt = new PptxGenJS();
+            let s1 = ppt.addSlide();
+            s1.addText(`LAPORAN KENDERAAN: ${document.getElementById('m-plate').value}`, { x:1, y:1, fontSize:32, color:'1E3A8A', bold:true });
+            s1.addText(`Jarak: ${document.getElementById('sum-dist').innerText}\nKadar: ${document.getElementById('sum-rate').innerText} KM/L`, { x:1, y:2.5, fontSize:20 });
+            
+            logsData.slice(0, 15).forEach(l => {
+                let s = ppt.addSlide();
+                s.addText(`${l.tarikh} - ${l.pemandu}`, { x:0.5, y:0.5, fontSize:22, bold:true, color:'1E3A8A' });
+                s.addText(`TUJUAN: ${l.tujuan}\nJARAK: ${l.jarak} KM\nLITER: ${l.liter} L`, { x:0.5, y:1.5, fontSize:16 });
+            });
+            ppt.writeFile({ fileName: `PPT_Veterinar_${document.getElementById('m-plate').value}.pptx` });
+        }
+
+        async function shareToMobile() {
+            const msg = `LAPORAN LOG VETERINAR\nPlat: ${document.getElementById('m-plate').value}\nJarak: ${document.getElementById('sum-dist').innerText}\nKM/L: ${document.getElementById('sum-rate').innerText}\n\n- Pilot Intelligent System`;
+            if (navigator.share) await navigator.share({ title: 'Log Laporan', text: msg });
+            else alert("Gunakan export Notepad.");
+        }
 
         window.onload = () => { lucide.createIcons(); };
     </script>

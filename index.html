@@ -4,12 +4,11 @@
     <script async src="https://pagead2.googlesyndication.com/pagead/js/ads=google.js?client=ca-pub-5395525176253885" crossorigin="anonymous"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pilot Intelligent v3.2.1</title>
+    <title>Pilot Intelligent v3.2.2 - Log Logistik</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
@@ -20,9 +19,9 @@
 
         .pixar-card { background: rgba(255, 255, 255, 0.98); backdrop-filter: blur(25px); border-radius: 1rem; border: 1px solid rgba(0,0,0,0.1); }
         
-        /* Auto-resize Textarea */
+        /* Input & Textarea Styling */
         .row-input { 
-            font-size: 0.8rem; 
+            font-size: 0.75rem; 
             width: 100%; 
             border: none; 
             background: transparent; 
@@ -30,57 +29,61 @@
             outline: none; 
             resize: none;
             overflow: hidden;
-            min-height: 30px;
+            display: block;
+            line-height: 1.4;
         }
 
-        /* PRINT SETTINGS */
+        /* PRINT SETTINGS - THE BIG FIX */
         @media print {
             @page { 
                 size: A4 landscape; 
-                margin: 8mm; 
+                margin: 10mm 5mm; 
             }
             body { background: white !important; padding: 0 !important; margin: 0 !important; }
             .no-print { display: none !important; }
             
             .print-full { width: 100% !important; max-width: 100% !important; border: none !important; box-shadow: none !important; }
             
-            /* Watermark */
-            body::before {
-                content: ""; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-30deg);
-                font-size: 100px; color: rgba(0,0,0,0.03); content: "KERAJAAN MALAYSIA"; z-index: -1;
+            /* Table Print Layout */
+            table { 
+                width: 100% !important; 
+                table-layout: fixed !important; /* Fixed helps control column widths */
+                border-collapse: collapse !important; 
+            }
+            
+            th, td { 
+                border: 0.5pt solid #000 !important; 
+                padding: 4px !important; 
+                word-wrap: break-word !important;
+                vertical-align: top !important;
             }
 
+            /* Adjust Column Widths for Print */
+            .col-date { width: 75px !important; }
+            .col-time { width: 50px !important; }
+            .col-driver { width: 100px !important; }
+            .col-purpose { width: auto !important; } /* Destinasi akan ambil baki ruang */
+            .col-auth { width: 80px !important; }
+            .col-odo { width: 65px !important; }
+            .col-fuel { width: 55px !important; }
+
+            /* Force all textareas to expand to full height when printing */
+            .row-input { 
+                height: auto !important; 
+                overflow: visible !important;
+                white-space: pre-wrap !important;
+                font-size: 8pt !important;
+            }
+
+            tr { page-break-inside: avoid; }
+            
             .corporate-header-print {
                 display: flex !important;
                 align-items: center;
                 border-bottom: 2pt solid #000;
                 padding-bottom: 10px;
-                margin-bottom: 20px;
+                margin-bottom: 15px;
             }
-
-            /* Table Formatting for Print */
-            table { width: 100% !important; border-collapse: collapse !important; table-layout: auto !important; }
-            th, td { 
-                border: 0.5pt solid #000 !important; 
-                padding: 6px !important; 
-                word-wrap: break-word !important;
-                color: black !important;
-            }
-            th { background-color: #f2f2f2 !important; font-weight: bold; text-transform: uppercase; font-size: 7pt !important; }
-            td { font-size: 8pt !important; }
-            
-            /* Make textareas show all content */
-            .row-input { 
-                overflow: visible !important; 
-                height: auto !important; 
-                display: block !important;
-                font-size: 8pt !important;
-            }
-
-            /* Prevent row breaking between pages */
-            tr { page-break-inside: avoid; }
-            
-            .signature-section { page-break-inside: avoid; margin-top: 30px; }
         }
 
         .corporate-header-print { display: none; }
@@ -92,7 +95,7 @@
         
         <!-- PRINT-ONLY HEADER -->
         <div class="corporate-header-print">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/2/26/Coat_of_arms_of_Malaysia.svg" style="width: 70px; height: 70px; margin-right: 20px;">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/2/26/Coat_of_arms_of_Malaysia.svg" style="width: 60px; height: 60px; margin-right: 20px;">
             <div style="flex-grow: 1;">
                 <h2 style="font-size: 14pt; font-weight: bold; margin: 0;">LOG PERJALANAN KENDERAAN JABATAN</h2>
                 <h3 style="font-size: 10pt; margin: 0;">Sistem Pilot Intelligent Veterinar (Universal Logistics)</h3>
@@ -104,7 +107,7 @@
             <div class="flex items-center gap-6">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/2/26/Coat_of_arms_of_Malaysia.svg" class="w-14 h-14">
                 <div>
-                    <h1 class="text-2xl font-black text-blue-900 leading-none">PILOT INTELLIGENT v3.2.1</h1>
+                    <h1 class="text-2xl font-black text-blue-900 leading-none">PILOT INTELLIGENT v3.2.2</h1>
                     <p class="text-[10px] font-bold text-blue-500 tracking-widest mt-1">LOG LOGISTIK VETERINAR RASMI</p>
                 </div>
             </div>
@@ -137,21 +140,21 @@
                 <table id="main-table" class="w-full border-collapse">
                     <thead class="bg-blue-900 text-white">
                         <tr>
-                            <th rowspan="2" style="width: 85px;">Tarikh</th>
-                            <th colspan="2" style="width: 110px;">Masa</th>
-                            <th rowspan="2" style="width: 140px;">Pemandu</th>
-                            <th rowspan="2" style="width: auto;">Tujuan / Destinasi (Sila nyatakan dengan jelas)</th>
-                            <th rowspan="2" style="width: 90px;">Pelulus</th>
-                            <th rowspan="2" style="width: 90px;">Pengguna</th>
-                            <th rowspan="2" style="width: 85px;">Odo Akhir</th>
-                            <th rowspan="2" style="width: 60px;">Jarak</th>
-                            <th colspan="2" style="width: 130px;">Bahan Api</th>
-                            <th rowspan="2" style="width: 110px;">Catatan</th>
+                            <th rowspan="2" class="col-date">Tarikh</th>
+                            <th colspan="2" class="col-time">Masa</th>
+                            <th rowspan="2" class="col-driver">Pemandu</th>
+                            <th rowspan="2" class="col-purpose">Tujuan / Destinasi & Urusan Rasmi</th>
+                            <th rowspan="2" class="col-auth">Pelulus</th>
+                            <th rowspan="2" class="col-auth">Pengguna</th>
+                            <th rowspan="2" class="col-odo">Odo Akhir</th>
+                            <th rowspan="2" class="col-odo">Jarak</th>
+                            <th colspan="2" class="col-fuel">Bahan Api</th>
+                            <th rowspan="2" class="col-driver">Catatan</th>
                             <th rowspan="2" class="no-print" style="width: 40px;"></th>
                         </tr>
                         <tr class="bg-blue-800 text-[9px]">
-                            <th style="width: 55px;">Mula</th><th style="width: 55px;">Hingga</th>
-                            <th style="width: 70px;">RM</th><th style="width: 60px;">Liter</th>
+                            <th>Mula</th><th>Hingga</th>
+                            <th>RM</th><th>Liter</th>
                         </tr>
                     </thead>
                     <tbody id="log-body" class="bg-white">
@@ -170,33 +173,30 @@
 
         <!-- SUMMARY & SIGNATURE -->
         <div class="signature-section grid grid-cols-1 lg:grid-cols-2 gap-8 print-full">
-            <!-- Penyata Bahan Api -->
             <div class="pixar-card border-t-8 border-green-600 p-5 shadow-lg">
                 <h3 class="text-[10px] font-black mb-4 text-green-800 uppercase tracking-widest">Ringkasan Penggunaan Bahan Api</h3>
                 <div class="grid grid-cols-4 gap-2 text-center">
-                    <div><p class="text-[8px] text-gray-400 font-bold uppercase">Jumlah Jarak</p><p id="sum-dist" class="text-xl font-black">0</p><p class="text-[8px]">KM</p></div>
-                    <div><p class="text-[8px] text-gray-400 font-bold uppercase">Jumlah Liter</p><p id="sum-liter" class="text-xl font-black">0</p><p class="text-[8px]">LITRE</p></div>
-                    <div><p class="text-[8px] text-gray-400 font-bold uppercase">Jumlah Kos</p><p id="sum-rm" class="text-xl font-black">0</p><p class="text-[8px]">RM</p></div>
-                    <div><p class="text-[8px] text-gray-400 font-bold uppercase">Kadar Efisiensi</p><p id="sum-rate" class="text-xl font-black text-green-700">0.00</p><p class="text-[8px]">KM/L</p></div>
+                    <div><p class="text-[8px] text-gray-400 font-bold uppercase">Jarak</p><p id="sum-dist" class="text-xl font-black">0</p><p class="text-[8px]">KM</p></div>
+                    <div><p class="text-[8px] text-gray-400 font-bold uppercase">Liter</p><p id="sum-liter" class="text-xl font-black">0</p><p class="text-[8px]">L</p></div>
+                    <div><p class="text-[8px] text-gray-400 font-bold uppercase">Kos</p><p id="sum-rm" class="text-xl font-black">0</p><p class="text-[8px]">RM</p></div>
+                    <div><p class="text-[8px] text-gray-400 font-bold uppercase">KM/L</p><p id="sum-rate" class="text-xl font-black text-green-700">0.00</p></div>
                 </div>
             </div>
 
-            <!-- Signature Area -->
             <div class="pixar-card border-t-8 border-gray-400 p-5 flex flex-col justify-between shadow-lg">
                 <div class="mb-4">
-                    <p class="text-[9px] font-bold text-gray-400 uppercase mb-8">Pengesahan Pegawai Kenderaan / Ketua Unit:</p>
-                    <div class="border-b-2 border-dotted border-gray-800 w-full mb-2">
-                        <textarea id="auth-name" placeholder="NAMA & JAWATAN" class="w-full text-xs font-bold uppercase resize-none outline-none h-12 bg-transparent"></textarea>
+                    <p class="text-[9px] font-bold text-gray-400 uppercase mb-6">Pengesahan Pegawai Kenderaan / Ketua Unit:</p>
+                    <div class="border-b border-black w-full mb-1">
+                        <textarea id="auth-name" placeholder="NAMA & JAWATAN" class="w-full text-xs font-bold uppercase resize-none outline-none h-12 bg-transparent overflow-hidden"></textarea>
                     </div>
-                    <p class="text-[9px] uppercase font-bold text-gray-400">Tarikh:</p>
+                    <p class="text-[9px] uppercase font-bold text-gray-500">Tarikh:</p>
                 </div>
             </div>
         </div>
 
-        <!-- FLOATING ACTION BUTTONS (NO PRINT) -->
         <div class="fixed bottom-6 right-6 no-print flex flex-col gap-3">
             <button onclick="window.print()" class="bg-rose-600 text-white p-4 rounded-full shadow-2xl hover:scale-110 transition-transform flex items-center gap-2 font-bold">
-                <i data-lucide="printer"></i> CETAK LAPORAN (PDF)
+                <i data-lucide="printer"></i> CETAK LAPORAN
             </button>
         </div>
 
@@ -217,26 +217,27 @@
         function addRow(v = {}) {
             const tr = document.createElement('tr');
             tr.innerHTML = `
-                <td class="p-1"><input type="date" value="${v.tarikhRaw||''}" class="row-input"></td>
-                <td class="p-1"><input type="time" value="${v.mulaRaw||''}" class="row-input"></td>
-                <td class="p-1"><input type="time" value="${v.hinggaRaw||''}" class="row-input"></td>
-                <td class="p-1"><textarea class="row-input uppercase font-semibold" oninput="adjustHeight(this)">${v.pemandu||''}</textarea></td>
-                <td class="p-1"><textarea class="row-input uppercase text-blue-800 font-medium" oninput="adjustHeight(this)" placeholder="Nyatakan Destinasi & Urusan...">${v.tujuan||''}</textarea></td>
-                <td class="p-1"><textarea class="row-input uppercase text-center" oninput="adjustHeight(this)">${v.pelulus||''}</textarea></td>
-                <td class="p-1"><textarea class="row-input uppercase text-center" oninput="adjustHeight(this)">${v.pengguna||''}</textarea></td>
-                <td class="p-1"><input type="number" value="${v.odo||''}" class="row-input odo-val font-bold text-center"></td>
-                <td class="p-1"><input type="number" value="${v.jarak||''}" class="row-input dist-val text-center font-bold bg-gray-50" readonly></td>
-                <td class="p-1"><input type="number" step="0.01" value="${v.resit||''}" class="row-input rm-val text-center" placeholder="0.00"></td>
-                <td class="p-1"><input type="number" step="0.01" value="${v.liter||''}" class="row-input liter-val text-center" placeholder="0.00"></td>
-                <td class="p-1"><textarea class="row-input italic text-gray-600" oninput="adjustHeight(this)">${v.arahan||''}</textarea></td>
+                <td class="p-0 col-date"><input type="date" value="${v.tarikhRaw||''}" class="row-input"></td>
+                <td class="p-0 col-time"><input type="time" value="${v.mulaRaw||''}" class="row-input"></td>
+                <td class="p-0 col-time"><input type="time" value="${v.hinggaRaw||''}" class="row-input"></td>
+                <td class="p-0 col-driver"><textarea class="row-input uppercase font-semibold" oninput="adjustHeight(this)">${v.pemandu||''}</textarea></td>
+                <td class="p-0 col-purpose"><textarea class="row-input uppercase text-blue-900 font-medium" oninput="adjustHeight(this)" placeholder="...">${v.tujuan||''}</textarea></td>
+                <td class="p-0 col-auth"><textarea class="row-input uppercase text-center" oninput="adjustHeight(this)">${v.pelulus||''}</textarea></td>
+                <td class="p-0 col-auth"><textarea class="row-input uppercase text-center" oninput="adjustHeight(this)">${v.pengguna||''}</textarea></td>
+                <td class="p-0 col-odo"><input type="number" value="${v.odo||''}" class="row-input odo-val font-bold text-center"></td>
+                <td class="p-0 col-odo"><input type="number" value="${v.jarak||''}" class="row-input dist-val text-center font-bold bg-gray-50" readonly></td>
+                <td class="p-0 col-fuel"><input type="number" step="0.01" value="${v.resit||''}" class="row-input rm-val text-center"></td>
+                <td class="p-0 col-fuel"><input type="number" step="0.01" value="${v.liter||''}" class="row-input liter-val text-center"></td>
+                <td class="p-0 col-driver"><textarea class="row-input italic text-gray-600" oninput="adjustHeight(this)">${v.arahan||''}</textarea></td>
                 <td class="no-print text-center"><button onclick="this.closest('tr').remove();calcLogic();sync()" class="text-red-400 hover:text-red-700 font-bold">×</button></td>
             `;
             document.getElementById('log-body').appendChild(tr);
             
-            // Initial height adjustment for loaded data
-            tr.querySelectorAll('textarea').forEach(adjustHeight);
-            
-            // Listeners for sync and calculations
+            // Re-adjust all heights after adding content
+            setTimeout(() => {
+                tr.querySelectorAll('textarea').forEach(tx => adjustHeight(tx));
+            }, 10);
+
             tr.querySelectorAll('input, textarea').forEach(i => {
                 i.oninput = (e) => { 
                     if(e.target.tagName === 'TEXTAREA') adjustHeight(e.target);
@@ -310,30 +311,11 @@
             } else { addRow(); }
         }
 
-        async function loginGoogle() { 
-            try {
-                const res = await auth.signInWithPopup(provider); 
-                currentUser = res.user; 
-                updateUI(); 
-                loadData(); 
-            } catch (err) { console.error("Login Error", err); }
-        }
-
+        async function loginGoogle() { const res = await auth.signInWithPopup(provider); currentUser = res.user; updateUI(); loadData(); }
         function logout() { auth.signOut().then(() => location.reload()); }
-
-        function updateUI() { 
-            if(currentUser) { 
-                document.getElementById('login-btn').classList.add('hidden'); 
-                document.getElementById('user-profile').classList.remove('hidden'); 
-                document.getElementById('u-avatar').src = currentUser.photoURL; 
-            } 
-        }
-
+        function updateUI() { if(currentUser) { document.getElementById('login-btn').classList.add('hidden'); document.getElementById('user-profile').classList.remove('hidden'); document.getElementById('u-avatar').src = currentUser.photoURL; } }
         auth.onAuthStateChanged(user => { if(user) { currentUser = user; updateUI(); loadData(); } });
-
-        window.onload = () => { 
-            lucide.createIcons(); 
-        };
+        window.onload = () => { lucide.createIcons(); };
     </script>
 </body>
 </html>

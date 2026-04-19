@@ -3,14 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pilot Intelligent Veterinar v1.3.0</title>
+    <title>Pilot Intelligent Veterinar v1.5.0</title>
     
-    <!-- Libraries -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
     
-    <!-- Firebase SDKs (Compat Version) -->
+    <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
@@ -20,159 +19,187 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
 
     <style>
-        :root { --glass: rgba(255, 255, 255, 0.85); }
         body {
             font-family: 'Poppins', sans-serif;
-            background: #f0f4f8 url('https://upload.wikimedia.org/wikipedia/commons/2/26/Coat_of_arms_of_Malaysia.svg') no-repeat center fixed;
-            background-size: 40%;
+            background: #f1f5f9 url('https://upload.wikimedia.org/wikipedia/commons/2/26/Coat_of_arms_of_Malaysia.svg') no-repeat center fixed;
+            background-size: 45%;
             min-height: 100vh;
         }
         .glass-card {
-            background: var(--glass);
-            backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.5);
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.7);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
             border-radius: 1.5rem;
         }
         .header-font { font-family: 'Orbitron', sans-serif; }
         .btn-3d {
-            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: 0 4px 0 #0369a1;
+            transition: all 0.2s;
+            box-shadow: 0 5px 0 #0369a1;
         }
         .btn-3d:active {
             transform: translateY(3px);
-            box-shadow: none;
+            box-shadow: 0 2px 0 #0369a1;
         }
-        .status-sync { animation: pulse 2s infinite; }
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        th { border: 1px solid #e2e8f0; font-size: 0.7rem; text-transform: uppercase; }
+        td { border: 1px solid #f1f5f9; }
+        .row-input { font-size: 0.75rem; width: 100%; background: transparent; padding: 6px; outline: none; }
+        .row-input:focus { background: #f0f9ff; border-radius: 4px; }
+        .odo-highlight { background: #fffbeb; border: 1px solid #fde68a !important; }
     </style>
 </head>
-<body class="p-4 lg:p-8">
+<body class="p-2 lg:p-6">
 
-    <div class="max-w-7xl mx-auto">
+    <div class="max-w-[1600px] mx-auto">
         
-        <!-- HEADER -->
-        <header class="glass-card p-6 mb-8 flex flex-col md:flex-row items-center justify-between gap-6">
-            <div class="flex items-center gap-4">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/2/26/Coat_of_arms_of_Malaysia.svg" class="w-16 h-16 drop-shadow-md">
-                <div class="w-14 h-14 rounded-full bg-blue-600 flex items-center justify-center border-4 border-white shadow-lg">
-                    <i data-lucide="shield-check" class="text-white w-7 h-7"></i>
+        <!-- HEADER KORPORAT -->
+        <header class="glass-card p-6 mb-6 flex flex-col lg:flex-row items-center justify-between gap-6 border-b-4 border-blue-600">
+            <div class="flex items-center gap-6">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/2/26/Coat_of_arms_of_Malaysia.svg" class="w-20 h-20 drop-shadow-lg">
+                <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-600 to-blue-800 flex items-center justify-center shadow-xl transform rotate-3">
+                    <i data-lucide="truck" class="text-white w-10 h-10"></i>
                 </div>
             </div>
 
             <div class="text-center">
-                <h1 class="header-font text-2xl md:text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-900 to-blue-500">
+                <h1 class="header-font text-2xl lg:text-4xl font-black text-blue-900 tracking-tighter uppercase">
                     PILOT INTELLIGENT VETERINAR
                 </h1>
-                <p class="text-[10px] tracking-[4px] font-bold text-blue-400">SISTEM PENGURUSAN LOG KORPORAT</p>
-                <span class="text-[10px] bg-blue-100 text-blue-700 px-3 py-1 rounded-full mt-2 inline-block font-mono">v1.3.0 - STABLE VERSION</span>
+                <p class="text-[10px] font-bold text-blue-500 uppercase tracking-[0.4em] mt-1">LOG KENDERAAN RASMI DIGITAL</p>
+                <div class="mt-2 inline-flex items-center gap-2 bg-blue-100 px-3 py-1 rounded-full">
+                    <span class="w-2 h-2 bg-green-500 rounded-full animate-ping"></span>
+                    <span class="text-[10px] font-mono font-bold text-blue-800 uppercase">V1.5.0 - AUTO-ODO CALC</span>
+                </div>
             </div>
 
-            <div id="login-container">
-                <button id="btn-login" onclick="loginGoogle()" class="flex items-center gap-3 bg-white border border-gray-200 px-6 py-2.5 rounded-full shadow-sm hover:bg-gray-50 transition-all font-semibold btn-3d" style="box-shadow: 0 4px 0 #e2e8f0;">
+            <div id="auth-area">
+                <button onclick="loginGoogle()" class="flex items-center gap-3 bg-white border border-gray-300 px-6 py-3 rounded-xl shadow-sm font-bold text-sm btn-3d" style="box-shadow: 0 4px 0 #cbd5e1;">
                     <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" class="w-5 h-5">
-                    Log Masuk Google
+                    Login Staf Google
                 </button>
             </div>
-
-            <div id="user-display" class="hidden flex items-center gap-4">
+            <div id="user-area" class="hidden flex items-center gap-4 bg-white/50 p-2 rounded-2xl">
                 <div class="text-right">
-                    <p id="user-name" class="font-bold text-sm text-gray-800"></p>
-                    <button onclick="logout()" class="text-xs text-red-500 font-bold hover:underline">LOG KELUAR</button>
+                    <p id="u-name" class="font-bold text-sm text-blue-900"></p>
+                    <button onclick="logout()" class="text-[10px] text-red-500 font-bold hover:underline">LOG KELUAR</button>
                 </div>
-                <img id="user-photo" src="" class="w-12 h-12 rounded-full border-2 border-blue-500 shadow-xl">
+                <img id="u-photo" src="" class="w-12 h-12 rounded-full border-4 border-white shadow-lg">
             </div>
         </header>
 
-        <!-- INFO SECTION -->
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6 glass-card p-6">
-            <div class="space-y-1">
-                <label class="text-[10px] font-bold text-gray-400 uppercase">Bulan/Tahun</label>
-                <input type="month" id="meta-month" class="w-full bg-white border border-gray-100 rounded-lg p-2 focus:ring-2 ring-blue-400 outline-none" onchange="syncToFirebase()">
+        <!-- META DATA + ODO AWAL -->
+        <div class="grid grid-cols-2 lg:grid-cols-5 gap-4 mb-6 glass-card p-6 border-t-4 border-amber-400">
+            <div>
+                <label class="text-[10px] font-black text-gray-400 uppercase mb-1 block">Bulan/Tahun</label>
+                <input type="month" id="m-month" class="w-full p-2 rounded-lg border border-gray-200 outline-none focus:ring-2 ring-blue-400" onchange="sync()">
             </div>
-            <div class="space-y-1">
-                <label class="text-[10px] font-bold text-gray-400 uppercase">Kenderaan</label>
-                <input type="text" id="meta-type" placeholder="Model" class="w-full bg-white border border-gray-100 rounded-lg p-2 focus:ring-2 ring-blue-400 outline-none" onchange="syncToFirebase()">
+            <div>
+                <label class="text-[10px] font-black text-gray-400 uppercase mb-1 block">No. Pendaftaran</label>
+                <input type="text" id="m-plate" placeholder="VAB 1234" class="w-full p-2 rounded-lg border border-gray-200 outline-none focus:ring-2 ring-blue-400" onchange="sync()">
             </div>
-            <div class="space-y-1">
-                <label class="text-[10px] font-bold text-gray-400 uppercase">No. Pendaftaran</label>
-                <input type="text" id="meta-plate" placeholder="No Plat" class="w-full bg-white border border-gray-100 rounded-lg p-2 focus:ring-2 ring-blue-400 outline-none" onchange="syncToFirebase()">
+            <div>
+                <label class="text-[10px] font-black text-gray-400 uppercase mb-1 block">Bahagian/Unit</label>
+                <input type="text" id="m-unit" placeholder="Unit" class="w-full p-2 rounded-lg border border-gray-200 outline-none focus:ring-2 ring-blue-400" onchange="sync()">
             </div>
-            <div class="space-y-1">
-                <label class="text-[10px] font-bold text-gray-400 uppercase">Bahagian/Unit</label>
-                <input type="text" id="meta-unit" placeholder="Unit" class="w-full bg-white border border-gray-100 rounded-lg p-2 focus:ring-2 ring-blue-400 outline-none" onchange="syncToFirebase()">
+            <div class="col-span-1 bg-amber-50 p-2 rounded-xl border border-amber-200">
+                <label class="text-[10px] font-black text-amber-600 uppercase mb-1 block flex items-center gap-1">
+                    <i data-lucide="gauge" class="w-3 h-3"></i> Odometer Awal (KM)
+                </label>
+                <input type="number" id="m-odo-start" placeholder="Contoh: 42000" class="w-full p-2 rounded-lg border-2 border-amber-300 font-bold outline-none text-amber-900" oninput="calculateAutoDistances(); sync()">
             </div>
-        </div>
-
-        <!-- TABLE -->
-        <div class="glass-card overflow-hidden mb-6">
-            <div class="overflow-x-auto">
-                <table class="w-full text-sm">
-                    <thead class="bg-blue-900 text-white">
-                        <tr>
-                            <th class="p-4 text-left">Tarikh</th>
-                            <th class="p-4 text-left">Masa</th>
-                            <th class="p-4 text-left">Pemandu</th>
-                            <th class="p-4 text-left">Tujuan</th>
-                            <th class="p-4 text-left">Odo</th>
-                            <th class="p-4 text-left">Jarak</th>
-                            <th class="p-4 text-left">RM</th>
-                            <th class="p-4 text-left">Liter</th>
-                            <th class="p-4 text-center">X</th>
-                        </tr>
-                    </thead>
-                    <tbody id="main-table-body"></tbody>
-                </table>
-            </div>
-            <div class="p-4 bg-white/50 border-t border-gray-100 flex justify-between items-center">
-                <button onclick="addRow()" class="bg-blue-600 text-white px-5 py-2 rounded-xl font-bold btn-3d flex items-center gap-2">
-                    <i data-lucide="plus" class="w-4 h-4"></i> Tambah Data
-                </button>
-                <div id="sync-status" class="text-[10px] font-bold text-gray-400 uppercase flex items-center gap-2">
-                    <i data-lucide="database" class="w-4 h-4"></i> Standby
+            <div class="flex items-end">
+                <div id="sync-icon" class="mb-3 text-[10px] font-black text-gray-400 uppercase flex items-center gap-2">
+                    <i data-lucide="cloud-off" class="w-4 h-4"></i> Standby
                 </div>
             </div>
         </div>
 
-        <!-- FOOTER TOOLS -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- MAIN TABLE -->
+        <div class="glass-card overflow-hidden mb-6 shadow-2xl">
+            <div class="overflow-x-auto">
+                <table class="w-full border-collapse">
+                    <thead class="bg-blue-900 text-white">
+                        <tr>
+                            <th rowspan="2" class="p-2 w-28">Tarikh</th>
+                            <th colspan="2" class="p-2">Masa</th>
+                            <th rowspan="2" class="p-2 w-40">Nama Pemandu</th>
+                            <th rowspan="2" class="p-2 w-64">*Tujuan / *Destinasi</th>
+                            <th rowspan="2" class="p-2 w-32">Pelulus</th>
+                            <th rowspan="2" class="p-2 w-32">Pengguna</th>
+                            <th rowspan="2" class="p-2 w-32 bg-amber-700">Odometer (KM)</th>
+                            <th rowspan="2" class="p-2 w-24 bg-blue-700">Jarak (KM)</th>
+                            <th colspan="2" class="p-2">Bahan Api</th>
+                            <th rowspan="2" class="p-2 w-48">Arahan Khas</th>
+                            <th rowspan="2" class="p-2 w-10">X</th>
+                        </tr>
+                        <tr class="bg-blue-800 text-[9px]">
+                            <th class="p-1">Mula</th>
+                            <th class="p-1">Hingga</th>
+                            <th class="p-1">No Resit & RM</th>
+                            <th class="p-1">Liter</th>
+                        </tr>
+                    </thead>
+                    <tbody id="log-body" class="bg-white/50"></tbody>
+                </table>
+            </div>
+            <div class="p-4 bg-white/80 border-t flex justify-between">
+                <button onclick="addRow()" class="bg-blue-600 text-white px-8 py-3 rounded-2xl font-bold btn-3d flex items-center gap-2">
+                    <i data-lucide="plus-circle" class="w-5 h-5"></i> Tambah Perjalanan
+                </button>
+            </div>
+        </div>
+
+        <!-- STATS & CALC -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+            <!-- Bahan Api -->
             <div class="glass-card p-6 border-l-8 border-blue-600">
-                <h3 class="font-bold text-blue-800 text-sm mb-4 flex items-center gap-2">
-                    <i data-lucide="calculator" class="w-5 h-5"></i> KADAR BAHAN API
+                <h3 class="font-black text-blue-900 text-sm mb-4 uppercase tracking-widest flex items-center gap-2">
+                    <i data-lucide="fuel" class="w-5 h-5"></i> Ringkasan Bahan Api
                 </h3>
-                <div class="space-y-2">
-                    <div class="flex justify-between"><span class="text-xs text-gray-500">Jumlah Jarak:</span> <span id="stat-dist" class="font-bold">0 KM</span></div>
-                    <div class="flex justify-between"><span class="text-xs text-gray-500">Jumlah Liter:</span> <span id="stat-liter" class="font-bold">0 L</span></div>
-                    <div class="pt-2 border-t flex justify-between items-center">
-                        <span class="text-xs font-bold text-blue-600">KM/LITER:</span>
-                        <span id="stat-rate" class="text-2xl font-black text-blue-700 italic">0.00</span>
+                <div class="space-y-3">
+                    <div class="flex justify-between">
+                        <span class="text-xs font-bold text-gray-500 uppercase">Total Jarak (KM):</span>
+                        <span id="res-dist" class="font-black text-lg">0</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-xs font-bold text-gray-500 uppercase">Total Liter (L):</span>
+                        <span id="res-liter" class="font-black text-lg">0</span>
+                    </div>
+                    <div class="pt-2 border-t flex justify-between items-center bg-blue-50 p-2 rounded-lg">
+                        <span class="text-[10px] font-black text-blue-600">KM / LITER:</span>
+                        <span id="res-rate" class="text-3xl font-black text-blue-800">0.00</span>
                     </div>
                 </div>
             </div>
 
+            <!-- Gaji/OT -->
             <div class="glass-card p-6 border-l-8 border-purple-600">
-                <h3 class="font-bold text-purple-800 text-sm mb-4 flex items-center gap-2">
-                    <i data-lucide="banknote" class="w-5 h-5"></i> GAJI SEJAM
+                <h3 class="font-black text-purple-900 text-sm mb-4 uppercase tracking-widest flex items-center gap-2">
+                    <i data-lucide="wallet" class="w-5 h-5"></i> Pengiraan Gaji Sejam
                 </h3>
-                <input type="number" id="gaji-pokok" placeholder="Gaji Pokok (RM)" class="w-full p-2 mb-2 rounded border border-purple-100 outline-none text-sm" oninput="calcSalary(); syncToFirebase()">
-                <div class="bg-purple-900 text-white p-3 rounded-lg text-center">
-                    <p id="stat-gaji" class="text-xl font-bold">RM 0.00</p>
+                <input type="number" id="g-pokok" placeholder="Masukkan Gaji Pokok" class="w-full p-3 rounded-xl border-2 border-purple-100 mb-3 font-bold text-sm" oninput="calcOT(); sync()">
+                <div class="bg-purple-900 text-white p-4 rounded-2xl flex justify-between items-center">
+                    <span class="text-[10px] font-bold opacity-60">KADAR SEJAM:</span>
+                    <span id="res-ot" class="text-2xl font-black">RM 0.00</span>
                 </div>
             </div>
 
-            <div class="glass-card p-6 bg-gray-900 text-white">
-                <h3 class="font-bold text-sm mb-4 flex items-center gap-2"><i data-lucide="share" class="w-5 h-5"></i> EXPORT</h3>
-                <div class="grid grid-cols-2 gap-2">
-                    <button onclick="exportToExcel()" class="bg-green-600 py-2 rounded text-[10px] font-bold hover:bg-green-500">EXCEL</button>
-                    <button onclick="exportData('word')" class="bg-blue-600 py-2 rounded text-[10px] font-bold hover:bg-blue-500">WORD</button>
-                    <button onclick="window.print()" class="bg-red-600 py-2 rounded text-[10px] font-bold col-span-2 hover:bg-red-500">PRINT / PDF</button>
+            <!-- Export -->
+            <div class="glass-card p-6 bg-gray-900 text-white shadow-2xl">
+                <h3 class="font-black text-sm mb-4 uppercase tracking-widest text-blue-400">Export & Print</h3>
+                <div class="grid grid-cols-2 gap-3">
+                    <button onclick="exportXLS()" class="bg-green-600 p-3 rounded-xl font-bold text-xs btn-3d" style="box-shadow: 0 4px 0 #166534;">EXCEL</button>
+                    <button onclick="exportDoc('word')" class="bg-blue-600 p-3 rounded-xl font-bold text-xs btn-3d" style="box-shadow: 0 4px 0 #1e40af;">WORD</button>
+                    <button onclick="window.print()" class="col-span-2 bg-red-600 p-3 rounded-xl font-bold text-xs btn-3d flex items-center justify-center gap-2" style="box-shadow: 0 4px 0 #991b1b;">
+                        <i data-lucide="printer" class="w-4 h-4"></i> CETAK LOGBOOK RASMI
+                    </button>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        // === FIREBASE CONFIG ===
+        // === 1. FIREBASE CONFIG ===
         const firebaseConfig = {
             apiKey: "AIzaSyDdCwKNCx0nA1cZirGrw1UYvtumALluVXw",
             authDomain: "pilot-veterinar.firebaseapp.com",
@@ -189,159 +216,169 @@
 
         let currentUser = null;
 
-        // === AUTH FUNCTIONS ===
-        async function loginGoogle() {
-            try {
-                // Gunakan popup untuk login
-                const result = await auth.signInWithPopup(provider);
-                currentUser = result.user;
-                console.log("Login berjaya:", currentUser.displayName);
-                handleAuthChange(currentUser);
-            } catch (error) {
-                console.error("Login Error:", error);
-                alert("Gagal Log Masuk: " + error.message + "\n\nPastikan Google Auth diaktifkan di Firebase Console.");
-            }
-        }
+        // === 2. CORE LOGIC (AUTO-ODO) ===
+        function calculateAutoDistances() {
+            const startOdo = Number(document.getElementById('m-odo-start').value) || 0;
+            const rows = document.querySelectorAll('#log-body tr');
+            
+            let prevOdo = startOdo;
 
-        function logout() {
-            auth.signOut().then(() => {
-                window.location.reload();
+            rows.forEach((row, index) => {
+                const odoInput = row.querySelector('.odo-val');
+                const distInput = row.querySelector('.dist-val');
+                const currentOdo = Number(odoInput.value);
+
+                if (currentOdo > 0) {
+                    const diff = currentOdo - prevOdo;
+                    distInput.value = diff > 0 ? diff : 0;
+                    prevOdo = currentOdo; // Set Odo trip ini sebagai 'sebelumnya' untuk baris bawah
+                } else {
+                    distInput.value = 0;
+                }
             });
+
+            calcStats();
         }
 
-        function handleAuthChange(user) {
-            if (user) {
-                currentUser = user;
-                document.getElementById('login-container').classList.add('hidden');
-                document.getElementById('user-display').classList.remove('hidden');
-                document.getElementById('user-name').innerText = user.displayName;
-                document.getElementById('user-photo').src = user.photoURL;
-                loadData();
-            }
-        }
-
-        // Pantau status login secara automatik
-        auth.onAuthStateChanged(handleAuthChange);
-
-        // === CORE LOGIC ===
-        function addRow(data = {}) {
-            const tbody = document.getElementById('main-table-body');
+        function addRow(val = {}) {
+            const body = document.getElementById('log-body');
             const tr = document.createElement('tr');
-            tr.className = "hover:bg-blue-50/50 border-b border-gray-100 transition-colors bg-white/40";
+            tr.className = "hover:bg-blue-50/50 transition-colors";
             
             tr.innerHTML = `
-                <td class="p-2"><input type="date" value="${data.tarikh || ''}" class="w-full bg-transparent outline-none row-input"></td>
-                <td class="p-2 flex gap-1">
-                    <input type="time" value="${data.mula || ''}" class="w-1/2 bg-transparent text-[10px] outline-none row-input">
-                    <input type="time" value="${data.hingga || ''}" class="w-1/2 bg-transparent text-[10px] outline-none row-input">
-                </td>
-                <td class="p-2"><input type="text" value="${data.pemandu || ''}" class="w-full bg-transparent outline-none row-input" placeholder="Nama"></td>
-                <td class="p-2"><input type="text" value="${data.tujuan || ''}" class="w-full bg-transparent outline-none row-input text-xs" placeholder="Dari-Ke"></td>
-                <td class="p-2"><input type="number" value="${data.odo || ''}" class="w-16 bg-transparent outline-none row-input odo-val text-xs"></td>
-                <td class="p-2"><input type="number" value="${data.jarak || ''}" class="w-12 bg-transparent outline-none row-input dist-val font-bold"></td>
-                <td class="p-2"><input type="number" value="${data.rm || ''}" class="w-12 bg-transparent outline-none row-input rm-val"></td>
-                <td class="p-2"><input type="number" value="${data.liter || ''}" class="w-12 bg-transparent outline-none row-input liter-val"></td>
-                <td class="p-2 text-center">
-                    <button onclick="this.parentElement.parentElement.remove(); syncToFirebase()" class="text-red-400 hover:text-red-600"><i data-lucide="x-circle" class="w-4 h-4"></i></button>
+                <td class="p-1"><input type="date" value="${val.tarikh || ''}" class="row-input sync-trigger"></td>
+                <td class="p-1"><input type="time" value="${val.mula || ''}" class="row-input sync-trigger text-center"></td>
+                <td class="p-1"><input type="time" value="${val.hingga || ''}" class="row-input sync-trigger text-center"></td>
+                <td class="p-1"><input type="text" value="${val.pemandu || ''}" placeholder="Nama" class="row-input sync-trigger font-bold uppercase"></td>
+                <td class="p-1"><input type="text" value="${val.tujuan || ''}" placeholder="Tujuan" class="row-input sync-trigger"></td>
+                <td class="p-1"><input type="text" value="${val.pelulus || ''}" placeholder="Nama" class="row-input sync-trigger"></td>
+                <td class="p-1"><input type="text" value="${val.pengguna || ''}" placeholder="Nama" class="row-input sync-trigger"></td>
+                <td class="p-1"><input type="number" value="${val.odo || ''}" placeholder="0" class="row-input odo-val font-black odo-highlight text-center"></td>
+                <td class="p-1"><input type="number" value="${val.jarak || ''}" placeholder="0" class="row-input dist-val font-black text-center bg-blue-50" readonly></td>
+                <td class="p-1"><input type="text" value="${val.resit || ''}" placeholder="No & RM" class="row-input sync-trigger text-center"></td>
+                <td class="p-1"><input type="number" value="${val.liter || ''}" placeholder="0" class="row-input sync-trigger text-center liter-val font-bold"></td>
+                <td class="p-1"><input type="text" value="${val.arahan || ''}" placeholder="..." class="row-input sync-trigger italic"></td>
+                <td class="p-1 text-center">
+                    <button onclick="this.parentElement.parentElement.remove(); calculateAutoDistances(); sync()" class="text-red-400 hover:text-red-600"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
                 </td>
             `;
-            tbody.appendChild(tr);
+            body.appendChild(tr);
             lucide.createIcons();
-            attachListeners();
-        }
 
-        function attachListeners() {
-            document.querySelectorAll('.row-input').forEach(input => {
-                input.oninput = () => { calculateAll(); syncToFirebase(); };
+            // Re-attach listeners specifically for Odometer field
+            tr.querySelector('.odo-val').addEventListener('input', () => {
+                calculateAutoDistances();
+                sync();
+            });
+
+            // General listeners for other inputs
+            tr.querySelectorAll('.sync-trigger').forEach(el => {
+                el.oninput = () => { calcStats(); sync(); };
             });
         }
 
-        function calculateAll() {
-            let d = 0, l = 0;
-            document.querySelectorAll('.dist-val').forEach(i => d += Number(i.value));
-            document.querySelectorAll('.liter-val').forEach(i => l += Number(i.value));
-            document.getElementById('stat-dist').innerText = d + " KM";
-            document.getElementById('stat-liter').innerText = l + " L";
-            document.getElementById('stat-rate').innerText = l > 0 ? (d/l).toFixed(2) : "0.00";
-            calcSalary();
+        function calcStats() {
+            let totalD = 0, totalL = 0;
+            document.querySelectorAll('.dist-val').forEach(i => totalD += Number(i.value));
+            document.querySelectorAll('.liter-val').forEach(i => totalL += Number(i.value));
+            document.getElementById('res-dist').innerText = totalD;
+            document.getElementById('res-liter').innerText = totalL;
+            document.getElementById('res-rate').innerText = totalL > 0 ? (totalD / totalL).toFixed(2) : "0.00";
+            calcOT();
         }
 
-        function calcSalary() {
-            const gaji = document.getElementById('gaji-pokok').value;
+        function calcOT() {
+            const gaji = document.getElementById('g-pokok').value;
             if (gaji) {
-                document.getElementById('stat-gaji').innerText = "RM " + ((gaji * 12) / 2504).toFixed(2);
+                document.getElementById('res-ot').innerText = "RM " + ((gaji * 12) / 2504).toFixed(2);
             }
         }
 
-        // === SYNC DATA ===
+        // === 3. FIREBASE SYNC ===
         let timer;
-        async function syncToFirebase() {
+        async function sync() {
             if (!currentUser) return;
-            const status = document.getElementById('sync-status');
-            status.innerHTML = `<i data-lucide="refresh-cw" class="w-4 h-4 animate-spin text-blue-500"></i> Menyimpan...`;
-            status.classList.add('status-sync');
+            const icon = document.getElementById('sync-icon');
+            icon.innerHTML = `<i data-lucide="refresh-cw" class="w-4 h-4 animate-spin text-blue-500"></i> Syncing...`;
             lucide.createIcons();
 
             clearTimeout(timer);
             timer = setTimeout(async () => {
                 const logs = [];
-                document.querySelectorAll('#main-table-body tr').forEach(row => {
+                document.querySelectorAll('#log-body tr').forEach(row => {
                     const i = row.querySelectorAll('input');
                     logs.push({
-                        tarikh: i[0].value, mula: i[1].value, hingga: i[2].value,
-                        pemandu: i[3].value, tujuan: i[4].value, odo: i[5].value,
-                        jarak: i[6].value, rm: i[7].value, liter: i[8].value
+                        tarikh: i[0].value, mula: i[1].value, hingga: i[2].value, pemandu: i[3].value,
+                        tujuan: i[4].value, pelulus: i[5].value, pengguna: i[6].value, odo: i[7].value,
+                        jarak: i[8].value, resit: i[9].value, liter: i[10].value, arahan: i[11].value
                     });
                 });
 
                 const data = {
                     meta: {
-                        month: document.getElementById('meta-month').value,
-                        type: document.getElementById('meta-type').value,
-                        plate: document.getElementById('meta-plate').value,
-                        unit: document.getElementById('meta-unit').value,
-                        gaji: document.getElementById('gaji-pokok').value
+                        month: document.getElementById('m-month').value,
+                        plate: document.getElementById('m-plate').value,
+                        unit: document.getElementById('m-unit').value,
+                        odoStart: document.getElementById('m-odo-start').value,
+                        gaji: document.getElementById('g-pokok').value
                     },
                     logs: logs
                 };
 
                 try {
-                    await db.collection("logs").doc(currentUser.uid).set(data);
-                    status.innerHTML = `<i data-lucide="check-circle" class="w-4 h-4 text-green-500"></i> Cloud Secured`;
-                    status.classList.remove('status-sync');
+                    await db.collection("veterinar_logs_v15").doc(currentUser.uid).set(data);
+                    icon.innerHTML = `<i data-lucide="check-circle" class="w-4 h-4 text-green-500"></i> Cloud Saved`;
                     lucide.createIcons();
-                } catch (e) {
-                    status.innerHTML = `<i data-lucide="alert-triangle" class="w-4 h-4 text-red-500"></i> Error`;
-                }
-            }, 1500);
+                } catch (e) { console.error(e); }
+            }, 1200);
         }
 
         async function loadData() {
-            const doc = await db.collection("logs").doc(currentUser.uid).get();
+            const doc = await db.collection("veterinar_logs_v15").doc(currentUser.uid).get();
             if (doc.exists) {
                 const d = doc.data();
-                document.getElementById('meta-month').value = d.meta.month;
-                document.getElementById('meta-type').value = d.meta.type;
-                document.getElementById('meta-plate').value = d.meta.plate;
-                document.getElementById('meta-unit').value = d.meta.unit;
-                document.getElementById('gaji-pokok').value = d.meta.gaji;
-                document.getElementById('main-table-body').innerHTML = "";
+                document.getElementById('m-month').value = d.meta.month;
+                document.getElementById('m-plate').value = d.meta.plate;
+                document.getElementById('m-unit').value = d.meta.unit;
+                document.getElementById('m-odo-start').value = d.meta.odoStart;
+                document.getElementById('g-pokok').value = d.meta.gaji;
+                document.getElementById('log-body').innerHTML = "";
                 d.logs.forEach(l => addRow(l));
-                calculateAll();
+                calculateAutoDistances();
             } else { addRow(); }
         }
 
-        // === EXPORT ===
-        function exportToExcel() {
-            const ws = XLSX.utils.table_to_sheet(document.querySelector("table"));
-            const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, "Log");
-            XLSX.writeFile(wb, "Log_Veterinar.xlsx");
+        // === 4. AUTH ===
+        async function loginGoogle() {
+            try {
+                const res = await auth.signInWithPopup(provider);
+                currentUser = res.user;
+                updateAuthUI();
+                loadData();
+            } catch (e) { console.error(e); }
         }
+        function updateAuthUI() {
+            if (currentUser) {
+                document.getElementById('auth-area').classList.add('hidden');
+                document.getElementById('user-area').classList.remove('hidden');
+                document.getElementById('u-name').innerText = currentUser.displayName;
+                document.getElementById('u-photo').src = currentUser.photoURL;
+            }
+        }
+        function logout() { auth.signOut().then(() => location.reload()); }
+        auth.onAuthStateChanged(user => { if (user) { currentUser = user; updateAuthUI(); loadData(); } });
 
-        function exportData(fmt) {
-            const blob = new Blob([document.body.innerText], {type: "text/plain"});
-            saveAs(blob, "Log_Veterinar." + (fmt === 'word' ? 'doc' : 'txt'));
+        // === 5. EXPORT ===
+        function exportXLS() {
+            const wb = XLSX.utils.book_new();
+            const ws = XLSX.utils.table_to_sheet(document.querySelector("table"));
+            XLSX.utils.book_append_sheet(wb, ws, "Log Veterinar");
+            XLSX.writeFile(wb, "Log_Veterinar_v15.xlsx");
+        }
+        function exportDoc(ext) {
+            const content = document.body.innerText;
+            const blob = new Blob([content], {type: "text/plain"});
+            saveAs(blob, "Export_Log." + (ext === 'word' ? 'doc' : 'txt'));
         }
 
         window.onload = () => { lucide.createIcons(); };

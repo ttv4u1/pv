@@ -42,7 +42,7 @@
 
         .glass-card { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.5); }
 
-        /* --- PRINT ENGINE FIXES --- */
+        /* --- PRINT ENGINE --- */
         .print-text { display: none; white-space: pre-wrap; word-wrap: break-word; font-size: 8pt; line-height: 1.2; }
         
         @media print {
@@ -58,7 +58,6 @@
             .input-box { display: none !important; }
             .print-text { display: block !important; }
             
-            /* Print Column Width Adjustments */
             .w-date { width: 9%; }
             .w-time { width: 11%; }
             .w-driver { width: 10%; }
@@ -90,7 +89,12 @@
         <!-- WEB HEADER -->
         <header class="bg-slate-900 text-white p-4 md:p-5 rounded-2xl mb-6 flex flex-col lg:flex-row justify-between items-center no-print shadow-xl border-b-4 border-blue-500 gap-4">
             <div class="flex items-center gap-4">
-                <div class="bg-white p-2 rounded-xl"><img src="https://upload.wikimedia.org/wikipedia/commons/2/26/Coat_of_arms_of_Malaysia.svg" class="w-8 h-8 md:w-10 md:h-10"></div>
+                <!-- Logo Jabatan -->
+                <div class="bg-white p-2 rounded-xl flex items-center gap-2">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/2/26/Coat_of_arms_of_Malaysia.svg" class="w-8 h-8 md:w-10 md:h-10">
+                    <div class="h-8 w-[2px] bg-slate-200"></div>
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/e/e0/Logo_Jabatan_Perkhidmatan_Veterinar.png" class="w-8 h-8 md:w-10 md:h-10" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/2/26/Coat_of_arms_of_Malaysia.svg'">
+                </div>
                 <div>
                     <h1 class="text-lg md:text-xl font-bold font-heading tracking-tight uppercase">Pilot <span class="text-blue-400">Intelligent</span></h1>
                     <p class="text-[8px] md:text-[9px] text-slate-400 font-bold uppercase tracking-widest">Enterprise Logistics Dashboard</p>
@@ -114,23 +118,52 @@
             </div>
         </header>
 
-        <!-- INFO BAR -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mb-6 no-print">
-            <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm">
-                <label class="text-[9px] font-bold text-slate-400 uppercase">Bulan Rekod</label>
-                <input type="month" id="m-month" class="w-full font-bold text-base md:text-lg outline-none text-blue-600" onchange="sync()">
+        <!-- INFO BAR & SALARY CALC -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6 no-print">
+            <!-- Basic Info -->
+            <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm grid grid-cols-2 gap-3">
+                <div class="col-span-2 border-b pb-2 mb-1"><span class="text-[10px] font-black text-slate-400">INFO KENDERAAN</span></div>
+                <div>
+                    <label class="text-[9px] font-bold text-slate-400 uppercase">No. Pendaftaran</label>
+                    <input type="text" id="m-plate" class="w-full font-bold text-base uppercase outline-none" placeholder="VNC 974" onchange="sync()">
+                </div>
+                <div>
+                    <label class="text-[9px] font-bold text-slate-400 uppercase">Odo Awal</label>
+                    <input type="number" id="m-odo-start" class="w-full font-black text-base outline-none" oninput="calcLogic(); sync()">
+                </div>
             </div>
-            <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm">
-                <label class="text-[9px] font-bold text-slate-400 uppercase">No. Pendaftaran</label>
-                <input type="text" id="m-plate" class="w-full font-bold text-base md:text-lg uppercase outline-none" placeholder="Cth: VNC 974" onchange="sync()">
+
+            <!-- Salary Calculation (NEW) -->
+            <div class="bg-slate-900 text-white p-4 rounded-2xl shadow-xl grid grid-cols-2 gap-3 border-b-4 border-blue-500">
+                <div class="col-span-2 border-b border-slate-700 pb-2 mb-1 flex justify-between items-center">
+                    <span class="text-[10px] font-black text-blue-400">KALKULATOR GAJI</span>
+                    <i data-lucide="calculator" class="w-3 h-3 text-slate-500"></i>
+                </div>
+                <div>
+                    <label class="text-[9px] font-bold text-slate-500 uppercase">Gaji Pokok (RM)</label>
+                    <input type="number" id="m-gaji" class="w-full bg-transparent font-black text-base outline-none text-white" placeholder="0.00" oninput="calcSalary()">
+                </div>
+                <div>
+                    <label class="text-[9px] font-bold text-slate-500 uppercase">Gaji Sejam</label>
+                    <div id="m-gaji-sejam" class="w-full font-black text-base text-green-400">RM 0.00</div>
+                </div>
+                <div class="col-span-2 pt-1">
+                    <label class="text-[9px] font-bold text-slate-500 uppercase">Gaji Kasar (+Elaun RM765)</label>
+                    <div id="m-gaji-kasar" class="w-full font-black text-lg text-blue-400 leading-none">RM 0.00</div>
+                </div>
             </div>
-            <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm">
-                <label class="text-[9px] font-bold text-slate-400 uppercase">Odo Awal</label>
-                <input type="number" id="m-odo-start" class="w-full font-black text-lg md:text-xl outline-none" oninput="calcLogic(); sync()">
-            </div>
-            <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm">
-                <label class="text-[9px] font-bold text-slate-400 uppercase">Bahagian / Unit</label>
-                <input type="text" id="m-unit" class="w-full font-bold text-base md:text-lg uppercase outline-none" placeholder="BAHAGIAN PENGUATKUASA" onchange="sync()">
+
+            <!-- Month & Unit -->
+            <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm grid grid-cols-2 gap-3">
+                <div class="col-span-2 border-b pb-2 mb-1"><span class="text-[10px] font-black text-slate-400">BUTIRAN REKOD</span></div>
+                <div>
+                    <label class="text-[9px] font-bold text-slate-400 uppercase">Bulan</label>
+                    <input type="month" id="m-month" class="w-full font-bold text-base outline-none text-blue-600" onchange="sync()">
+                </div>
+                <div>
+                    <label class="text-[9px] font-bold text-slate-400 uppercase">Unit</label>
+                    <input type="text" id="m-unit" class="w-full font-bold text-base uppercase outline-none" placeholder="PENGUATKUASA" onchange="sync()">
+                </div>
             </div>
         </div>
 
@@ -205,6 +238,20 @@
         }
         setInterval(updateClock, 1000);
 
+        // --- SALARY CALC LOGIC ---
+        function calcSalary() {
+            const gaji = parseFloat(document.getElementById('m-gaji').value) || 0;
+            const elaun = 300 + 115 + 350; // ITP + ITKA + BISH
+            
+            // Formula: (Gaji * 12) / 2504
+            const gajiSejam = (gaji * 12) / 2504;
+            const gajiKasar = gaji + elaun;
+
+            document.getElementById('m-gaji-sejam').innerText = `RM ${gajiSejam.toFixed(2)}`;
+            document.getElementById('m-gaji-kasar').innerText = `RM ${gajiKasar.toFixed(2)}`;
+            sync();
+        }
+
         function to12h(t) {
             if(!t) return "--:--";
             let [h, m] = t.split(':'); h = parseInt(h);
@@ -236,8 +283,8 @@
                 </td>
                 <td class="w-time">
                     <div class="flex flex-col input-box">
-                        <input type="time" value="${v.mulaRaw||''}" class="row-input t-mula border-b border-slate-100" placeholder="Mula">
-                        <input type="time" value="${v.hinggaRaw||''}" class="row-input t-hingga" placeholder="Hingga">
+                        <input type="time" value="${v.mulaRaw||''}" class="row-input t-mula border-b border-slate-100">
+                        <input type="time" value="${v.hinggaRaw||''}" class="row-input t-hingga">
                     </div>
                     <span class="print-text text-center font-bold">${to12h(v.mulaRaw)} - ${to12h(v.hinggaRaw)}</span>
                 </td>
@@ -284,7 +331,6 @@
             document.getElementById('log-body').appendChild(tr);
             lucide.createIcons();
             
-            // Re-sync all print spans and height on input
             tr.querySelectorAll('input, textarea').forEach(input => {
                 input.addEventListener('input', (e) => {
                     const row = e.target.closest('tr');
@@ -293,23 +339,15 @@
                     if(e.target.classList.contains('date-input')) {
                         row.querySelector('.w-date .print-text').innerText = formatDisplayDate(e.target.value);
                     } else if(e.target.classList.contains('t-mula') || e.target.classList.contains('t-hingga')) {
-                        const mula = row.querySelector('.t-mula').value;
-                        const hingga = row.querySelector('.t-hingga').value;
-                        row.querySelector('.w-time .print-text').innerText = `${to12h(mula)} - ${to12h(hingga)}`;
+                        row.querySelector('.w-time .print-text').innerText = `${to12h(row.querySelector('.t-mula').value)} - ${to12h(row.querySelector('.t-hingga').value)}`;
                     } else if (span && span.classList.contains('print-text')) {
                         span.innerText = e.target.value;
                     }
-
                     if(e.target.tagName === 'TEXTAREA') adjustHeight(e.target);
-                    calcLogic(); 
-                    sync();
+                    calcLogic(); sync();
                 });
             });
-
-            // Initial height & span sync for loaded data
-            setTimeout(() => {
-                tr.querySelectorAll('textarea').forEach(tx => adjustHeight(tx));
-            }, 50);
+            setTimeout(() => { tr.querySelectorAll('textarea').forEach(tx => adjustHeight(tx)); }, 50);
         }
 
         function calcLogic() {
@@ -319,15 +357,13 @@
                 const odo = Number(row.querySelector('.odo-val').value);
                 const distField = row.querySelector('.dist-val');
                 const distSpan = row.querySelector('.w-dist .print-text');
-                
                 if(odo > 0 && odo > prev) { 
                     const currentDist = odo - prev;
                     distField.value = currentDist; 
                     distSpan.innerText = currentDist;
                     prev = odo; td += currentDist; 
                 } else { 
-                    distField.value = ""; 
-                    distSpan.innerText = ""; 
+                    distField.value = ""; distSpan.innerText = ""; 
                     if(odo > 0) prev = odo;
                 }
                 tl += Number(row.querySelector('.liter-val').value) || 0;
@@ -354,7 +390,8 @@
             await db.collection("logs_v32").doc(currentUser.uid).set({
                 meta: { 
                     month:document.getElementById('m-month').value, plate:document.getElementById('m-plate').value, 
-                    odo:document.getElementById('m-odo-start').value, unit:document.getElementById('m-unit').value 
+                    odo:document.getElementById('m-odo-start').value, unit:document.getElementById('m-unit').value,
+                    gaji:document.getElementById('m-gaji').value 
                 },
                 logs: logs
             });
@@ -368,16 +405,16 @@
                 document.getElementById('m-plate').value = d.meta.plate || '';
                 document.getElementById('m-odo-start').value = d.meta.odo || ''; 
                 document.getElementById('m-unit').value = d.meta.unit || '';
+                document.getElementById('m-gaji').value = d.meta.gaji || '';
                 document.getElementById('log-body').innerHTML = ""; 
                 if(d.logs && d.logs.length > 0) d.logs.forEach(l => addRow(l)); else addRow();
-                calcLogic();
+                calcSalary(); calcLogic();
             } else { addRow(); }
         }
 
         async function loginGoogle() { try { const res = await auth.signInWithPopup(provider); currentUser = res.user; updateUI(); loadData(); } catch(e) {} }
         function logout() { auth.signOut().then(() => location.reload()); }
         function updateUI() { if(currentUser) { document.getElementById('login-btn').classList.add('hidden'); document.getElementById('user-profile').classList.remove('hidden'); document.getElementById('u-avatar').src = currentUser.photoURL; } }
-        
         auth.onAuthStateChanged(user => { if(user) { currentUser = user; updateUI(); loadData(); } });
         window.onload = () => { lucide.createIcons(); updateClock(); };
     </script>

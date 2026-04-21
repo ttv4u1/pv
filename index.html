@@ -28,14 +28,26 @@
         
         .row-input { 
             width: 100%; border: none; background: transparent; 
-            padding: 8px 4px; outline: none; resize: none; overflow: hidden;
+            padding: 4px 4px; outline: none; resize: none; overflow: hidden;
             font-size: 0.875rem; font-weight: 600; color: #1e293b;
             display: block;
-            min-height: 38px;
         }
         .row-input:focus { background: #f8fafc; border-radius: 4px; }
 
-        /* Animation Realtime */
+        /* Animation Realtime Tarikh */
+        .pulse-dot {
+            display: none; width: 7px; height: 7px; background-color: #22c55e;
+            border-radius: 50%; margin-left: 5px;
+            box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7);
+            animation: pulse-green 2s infinite;
+        }
+        @keyframes pulse-green {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(34, 197, 94, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+        }
+        .date-input:not(:placeholder-shown) + .pulse-dot { display: inline-block; }
+
         @keyframes pulse-edit {
             0% { box-shadow: inset 0 0 0 2px transparent; background: transparent; }
             50% { box-shadow: inset 0 0 10px rgba(14, 165, 233, 0.2); background: rgba(14, 165, 233, 0.05); }
@@ -73,13 +85,21 @@
             .input-box { display: none !important; }
             .print-text { display: block !important; }
             
+            /* Tarikh & Masa Print Styling */
+            .print-center-stack { text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; }
+            .date-line { font-weight: 800; font-size: 9pt; white-space: nowrap; }
+            .day-line { font-size: 7pt; font-weight: 600; text-transform: uppercase; margin-top: 1px; }
+            
+            .time-top { font-weight: 800; font-size: 8pt; border-bottom: 0.5pt solid #ddd; width: 100%; padding-bottom: 2px; }
+            .time-bottom { font-weight: 800; font-size: 8pt; padding-top: 2px; width: 100%; }
+
             body.hide-header-print .corporate-header-print { display: none !important; }
             body.hide-footer-print .print-footer-only { display: none !important; }
 
             .w-date { width: 9%; }
-            .w-time { width: 11%; }
+            .w-time { width: 10%; }
             .w-driver { width: 10%; }
-            .w-purpose { width: 28%; }
+            .w-purpose { width: 29%; }
             .w-auth { width: 8%; }
             .w-odo { width: 7%; }
             .w-dist { width: 6%; }
@@ -144,7 +164,7 @@
             </div>
         </header>
 
-        <!-- PRINT OPTIONS (No-print) -->
+        <!-- PRINT OPTIONS -->
         <div class="no-print mb-4 flex flex-wrap gap-4 items-center bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
             <span class="text-[10px] font-black text-slate-400 uppercase">Tetapan Cetakan:</span>
             <label class="flex items-center gap-2 text-xs font-bold cursor-pointer hover:text-blue-600 transition">
@@ -252,7 +272,7 @@
         </div>
     </div>
 
-    <!-- MODAL JADUAL (Kekal) -->
+    <!-- MODAL JADUAL -->
     <div id="schedule-modal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-[100] hidden flex items-center justify-center p-4">
         <div class="bg-white w-full max-w-2xl rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
             <div class="bg-slate-900 p-6 text-white flex justify-between items-center">
@@ -273,11 +293,12 @@
         let currentUser = null;
         let futureSchedules = [];
 
+        const dayNames = ["AHAD", "ISNIN", "SELASA", "RABU", "KHAMIS", "JUMAAT", "SABTU"];
+
         function updateClock() {
             const now = new Date();
-            const days = ["AHAD", "ISNIN", "SELASA", "RABU", "KHAMIS", "JUMAAT", "SABTU"];
             const months = ["JAN", "FEB", "MAC", "APR", "MEI", "JUN", "JUL", "OGOS", "SEP", "OKT", "NOV", "DIS"];
-            document.getElementById('live-date').innerText = `${days[now.getDay()]}, ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
+            document.getElementById('live-date').innerText = `${dayNames[now.getDay()]}, ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
             document.getElementById('live-clock').innerText = now.toLocaleTimeString('ms-MY', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true }).toUpperCase();
         }
         setInterval(updateClock, 1000);
@@ -290,12 +311,25 @@
             return `${String(h).padStart(2,'0')}:${m} ${ampm}`;
         }
 
+        // Format Tarikh untuk Web Day Label
+        function getDayFromDate(dateStr) {
+            if(!dateStr) return "";
+            const d = new Date(dateStr);
+            return isNaN(d) ? "" : dayNames[d.getDay()];
+        }
+
+        // Format Tarikh untuk Print (Tarikh sebaris, Hari di bawah)
         function formatDisplayDate(dateStr) {
             if(!dateStr) return "";
-            const days = ["AHAD", "ISN", "SEL", "RAB", "KHA", "JUM", "SAB"];
             const d = new Date(dateStr);
             if(isNaN(d)) return "";
-            return `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()} (${days[d.getDay()]})`;
+            const formattedDate = `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`;
+            return `<div class="print-center-stack"><span class="date-line">${formattedDate}</span><span class="day-line">${dayNames[d.getDay()]}</span></div>`;
+        }
+
+        // Format Masa untuk Print (Mula atas, Hingga bawah)
+        function formatDisplayTime(mula, hingga) {
+            return `<div class="print-center-stack"><div class="time-top">${to12h(mula)}</div><div class="time-bottom">${to12h(hingga)}</div></div>`;
         }
 
         function togglePrintConfig() {
@@ -321,16 +355,22 @@
             const tr = document.createElement('tr');
             tr.className = "border-b border-slate-100 hover:bg-slate-50 transition-colors";
             tr.innerHTML = `
-                <td class="w-date p-1">
-                    <div class="input-box"><input type="date" value="${v.tarikhRaw||''}" class="row-input date-input" onfocus="this.closest('td').classList.add('editing-active')" onblur="this.closest('td').classList.remove('editing-active')"></div>
-                    <span class="print-text text-xs font-bold">${formatDisplayDate(v.tarikhRaw)}</span>
+                <td class="w-date p-2">
+                    <div class="input-box flex flex-col">
+                        <div class="flex items-center">
+                            <input type="date" value="${v.tarikhRaw||''}" class="row-input date-input" onfocus="this.closest('td').classList.add('editing-active')" onblur="this.closest('td').classList.remove('editing-active')">
+                            <span class="pulse-dot"></span>
+                        </div>
+                        <div class="web-day-label text-[10px] font-bold text-slate-400 mt-0.5 ml-1 uppercase">${getDayFromDate(v.tarikhRaw)}</div>
+                    </div>
+                    <span class="print-text">${formatDisplayDate(v.tarikhRaw)}</span>
                 </td>
-                <td class="w-time p-1">
+                <td class="w-time p-2">
                     <div class="flex flex-col input-box">
-                        <input type="time" value="${v.mulaRaw||''}" class="row-input t-mula border-b border-slate-50" onfocus="this.closest('td').classList.add('editing-active')" onblur="this.closest('td').classList.remove('editing-active')">
+                        <input type="time" value="${v.mulaRaw||''}" class="row-input t-mula border-b border-slate-100" onfocus="this.closest('td').classList.add('editing-active')" onblur="this.closest('td').classList.remove('editing-active')">
                         <input type="time" value="${v.hinggaRaw||''}" class="row-input t-hingga" onfocus="this.closest('td').classList.add('editing-active')" onblur="this.closest('td').classList.remove('editing-active')">
                     </div>
-                    <span class="print-text text-center font-bold">${to12h(v.mulaRaw)} - ${to12h(v.hinggaRaw)}</span>
+                    <span class="print-text">${formatDisplayTime(v.mulaRaw, v.hinggaRaw)}</span>
                 </td>
                 <td class="w-driver">
                     <div class="input-box"><textarea class="row-input uppercase font-bold" rows="1">${v.pemandu||''}</textarea></div>
@@ -362,7 +402,7 @@
                             <span class="text-[10px] font-black text-slate-400 mr-1">RM</span>
                             <input type="number" step="0.01" value="${v.resit||''}" class="row-input rm-val font-bold text-slate-800" placeholder="0.00">
                         </div>
-                        <div class="flex items-center -mt-2">
+                        <div class="flex items-center -mt-1">
                             <span class="text-[8px] font-black text-blue-400 mr-1">R/N:</span>
                             <input type="text" value="${v.noResit||''}" class="row-input no-resit-val text-[10px] text-blue-600 font-bold" placeholder="...">
                         </div>
@@ -390,22 +430,24 @@
             tr.querySelectorAll('input, textarea').forEach(input => {
                 input.addEventListener('input', (e) => {
                     const row = e.target.closest('tr');
-                    const span = e.target.parentElement.nextElementSibling;
                     
                     if(e.target.classList.contains('date-input')) {
-                        row.querySelector('.w-date .print-text').innerText = formatDisplayDate(e.target.value);
+                        const dayLabel = row.querySelector('.web-day-label');
+                        dayLabel.innerText = getDayFromDate(e.target.value);
+                        row.querySelector('.w-date .print-text').innerHTML = formatDisplayDate(e.target.value);
                     } else if(e.target.classList.contains('t-mula') || e.target.classList.contains('t-hingga')) {
                         const mula = row.querySelector('.t-mula').value;
                         const hingga = row.querySelector('.t-hingga').value;
-                        row.querySelector('.w-time .print-text').innerText = `${to12h(mula)} - ${to12h(hingga)}`;
+                        row.querySelector('.w-time .print-text').innerHTML = formatDisplayTime(mula, hingga);
                     } else if(e.target.classList.contains('rm-val') || e.target.classList.contains('no-resit-val')) {
                         const rm = row.querySelector('.rm-val').value;
                         const nr = row.querySelector('.no-resit-val').value;
                         row.querySelector('.w-fuel .print-text').innerHTML = `<div class="font-bold">RM ${rm || '0.00'}</div><div class="text-[7pt] text-blue-600 font-bold italic">R/N: ${nr || '-'}</div>`;
                     } else if(e.target.classList.contains('liter-val')) {
                          row.querySelector('.w-fuel + .w-fuel .print-text').innerText = e.target.value + " L";
-                    } else if (span && span.classList.contains('print-text')) {
-                        span.innerText = e.target.value;
+                    } else {
+                        const span = e.target.parentElement.nextElementSibling;
+                        if (span && span.classList.contains('print-text')) span.innerText = e.target.value;
                     }
 
                     if(e.target.tagName === 'TEXTAREA') adjustHeight(e.target);

@@ -1,10 +1,10 @@
-<!-- Pilot Intel v27 - Updated with Auto-Lock Logic -->
+<!-- Pilot Intel v29 - Updated with Schedule Auto-Lock -->
 <!DOCTYPE html>
 <html lang="ms">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Pilot Intel v27</title>
+    <title>Pilot Intel v29</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
@@ -119,6 +119,9 @@
         
         /* Locked Row Style */
         .row-locked-bg { background-color: #f8fafc; }
+        
+        /* Schedule Locked State */
+        .sch-locked { opacity: 0.7; border-left-color: #94a3b8 !important; }
     </style>
 </head>
 <body class="p-2 md:p-6">
@@ -433,6 +436,13 @@
             window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(input.value)}`, '_blank');
         }
 
+        // Logic Schedule Lock Toggle
+        function toggleScheduleLock(index) {
+            futureSchedules[index].isLocked = !futureSchedules[index].isLocked;
+            renderSchedules();
+            sync();
+        }
+
         function renderSchedules() {
             const list = document.getElementById('schedule-list');
             list.innerHTML = "";
@@ -441,15 +451,18 @@
                 lucide.createIcons(); return;
             }
             futureSchedules.forEach((item, index) => {
+                const isLocked = item.isLocked || false;
                 const div = document.createElement('div');
-                div.className = "p-4 bg-slate-50 rounded-2xl border-l-4 border-blue-500 shadow-sm relative group hover:bg-slate-100 transition-all cursor-pointer";
+                div.className = `p-4 bg-slate-50 rounded-2xl border-l-4 ${isLocked ? 'sch-locked' : 'border-blue-500'} shadow-sm relative group hover:bg-slate-100 transition-all cursor-pointer`;
                 div.onclick = (e) => { if(!e.target.closest('button')) viewFullSchedule(index); };
+                
                 div.innerHTML = `
                     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
                         <div class="flex-1">
                             <div class="flex items-center gap-2 mb-1">
-                                <span class="bg-blue-100 text-blue-700 text-[9px] font-black px-2 py-0.5 rounded-full uppercase">${getDayFromDate(item.dateStart)}</span>
+                                <span class="${isLocked ? 'bg-slate-200 text-slate-600' : 'bg-blue-100 text-blue-700'} text-[9px] font-black px-2 py-0.5 rounded-full uppercase">${getDayFromDate(item.dateStart)}</span>
                                 <span class="text-xs font-bold text-slate-400 uppercase tracking-widest">Jadual #${index+1}</span>
+                                ${isLocked ? '<i data-lucide="lock" class="w-3 h-3 text-slate-400"></i>' : ''}
                             </div>
                             <h3 class="font-black text-slate-800 text-base uppercase leading-tight truncate max-w-[250px] md:max-w-md">${item.desc}</h3>
                             ${item.location ? `<p class="text-blue-600 text-xs font-bold mt-1 truncate max-w-[250px] md:max-w-md"><i data-lucide="map-pin" class="w-3 h-3 inline"></i> ${item.location}</p>` : ''}
@@ -458,9 +471,16 @@
                                 <div><p class="text-[9px] font-bold text-slate-400 uppercase">Akhir</p><p class="text-xs font-bold text-slate-700">${item.dateEnd || item.dateStart} | ${to12h(item.timeEnd)}</p></div>
                             </div>
                         </div>
-                        <div class="flex gap-2">
-                            <button onclick="editScheduleItem(${index})" class="text-blue-500 p-2 hover:bg-blue-50 rounded-full"><i data-lucide="edit-3" class="w-5 h-5"></i></button>
-                            <button onclick="removeScheduleItem(${index})" class="text-red-400 p-2 hover:bg-red-50 rounded-full"><i data-lucide="trash-2" class="w-5 h-5"></i></button>
+                        <div class="flex gap-2 items-center">
+                            <button onclick="toggleScheduleLock(${index})" class="${isLocked ? 'text-red-500 bg-red-50' : 'text-emerald-500 bg-emerald-50'} p-2 rounded-full hover:scale-110 transition shadow-sm">
+                                <i data-lucide="${isLocked ? 'lock' : 'lock-open'}" class="w-5 h-5"></i>
+                            </button>
+                            <button onclick="editScheduleItem(${index})" class="${isLocked ? 'opacity-30 cursor-not-allowed' : 'text-blue-500 hover:bg-blue-50'} p-2 rounded-full">
+                                <i data-lucide="edit-3" class="w-5 h-5"></i>
+                            </button>
+                            <button onclick="removeScheduleItem(${index})" class="text-red-400 p-2 hover:bg-red-50 rounded-full">
+                                <i data-lucide="trash-2" class="w-5 h-5"></i>
+                            </button>
                         </div>
                     </div>`;
                 list.appendChild(div);
@@ -488,6 +508,8 @@
 
         function editScheduleItem(index) {
             const item = futureSchedules[index];
+            if(item.isLocked) return alert("Jadual ini dikunci. Sila tekan ikon mangga untuk buka kunci sebelum mengedit.");
+            
             document.getElementById('editing-index').value = index;
             document.getElementById('new-sch-date-start').value = item.dateStart || "";
             document.getElementById('new-sch-time-start').value = item.timeStart || "";
@@ -522,7 +544,8 @@
                 dateEnd: document.getElementById('new-sch-date-end').value || document.getElementById('new-sch-date-start').value,
                 timeEnd: document.getElementById('new-sch-time-end').value,
                 desc: document.getElementById('new-sch-desc').value,
-                location: document.getElementById('new-sch-loc').value
+                location: document.getElementById('new-sch-loc').value,
+                isLocked: true // Auto-Lock on save
             };
             if(!data.dateStart || !data.desc) return alert("Sila isi tarikh dan urusan");
             if(idx === -1) futureSchedules.push(data); else futureSchedules[idx] = data;

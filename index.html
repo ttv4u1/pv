@@ -1,10 +1,10 @@
-<!-- Pilot Intel v8.1 - Updated with Location Picker & Print Support -->
+<!-- Pilot Intel v13.1 - Updated with Logo Positioning & Schedule Viewer -->
 <!DOCTYPE html>
 <html lang="ms">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Pilot Intel v13</title>
+    <title>Pilot Intel v16</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
@@ -50,13 +50,6 @@
         }
         .date-input:not(:placeholder-shown) + .pulse-dot { display: inline-block; }
 
-        @keyframes pulse-edit {
-            0% { box-shadow: inset 0 0 0 2px transparent; background: transparent; }
-            50% { box-shadow: inset 0 0 10px rgba(14, 165, 233, 0.2); background: rgba(14, 165, 233, 0.05); }
-            100% { box-shadow: inset 0 0 0 2px transparent; background: transparent; }
-        }
-        .editing-active { animation: pulse-edit 1.5s infinite; border-radius: 6px; }
-
         .w-date { width: 135px; }
         .w-time { width: 140px; }
         .w-driver { width: 150px; }
@@ -90,7 +83,7 @@
             .time-bottom { font-weight: 800; font-size: 8pt; padding-top: 1px; width: 100%; line-height: 1.1; }
             body.hide-header-print .corporate-header-print { display: none !important; }
             body.hide-footer-print .print-footer-only { display: none !important; }
-            .corporate-header-print { display: flex !important; align-items: center; border-bottom: 1.5pt solid black; margin-bottom: 5px; padding-bottom: 5px; }
+            .corporate-header-print { display: flex !important; align-items: center; justify-content: space-between; border-bottom: 1.5pt solid black; margin-bottom: 5px; padding-bottom: 5px; }
             .print-footer-only { display: block !important; margin-top: 5px; }
             .w-date { width: 8.5%; }
             .w-time { width: 9%; }
@@ -116,21 +109,23 @@
         
         <!-- PRINT HEADER -->
         <div id="print-header-section" class="corporate-header-print">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/2/26/Coat_of_arms_of_Malaysia.svg" style="width: 50px; height: 50px; margin-right: 12px;">
-            <img src="https://github.com/ttv4u1/KP/raw/main/DVS.svg" style="width: 50px; height: 50px; margin-right: 15px;">
-            <div>
-                <h2 style="font-size: 14pt; font-weight: 800; margin: 0;" class="font-heading uppercase">Pilot Intelligent</h2>
-                <p style="font-size: 9pt; margin: 0; font-weight: 600;">Bahagian Penguatkuasa • Enterprise Logistics Dashboard</p>
-                <p id="print-meta-info" style="font-size: 8pt; margin: 0; color: #444; font-weight: 700;"></p>
+            <div class="flex items-center">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/2/26/Coat_of_arms_of_Malaysia.svg" style="width: 50px; height: 50px; margin-right: 12px;">             
+                <div>
+                    <h2 style="font-size: 14pt; font-weight: 800; margin: 0;" class="font-heading uppercase">Pilot Intelligent</h2>
+                    <p style="font-size: 9pt; margin: 0; font-weight: 600;">Bahagian Penguatkuasa • Enterprise Logistics Dashboard</p>
+                    <p id="print-meta-info" style="font-size: 8pt; margin: 0; color: #444; font-weight: 700;"></p>
+                </div>
             </div>
+            <!-- Logo DVS Kanan (Print) -->
+            <img src="https://github.com/ttv4u1/KP/raw/main/DVS.svg" style="width: 55px; height: 55px;">
         </div>
 
         <!-- WEB HEADER -->
         <header class="bg-slate-900 text-white p-4 md:p-5 rounded-2xl mb-6 flex flex-col lg:flex-row justify-between items-center no-print shadow-xl border-b-4 border-blue-500 gap-4">
             <div class="flex items-center gap-4">
                 <div class="flex gap-2 bg-white p-2 rounded-xl">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/2/26/Coat_of_arms_of_Malaysia.svg" class="w-8 h-8 md:w-10 md:h-10">
-                    <img src="https://github.com/ttv4u1/KP/raw/main/DVS.svg" class="w-8 h-8 md:w-10 md:h-10">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/2/26/Coat_of_arms_of_Malaysia.svg" class="w-8 h-8 md:w-10 md:h-10">                    
                 </div>
                 <div>
                     <h1 class="text-lg md:text-xl font-bold font-heading tracking-tight uppercase">Pilot <span class="text-blue-400">Intelligent</span></h1>
@@ -146,7 +141,7 @@
                 <i data-lucide="clock" class="text-slate-500 w-4 h-4 md:w-5 md:h-5"></i>
             </div>
 
-            <div class="flex flex-wrap justify-center gap-2">
+            <div class="flex flex-wrap justify-center gap-2 items-center">
                 <button onclick="toggleScheduleModal()" class="bg-emerald-600 hover:bg-emerald-700 px-4 py-2 rounded-xl font-bold text-xs shadow-lg active:scale-95 transition flex items-center gap-2">
                     <i data-lucide="calendar" class="w-4 h-4"></i> JADUAL
                 </button>
@@ -155,6 +150,8 @@
                     <img id="u-avatar" class="w-8 h-8 rounded-full border border-blue-500">
                     <button onclick="logout()" class="text-[10px] text-red-400 font-bold underline uppercase">Logout</button>
                 </div>
+                <!-- Logo DVS Paling Kanan (Web) -->
+                <img src="https://github.com/ttv4u1/KP/raw/main/DVS.svg" class="w-10 h-10 ml-2 hidden lg:block">
             </div>
         </header>
 
@@ -320,6 +317,22 @@
         </div>
     </div>
 
+    <!-- MODAL VIEW DETAILS -->
+    <div id="view-detail-modal" class="fixed inset-0 bg-black/60 backdrop-blur-md z-[110] hidden flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-lg rounded-3xl shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200">
+            <div class="bg-blue-600 p-5 text-white flex justify-between items-center">
+                <h3 class="font-heading font-bold text-lg uppercase">Butiran Penuh Jadual</h3>
+                <button onclick="document.getElementById('view-detail-modal').classList.add('hidden')" class="p-1 hover:bg-blue-500 rounded-lg"><i data-lucide="x"></i></button>
+            </div>
+            <div id="view-detail-content" class="p-6 space-y-4">
+                <!-- Content injected via JS -->
+            </div>
+            <div class="p-4 bg-slate-50 flex justify-end">
+                <button onclick="document.getElementById('view-detail-modal').classList.add('hidden')" class="bg-slate-900 text-white px-6 py-2 rounded-xl font-bold text-sm">TUTUP</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         // API Config - Do not change
         const firebaseConfig = { apiKey: "AIzaSyDdCwKNCx0nA1cZirGrw1UYvtumALluVXw", authDomain: "pilot-veterinar.firebaseapp.com", projectId: "pilot-veterinar", storageBucket: "pilot-veterinar.firebasestorage.app", messagingSenderId: "559136368070", appId: "1:559136368070:web:8aaa2dcb804c73f10cbec7" };
@@ -357,7 +370,11 @@
             }
             futureSchedules.forEach((item, index) => {
                 const div = document.createElement('div');
-                div.className = "p-4 bg-slate-50 rounded-2xl border-l-4 border-blue-500 shadow-sm relative group hover:bg-slate-100 transition-all";
+                div.className = "p-4 bg-slate-50 rounded-2xl border-l-4 border-blue-500 shadow-sm relative group hover:bg-slate-100 transition-all cursor-pointer";
+                // Add click event for full view
+                div.onclick = (e) => {
+                    if(!e.target.closest('button')) viewFullSchedule(index);
+                };
                 div.innerHTML = `
                     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
                         <div class="flex-1">
@@ -365,8 +382,8 @@
                                 <span class="bg-blue-100 text-blue-700 text-[9px] font-black px-2 py-0.5 rounded-full uppercase">${getDayFromDate(item.dateStart)}</span>
                                 <span class="text-xs font-bold text-slate-400 uppercase tracking-widest">Jadual #${index+1}</span>
                             </div>
-                            <h3 class="font-black text-slate-800 text-base uppercase leading-tight">${item.desc}</h3>
-                            ${item.location ? `<p class="text-blue-600 text-xs font-bold mt-1"><i data-lucide="map-pin" class="w-3 h-3 inline"></i> ${item.location}</p>` : ''}
+                            <h3 class="font-black text-slate-800 text-base uppercase leading-tight truncate max-w-[250px] md:max-w-md">${item.desc}</h3>
+                            ${item.location ? `<p class="text-blue-600 text-xs font-bold mt-1 truncate max-w-[250px] md:max-w-md"><i data-lucide="map-pin" class="w-3 h-3 inline"></i> ${item.location}</p>` : ''}
                             <div class="grid grid-cols-2 gap-4 mt-3">
                                 <div><p class="text-[9px] font-bold text-slate-400 uppercase">Mula</p><p class="text-xs font-bold text-slate-700">${item.dateStart} | ${to12h(item.timeStart)}</p></div>
                                 <div><p class="text-[9px] font-bold text-slate-400 uppercase">Akhir</p><p class="text-xs font-bold text-slate-700">${item.dateEnd || item.dateStart} | ${to12h(item.timeEnd)}</p></div>
@@ -382,6 +399,41 @@
             lucide.createIcons();
         }
 
+        function viewFullSchedule(index) {
+            const item = futureSchedules[index];
+            const content = document.getElementById('view-detail-content');
+            content.innerHTML = `
+                <div class="space-y-4">
+                    <div>
+                        <label class="text-[10px] font-black text-slate-400 uppercase block">Urusan / Tujuan</label>
+                        <p class="text-lg font-black text-slate-900 uppercase leading-tight">${item.desc}</p>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="text-[10px] font-black text-slate-400 uppercase block">Mula</label>
+                            <p class="font-bold text-slate-700">${getDayFromDate(item.dateStart)}, ${item.dateStart}</p>
+                            <p class="text-blue-600 font-black text-xl">${to12h(item.timeStart)}</p>
+                        </div>
+                        <div>
+                            <label class="text-[10px] font-black text-slate-400 uppercase block">Tamat</label>
+                            <p class="font-bold text-slate-700">${getDayFromDate(item.dateEnd || item.dateStart)}, ${item.dateEnd || item.dateStart}</p>
+                            <p class="text-blue-600 font-black text-xl">${to12h(item.timeEnd)}</p>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-black text-slate-400 uppercase block">Lokasi Penuh</label>
+                        <p class="font-bold text-slate-800 uppercase italic mb-2">${item.location || 'TIADA LOKASI DINYATAKAN'}</p>
+                        ${item.location ? `
+                        <button onclick="window.open('https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(item.location)}', '_blank')" class="flex items-center gap-2 text-xs font-black bg-blue-50 text-blue-700 px-4 py-2 rounded-lg hover:bg-blue-100 transition">
+                            <i data-lucide="map-pin" class="w-4 h-4"></i> BUKA GOOGLE MAPS
+                        </button>` : ''}
+                    </div>
+                </div>
+            `;
+            document.getElementById('view-detail-modal').classList.remove('hidden');
+            lucide.createIcons();
+        }
+
         function editScheduleItem(index) {
             const item = futureSchedules[index];
             document.getElementById('editing-index').value = index;
@@ -394,6 +446,8 @@
             document.getElementById('btn-text').innerText = "KEMASKINI JADUAL";
             document.getElementById('save-sch-btn').classList.replace('bg-blue-600', 'bg-orange-500');
             document.getElementById('cancel-edit-btn').classList.remove('hidden');
+            // Scroll to top of form
+            document.querySelector('#schedule-modal .overflow-y-auto').scrollTop = 0;
         }
 
         function resetSchForm() {
@@ -429,7 +483,7 @@
             
             renderSchedules();
             resetSchForm();
-            sync(); // Hantar terus ke Firebase
+            sync();
         }
 
         function removeScheduleItem(index) { if(confirm("Padam jadual ini?")) { futureSchedules.splice(index, 1); renderSchedules(); sync(); } }
@@ -626,7 +680,7 @@
                     salary:document.getElementById('m-salary').value 
                 },
                 logs: logs, 
-                futureSchedules: futureSchedules // Pastikan jadual dihantar
+                futureSchedules: futureSchedules
             });
         }
 

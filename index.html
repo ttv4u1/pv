@@ -1,10 +1,10 @@
-<!-- Pilot Intel v30 - Updated with Auth Persistence, Examples & Realtime Tips -->
+<!-- Pilot Intel v32 - Updated with Export, Auth Persistence, Examples & Realtime Tips -->
 <!DOCTYPE html>
 <html lang="ms">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Pilot Intel v30</title>
+    <title>Pilot Intel v32</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
@@ -163,7 +163,7 @@
             </div>
         </header>
 
-        <!-- TIPS ANIMATION BAR (NEW) -->
+        <!-- TIPS ANIMATION BAR -->
         <div id="tips-container" onclick="nextTip()" class="no-print mb-6 bg-white border border-slate-200 rounded-2xl p-4 shadow-sm flex items-center gap-4 cursor-pointer hover:bg-blue-50 transition-colors overflow-hidden group">
             <div class="bg-blue-600 p-2 rounded-lg text-white shadow-md group-hover:scale-110 transition-transform">
                 <i data-lucide="lightbulb" id="tip-icon" class="w-5 h-5"></i>
@@ -180,15 +180,26 @@
             </div>
         </div>
 
-        <!-- PRINT OPTIONS -->
+        <!-- PRINT & EXPORT OPTIONS -->
         <div class="no-print mb-4 flex flex-wrap gap-4 items-center bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
-            <span class="text-[10px] font-black text-slate-400 uppercase">Tetapan Cetakan:</span>
-            <label class="flex items-center gap-2 text-xs font-bold cursor-pointer hover:text-blue-600 transition">
-                <input type="checkbox" id="print-header-toggle" checked onchange="togglePrintConfig()" class="w-4 h-4 rounded"> Cetak Header
-            </label>
-            <label class="flex items-center gap-2 text-xs font-bold cursor-pointer hover:text-blue-600 transition">
-                <input type="checkbox" id="print-footer-toggle" checked onchange="togglePrintConfig()" class="w-4 h-4 rounded"> Cetak Footer (Rumusan)
-            </label>
+            <div class="flex items-center gap-4 border-r border-slate-200 pr-4">
+                <span class="text-[10px] font-black text-slate-400 uppercase">Tetapan Cetakan:</span>
+                <label class="flex items-center gap-2 text-xs font-bold cursor-pointer hover:text-blue-600 transition">
+                    <input type="checkbox" id="print-header-toggle" checked onchange="togglePrintConfig()" class="w-4 h-4 rounded"> Header
+                </label>
+                <label class="flex items-center gap-2 text-xs font-bold cursor-pointer hover:text-blue-600 transition">
+                    <input type="checkbox" id="print-footer-toggle" checked onchange="togglePrintConfig()" class="w-4 h-4 rounded"> Footer
+                </label>
+            </div>
+            <div class="flex items-center gap-2">
+                <span class="text-[10px] font-black text-slate-400 uppercase">Export & Muat Turun:</span>
+                <button onclick="exportData('bulan')" class="bg-slate-100 hover:bg-blue-500 hover:text-white px-3 py-1.5 rounded-lg text-[10px] font-bold transition flex items-center gap-1.5 border border-slate-200">
+                    <i data-lucide="file-spreadsheet" class="w-3.5 h-3.5"></i> BULANAN (CSV)
+                </button>
+                <button onclick="exportData('tahun')" class="bg-slate-100 hover:bg-emerald-600 hover:text-white px-3 py-1.5 rounded-lg text-[10px] font-bold transition flex items-center gap-1.5 border border-slate-200">
+                    <i data-lucide="archive" class="w-3.5 h-3.5"></i> TAHUNAN (CSV)
+                </button>
+            </div>
         </div>
 
         <!-- INFO BAR -->
@@ -384,26 +395,18 @@
         function rotateTips() {
             const tipBox = document.getElementById('tip-text-box');
             const tipIcon = document.getElementById('tip-icon');
-            
+            if(!tipBox || !tipIcon) return;
             tipBox.classList.remove('tip-fade');
             void tipBox.offsetWidth; // trigger reflow
-            
             const currentTip = intelTips[currentTipIndex];
             tipBox.innerHTML = currentTip.text;
             tipIcon.setAttribute('data-lucide', currentTip.icon);
-            
             tipBox.classList.add('tip-fade');
             lucide.createIcons();
-            
             currentTipIndex = (currentTipIndex + 1) % intelTips.length;
         }
 
-        function nextTip() {
-            rotateTips();
-            clearInterval(tipInterval);
-            tipInterval = setInterval(rotateTips, 6000);
-        }
-
+        function nextTip() { rotateTips(); clearInterval(tipInterval); tipInterval = setInterval(rotateTips, 6000); }
         let tipInterval = setInterval(rotateTips, 6000);
 
         function toggleScheduleModal() {
@@ -557,6 +560,59 @@
             const meta = `BULAN: ${document.getElementById('m-month').value} | NO: ${document.getElementById('m-plate').value} | UNIT: ${document.getElementById('m-unit').value}`;
             document.getElementById('print-meta-info').innerText = meta;
             window.print();
+        }
+
+        // --- EXPORT FUNCTIONALITY ---
+        function exportData(type) {
+            const plate = document.getElementById('m-plate').value || "LOG";
+            const month = document.getElementById('m-month').value || "DATA";
+            const filename = `PILOT_INTEL_${plate}_${month}_${type.toUpperCase()}.csv`;
+            
+            // Collect Rows
+            const logs = [];
+            document.querySelectorAll('#log-body tr').forEach(r => {
+                const i = r.querySelectorAll('input, textarea');
+                if(i.length >= 13) {
+                    logs.push([
+                        i[0].value, // Tarikh
+                        to12h(i[1].value), // Mula
+                        to12h(i[2].value), // Hingga
+                        i[3].value.replace(/,/g, " "), // Pemandu
+                        i[4].value.replace(/,/g, " "), // Tujuan
+                        i[5].value.replace(/,/g, " "), // Lokasi
+                        i[6].value.replace(/,/g, " "), // Pelulus
+                        i[7].value.replace(/,/g, " "), // Pengguna
+                        i[8].value, // Odo
+                        i[9].value, // Jarak
+                        i[10].value, // Kos RM
+                        i[11].value, // No Resit
+                        i[12].value, // Liter
+                        i[13].value.replace(/,/g, " ") // Catatan
+                    ]);
+                }
+            });
+
+            if(logs.length === 0) return alert("Tiada data untuk dieksport");
+
+            let csvContent = "data:text/csv;charset=utf-8,";
+            csvContent += "TARIKH,MULA,HINGGA,PEMANDU,TUJUAN,LOKASI,PELULUS,PENGGUNA,ODO AKHIR,JARAK,KOS (RM),NO RESIT,LITER,CATATAN\n";
+            
+            logs.forEach(row => { csvContent += row.join(",") + "\n"; });
+
+            // Add Summary for Yearly/Monthly
+            if(type === 'bulan') {
+                csvContent += `\nRINGKASAN BULANAN,,,,,JARAK KESELURUHAN,${document.getElementById('sum-dist').innerText} KM\n`;
+                csvContent += `,,,,,KOS KESELURUHAN,RM ${document.getElementById('sum-rm').innerText}\n`;
+                csvContent += `,,,,,LITER KESELURUHAN,${document.getElementById('sum-liter').innerText} L\n`;
+            }
+
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", filename);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
         }
 
         function adjustHeight(el) { if (!el) return; el.style.height = "auto"; el.style.height = (el.scrollHeight) + "px"; }

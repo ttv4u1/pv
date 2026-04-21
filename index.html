@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Pilot Intel v10.0</title>
+    <title>Pilot Intel v12</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
@@ -70,41 +70,41 @@
         th { white-space: nowrap; }
         .glass-card { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.5); }
 
-        .print-text { display: none; white-space: pre-wrap; word-wrap: break-word; font-size: 8pt; line-height: 1.2; }
+        .print-text { display: none; white-space: pre-wrap; word-wrap: break-word; font-size: 8pt; line-height: 1.1; }
         
         @media print {
-            @page { size: A4 landscape; margin: 8mm; }
+            @page { size: A4 landscape; margin: 5mm; }
             body { background: white !important; padding: 0 !important; }
             .no-print { display: none !important; }
             .max-w-\[1850px\] { max-width: 100% !important; width: 100% !important; margin: 0 !important; }
-            table { display: table !important; width: 100% !important; table-layout: fixed !important; border: 1pt solid black !important; min-width: auto !important; }
-            th, td { border: 0.5pt solid black !important; padding: 4px !important; vertical-align: top !important; overflow: visible !important; }
-            th { background-color: #f1f5f9 !important; color: black !important; font-weight: 800 !important; font-size: 8pt !important; }
+            table { display: table !important; width: 100% !important; table-layout: fixed !important; border: 1pt solid black !important; min-width: auto !important; border-spacing: 0; }
+            th, td { border: 0.5pt solid black !important; padding: 1px 3px !important; vertical-align: middle !important; overflow: visible !important; }
+            th { background-color: #f1f5f9 !important; color: black !important; font-weight: 800 !important; font-size: 8pt !important; padding: 3px !important; }
             .input-box { display: none !important; }
             .print-text { display: block !important; }
-            .location-print { color: #1e40af; font-size: 7pt; font-style: italic; margin-top: 2px; border-top: 0.2pt solid #eee; padding-top: 1px; }
-            .print-center-stack { text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; }
-            .date-line { font-weight: 800; font-size: 9pt; white-space: nowrap; }
-            .day-line { font-size: 7pt; font-weight: 600; text-transform: uppercase; margin-top: 1px; }
-            .time-top { font-weight: 800; font-size: 8pt; border-bottom: 0.5pt solid #ddd; width: 100%; padding-bottom: 2px; }
-            .time-bottom { font-weight: 800; font-size: 8pt; padding-top: 2px; width: 100%; }
+            .location-print { color: #1e40af; font-size: 7pt; font-style: italic; margin-top: 1px; border-top: 0.1pt solid #eee; padding-top: 1px; }
+            .print-center-stack { text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; gap: 0; }
+            .date-line { font-weight: 800; font-size: 9pt; white-space: nowrap; line-height: 1; }
+            .day-line { font-size: 7pt; font-weight: 600; text-transform: uppercase; margin-top: 0px; line-height: 1; }
+            .time-top { font-weight: 800; font-size: 8pt; border-bottom: 0.5pt solid #ddd; width: 100%; padding-bottom: 1px; line-height: 1.1; }
+            .time-bottom { font-weight: 800; font-size: 8pt; padding-top: 1px; width: 100%; line-height: 1.1; }
             body.hide-header-print .corporate-header-print { display: none !important; }
             body.hide-footer-print .print-footer-only { display: none !important; }
-            .w-date { width: 9%; }
-            .w-time { width: 10%; }
+            .corporate-header-print { display: flex !important; align-items: center; border-bottom: 1.5pt solid black; margin-bottom: 5px; padding-bottom: 5px; }
+            .print-footer-only { display: block !important; margin-top: 5px; }
+            .w-date { width: 8.5%; }
+            .w-time { width: 9%; }
             .w-driver { width: 10%; }
-            .w-purpose { width: 29%; }
+            .w-purpose { width: 31.5%; }
             .w-auth { width: 8%; }
             .w-odo { width: 7%; }
-            .w-dist { width: 6%; }
+            .w-dist { width: 5%; }
             .w-fuel { width: 10%; }
             .w-notes { width: 11%; }
         }
 
         .corporate-header-print { display: none; }
-        @media print { .corporate-header-print { display: flex !important; align-items: center; border-bottom: 2pt solid black; margin-bottom: 10px; padding-bottom: 10px; } }
         .print-footer-only { display: none; }
-        @media print { .print-footer-only { display: block !important; margin-top: 20px; } }
 
         .scroll-hint { display: none; }
         @media (max-width: 768px) { .scroll-hint { display: block; text-align: center; font-size: 10px; color: #64748b; margin-bottom: 4px; font-weight: bold; } }
@@ -116,11 +116,11 @@
         
         <!-- PRINT HEADER -->
         <div id="print-header-section" class="corporate-header-print">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/2/26/Coat_of_arms_of_Malaysia.svg" style="width: 60px; height: 60px; margin-right: 15px;">
-            <img src="https://github.com/ttv4u1/KP/raw/main/DVS.svg" style="width: 60px; height: 60px; margin-right: 20px;">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/2/26/Coat_of_arms_of_Malaysia.svg" style="width: 50px; height: 50px; margin-right: 12px;">
+            <img src="https://github.com/ttv4u1/KP/raw/main/DVS.svg" style="width: 50px; height: 50px; margin-right: 15px;">
             <div>
-                <h2 style="font-size: 16pt; font-weight: 800; margin: 0;" class="font-heading uppercase">Pilot Intelligent</h2>
-                <p style="font-size: 10pt; margin: 0; font-weight: 600;">Bahagian Penguatkuasa • Enterprise Logistics Dashboard</p>
+                <h2 style="font-size: 14pt; font-weight: 800; margin: 0;" class="font-heading uppercase">Pilot Intelligent</h2>
+                <p style="font-size: 9pt; margin: 0; font-weight: 600;">Bahagian Penguatkuasa • Enterprise Logistics Dashboard</p>
                 <p id="print-meta-info" style="font-size: 8pt; margin: 0; color: #444; font-weight: 700;"></p>
             </div>
         </div>
@@ -247,13 +247,13 @@
 
         <!-- PRINT FOOTER RUMUSAN -->
         <div class="print-footer-only">
-            <div style="border: 1pt solid black; padding: 10px; margin-top: 20px;">
-                <h4 style="font-size: 10pt; font-weight: 800; border-bottom: 1pt solid black; padding-bottom: 4px; margin-bottom: 10px; text-transform: uppercase;">Rumusan Keseluruhan Bulan Ini</h4>
+            <div style="border: 1pt solid black; padding: 6px; margin-top: 5px;">
+                <h4 style="font-size: 9pt; font-weight: 800; border-bottom: 0.5pt solid black; padding-bottom: 2px; margin-bottom: 6px; text-transform: uppercase;">Rumusan Keseluruhan Bulan Ini</h4>
                 <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;">
-                    <div style="font-size: 9pt;"><strong>JUMLAH JARAK:</strong> <span id="p-dist">0</span> KM</div>
-                    <div style="font-size: 9pt;"><strong>JUMLAH LITER:</strong> <span id="p-liter">0</span> L</div>
-                    <div style="font-size: 9pt;"><strong>JUMLAH KOS:</strong> RM <span id="p-rm">0</span></div>
-                    <div style="font-size: 9pt;"><strong>KM / LITER:</strong> <span id="p-rate">0.00</span></div>
+                    <div style="font-size: 8pt;"><strong>JUMLAH JARAK:</strong> <span id="p-dist">0</span> KM</div>
+                    <div style="font-size: 8pt;"><strong>JUMLAH LITER:</strong> <span id="p-liter">0</span> L</div>
+                    <div style="font-size: 8pt;"><strong>JUMLAH KOS:</strong> RM <span id="p-rm">0</span></div>
+                    <div style="font-size: 8pt;"><strong>KM / LITER:</strong> <span id="p-rate">0.00</span></div>
                 </div>
             </div>
         </div>

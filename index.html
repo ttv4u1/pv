@@ -1,10 +1,10 @@
-<!-- Pilot Intel v22 - Updated with Auth Persistence & Examples -->
+<!-- Pilot Intel v26 - Updated with Auth Persistence, Examples & Realtime Tips -->
 <!DOCTYPE html>
 <html lang="ms">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Pilot Intel v22</title>
+    <title>Pilot Intel v26</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
@@ -17,6 +17,18 @@
         :root { --cyber-blue: #0ea5e9; }
         body { font-family: 'Inter', sans-serif; background: #f1f5f9; color: #1e293b; overflow-x: hidden; }
         .font-heading { font-family: 'Space Grotesk', sans-serif; }
+
+        /* Tips Animation Classes */
+        .tip-fade { animation: tipFadeInOut 6s infinite; }
+        @keyframes tipFadeInOut {
+            0%, 5%, 95%, 100% { opacity: 0; transform: translateY(10px); }
+            10% , 90% { opacity: 1; transform: translateY(0); }
+        }
+        .speed-badge {
+            display: inline-flex; align-items: center; justify-content: center;
+            width: 32px; height: 32px; border: 3px solid #ef4444; border-radius: 50%;
+            font-weight: 900; font-size: 0.7rem; color: #1e293b; background: white;
+        }
 
         .table-container { 
             overflow-x: auto; 
@@ -121,7 +133,7 @@
         </div>
 
         <!-- WEB HEADER -->
-        <header class="bg-slate-900 text-white p-4 md:p-5 rounded-2xl mb-6 flex flex-col lg:flex-row justify-between items-center no-print shadow-xl border-b-4 border-blue-500 gap-4">
+        <header class="bg-slate-900 text-white p-4 md:p-5 rounded-2xl mb-4 flex flex-col lg:flex-row justify-between items-center no-print shadow-xl border-b-4 border-blue-500 gap-4">
             <div class="flex items-center gap-4">
                 <div class="flex gap-2 bg-white p-2 rounded-xl">
                     <img src="https://upload.wikimedia.org/wikipedia/commons/2/26/Coat_of_arms_of_Malaysia.svg" class="w-8 h-8 md:w-10 md:h-10">                    
@@ -152,6 +164,23 @@
                 <img src="https://github.com/ttv4u1/KP/raw/main/DVS.svg" class="w-10 h-10 ml-2 hidden lg:block">
             </div>
         </header>
+
+        <!-- TIPS ANIMATION BAR (NEW) -->
+        <div id="tips-container" onclick="nextTip()" class="no-print mb-6 bg-white border border-slate-200 rounded-2xl p-4 shadow-sm flex items-center gap-4 cursor-pointer hover:bg-blue-50 transition-colors overflow-hidden group">
+            <div class="bg-blue-600 p-2 rounded-lg text-white shadow-md group-hover:scale-110 transition-transform">
+                <i data-lucide="lightbulb" id="tip-icon" class="w-5 h-5"></i>
+            </div>
+            <div class="flex-1">
+                <p class="text-[10px] font-black text-blue-500 uppercase tracking-widest mb-0.5">Pilot Intel Intelligence Tips</p>
+                <div id="tip-text-box" class="text-sm font-bold text-slate-700 leading-tight">
+                    Memuatkan tips pintar untuk anda...
+                </div>
+            </div>
+            <div class="hidden md:flex items-center gap-2 text-slate-300">
+                <span class="text-[10px] font-bold">KLIK UNTUK SETERUSNYA</span>
+                <i data-lucide="chevron-right" class="w-4 h-4"></i>
+            </div>
+        </div>
 
         <!-- PRINT OPTIONS -->
         <div class="no-print mb-4 flex flex-wrap gap-4 items-center bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
@@ -334,12 +363,50 @@
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth(); const db = firebase.firestore(); const provider = new firebase.auth.GoogleAuthProvider();
         
-        // PENTING: Kekalkan login selagi belum logout
         auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
 
         let currentUser = null;
         let futureSchedules = [];
         const dayNames = ["AHAD", "ISNIN", "SELASA", "RABU", "KHAMIS", "JUMAAT", "SABTU"];
+
+        // TIPS DATA
+        const intelTips = [
+            { icon: "database", text: "TIPS DATA: Pastikan ODO AWAL diisi sebelum memasukkan rekod perjalanan baru." },
+            { icon: "receipt", text: "TIPS DATA: Masukkan NO. RESIT minyak dengan jelas untuk rujukan audit kewangan." },
+            { icon: "wrench", text: "PENJAGAAN: Periksa tekanan tayar setiap minggu untuk penjimatan bahan api optimum." },
+            { icon: "droplets", text: "PENJAGAAN: Pastikan paras air radiator dan minyak hitam diperiksa sebelum perjalanan jauh." },
+            { icon: "shield-check", text: "KESELAMATAN: Gunakan tali pinggang keledar dan elakkan penggunaan telefon semasa memandu." },
+            { icon: "gauge", text: "HAD LAJU: Lebuhraya <span class='speed-badge'>110</span> Jalan Persekutuan <span class='speed-badge'>90</span>" },
+            { icon: "home", text: "HAD LAJU: Kawasan Perkampungan & Bandar <span class='speed-badge'>60</span> km/j sahaja." },
+            { icon: "graduation-cap", text: "HAD LAJU: Kawasan Sekolah <span class='speed-badge'>30</span> km/j. Berhati-hati dengan kanak-kanak." },
+            { icon: "clock-3", text: "PRO-TIP: Amalkan rehat 15 minit bagi setiap 2 jam pemanduan untuk elak mengantuk." }
+        ];
+        let currentTipIndex = 0;
+
+        function rotateTips() {
+            const tipBox = document.getElementById('tip-text-box');
+            const tipIcon = document.getElementById('tip-icon');
+            
+            tipBox.classList.remove('tip-fade');
+            void tipBox.offsetWidth; // trigger reflow
+            
+            const currentTip = intelTips[currentTipIndex];
+            tipBox.innerHTML = currentTip.text;
+            tipIcon.setAttribute('data-lucide', currentTip.icon);
+            
+            tipBox.classList.add('tip-fade');
+            lucide.createIcons();
+            
+            currentTipIndex = (currentTipIndex + 1) % intelTips.length;
+        }
+
+        function nextTip() {
+            rotateTips();
+            clearInterval(tipInterval);
+            tipInterval = setInterval(rotateTips, 6000);
+        }
+
+        let tipInterval = setInterval(rotateTips, 6000);
 
         function toggleScheduleModal() {
             const modal = document.getElementById('schedule-modal');
@@ -645,7 +712,7 @@
         function updateUI() { if(currentUser) { document.getElementById('login-btn').classList.add('hidden'); document.getElementById('user-profile').classList.remove('hidden'); document.getElementById('u-avatar').src = currentUser.photoURL; } }
         
         auth.onAuthStateChanged(user => { if(user) { currentUser = user; updateUI(); loadData(); } });
-        window.onload = () => { lucide.createIcons(); updateClock(); togglePrintConfig(); };
+        window.onload = () => { lucide.createIcons(); updateClock(); togglePrintConfig(); rotateTips(); };
     </script>
 </body>
 </html>

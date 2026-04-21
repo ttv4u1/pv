@@ -1,10 +1,10 @@
-<!-- Pilot Intel v13.1 - Updated with Logo Positioning & Schedule Viewer -->
+<!-- Pilot Intel v21 - Updated with Auth Persistence & Examples -->
 <!DOCTYPE html>
 <html lang="ms">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Pilot Intel v16</title>
+    <title>Pilot Intel v21</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
@@ -110,14 +110,14 @@
         <!-- PRINT HEADER -->
         <div id="print-header-section" class="corporate-header-print">
             <div class="flex items-center">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/2/26/Coat_of_arms_of_Malaysia.svg" style="width: 50px; height: 50px; margin-right: 12px;">             
+                <img src="https://upload.wikimedia.org/wikipedia/commons/2/26/Coat_of_arms_of_Malaysia.svg" style="width: 50px; height: 50px; margin-right: 12px;">
+                <img src="https://github.com/ttv4u1/KP/raw/main/DVS.svg" style="width: 50px; height: 50px; margin-right: 15px;">
                 <div>
                     <h2 style="font-size: 14pt; font-weight: 800; margin: 0;" class="font-heading uppercase">Pilot Intelligent</h2>
                     <p style="font-size: 9pt; margin: 0; font-weight: 600;">Bahagian Penguatkuasa • Enterprise Logistics Dashboard</p>
                     <p id="print-meta-info" style="font-size: 8pt; margin: 0; color: #444; font-weight: 700;"></p>
                 </div>
             </div>
-            <!-- Logo DVS Kanan (Print) -->
             <img src="https://github.com/ttv4u1/KP/raw/main/DVS.svg" style="width: 55px; height: 55px;">
         </div>
 
@@ -125,7 +125,8 @@
         <header class="bg-slate-900 text-white p-4 md:p-5 rounded-2xl mb-6 flex flex-col lg:flex-row justify-between items-center no-print shadow-xl border-b-4 border-blue-500 gap-4">
             <div class="flex items-center gap-4">
                 <div class="flex gap-2 bg-white p-2 rounded-xl">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/2/26/Coat_of_arms_of_Malaysia.svg" class="w-8 h-8 md:w-10 md:h-10">                    
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/2/26/Coat_of_arms_of_Malaysia.svg" class="w-8 h-8 md:w-10 md:h-10">
+                    <img src="https://github.com/ttv4u1/KP/raw/main/DVS.svg" class="w-8 h-8 md:w-10 md:h-10">
                 </div>
                 <div>
                     <h1 class="text-lg md:text-xl font-bold font-heading tracking-tight uppercase">Pilot <span class="text-blue-400">Intelligent</span></h1>
@@ -150,7 +151,6 @@
                     <img id="u-avatar" class="w-8 h-8 rounded-full border border-blue-500">
                     <button onclick="logout()" class="text-[10px] text-red-400 font-bold underline uppercase">Logout</button>
                 </div>
-                <!-- Logo DVS Paling Kanan (Web) -->
                 <img src="https://github.com/ttv4u1/KP/raw/main/DVS.svg" class="w-10 h-10 ml-2 hidden lg:block">
             </div>
         </header>
@@ -174,19 +174,19 @@
             </div>
             <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm">
                 <label class="text-[9px] font-bold text-slate-400 uppercase">No. Pendaftaran</label>
-                <input type="text" id="m-plate" class="w-full font-bold text-base md:text-lg uppercase outline-none" placeholder="Cth: VNC 974" onchange="sync()">
+                <input type="text" id="m-plate" class="w-full font-bold text-base md:text-lg uppercase outline-none" placeholder="Cth: VNC 974 / WRA 1234" onchange="sync()">
             </div>
             <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm">
                 <label class="text-[9px] font-bold text-slate-400 uppercase">Odo Awal</label>
-                <input type="number" id="m-odo-start" class="w-full font-black text-lg md:text-xl outline-none" oninput="calcLogic(); sync()">
+                <input type="number" id="m-odo-start" class="w-full font-black text-lg md:text-xl outline-none" placeholder="Cth: 45000" oninput="calcLogic(); sync()">
             </div>
             <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm">
                 <label class="text-[9px] font-bold text-slate-400 uppercase">Bahagian / Unit</label>
-                <input type="text" id="m-unit" class="w-full font-bold text-base md:text-lg uppercase outline-none" placeholder="UNIT LOGISTIK" onchange="sync()">
+                <input type="text" id="m-unit" class="w-full font-bold text-base md:text-lg uppercase outline-none" placeholder="Cth: UNIT LOGISTIK / PENGUATKUASA" onchange="sync()">
             </div>
             <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm">
                 <label class="text-[9px] font-bold text-slate-400 uppercase">Gaji Pokok (RM)</label>
-                <input type="number" id="m-salary" class="w-full font-bold text-base md:text-lg outline-none" placeholder="0.00" oninput="calcWage(); sync()">
+                <input type="number" id="m-salary" class="w-full font-bold text-base md:text-lg outline-none" placeholder="Cth: 2500.00" oninput="calcWage(); sync()">
                 <div id="wage-result" class="mt-1 leading-tight">
                     <p class="text-[9px] font-bold text-slate-500 uppercase">Jumlah (+ RM765): <span id="total-with-allowance" class="text-slate-700">RM 0.00</span></p>
                     <p id="hourly-rate" class="text-[10px] font-black text-emerald-600 uppercase italic tracking-tighter">Kadar/Jam: RM 0.00</p>
@@ -293,12 +293,12 @@
                     </div>
                     <div class="md:col-span-2">
                         <label class="text-[10px] font-black text-slate-400 uppercase">Tujuan / Urusan</label>
-                        <input type="text" id="new-sch-desc" class="w-full mt-1 p-2 border rounded-xl text-sm font-bold uppercase" placeholder="Contoh: Lawatan Tapak">
+                        <input type="text" id="new-sch-desc" class="w-full mt-1 p-2 border rounded-xl text-sm font-bold uppercase" placeholder="Cth: LAWATAN TAPAK / MENGHANTAR PEGAWAI KE KLIA">
                     </div>
                     <div class="md:col-span-2">
                         <label class="text-[10px] font-black text-slate-400 uppercase">Lokasi Penuh (Google Maps)</label>
                         <div class="flex gap-2 mt-1">
-                            <input type="text" id="new-sch-loc" class="flex-1 p-2 border rounded-xl text-sm font-bold uppercase" placeholder="Nama Bangunan / Alamat Penuh">
+                            <input type="text" id="new-sch-loc" class="flex-1 p-2 border rounded-xl text-sm font-bold uppercase" placeholder="Cth: IBU PEJABAT PERKHIDMATAN VETERINAR, PUTRAJAYA">
                             <button onclick="previewMapFromInput('new-sch-loc')" class="bg-slate-200 text-slate-700 p-2 rounded-xl hover:bg-slate-300 transition shadow-sm">
                                 <i data-lucide="map-pin" class="w-5 h-5"></i>
                             </button>
@@ -324,9 +324,7 @@
                 <h3 class="font-heading font-bold text-lg uppercase">Butiran Penuh Jadual</h3>
                 <button onclick="document.getElementById('view-detail-modal').classList.add('hidden')" class="p-1 hover:bg-blue-500 rounded-lg"><i data-lucide="x"></i></button>
             </div>
-            <div id="view-detail-content" class="p-6 space-y-4">
-                <!-- Content injected via JS -->
-            </div>
+            <div id="view-detail-content" class="p-6 space-y-4"></div>
             <div class="p-4 bg-slate-50 flex justify-end">
                 <button onclick="document.getElementById('view-detail-modal').classList.add('hidden')" class="bg-slate-900 text-white px-6 py-2 rounded-xl font-bold text-sm">TUTUP</button>
             </div>
@@ -334,13 +332,15 @@
     </div>
 
     <script>
-        // API Config - Do not change
         const firebaseConfig = { apiKey: "AIzaSyDdCwKNCx0nA1cZirGrw1UYvtumALluVXw", authDomain: "pilot-veterinar.firebaseapp.com", projectId: "pilot-veterinar", storageBucket: "pilot-veterinar.firebasestorage.app", messagingSenderId: "559136368070", appId: "1:559136368070:web:8aaa2dcb804c73f10cbec7" };
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth(); const db = firebase.firestore(); const provider = new firebase.auth.GoogleAuthProvider();
+        
+        // PENTING: Kekalkan login selagi belum logout
+        auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+
         let currentUser = null;
         let futureSchedules = [];
-
         const dayNames = ["AHAD", "ISNIN", "SELASA", "RABU", "KHAMIS", "JUMAAT", "SABTU"];
 
         function toggleScheduleModal() {
@@ -371,10 +371,7 @@
             futureSchedules.forEach((item, index) => {
                 const div = document.createElement('div');
                 div.className = "p-4 bg-slate-50 rounded-2xl border-l-4 border-blue-500 shadow-sm relative group hover:bg-slate-100 transition-all cursor-pointer";
-                // Add click event for full view
-                div.onclick = (e) => {
-                    if(!e.target.closest('button')) viewFullSchedule(index);
-                };
+                div.onclick = (e) => { if(!e.target.closest('button')) viewFullSchedule(index); };
                 div.innerHTML = `
                     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
                         <div class="flex-1">
@@ -404,32 +401,15 @@
             const content = document.getElementById('view-detail-content');
             content.innerHTML = `
                 <div class="space-y-4">
-                    <div>
-                        <label class="text-[10px] font-black text-slate-400 uppercase block">Urusan / Tujuan</label>
-                        <p class="text-lg font-black text-slate-900 uppercase leading-tight">${item.desc}</p>
-                    </div>
+                    <div><label class="text-[10px] font-black text-slate-400 uppercase block">Urusan / Tujuan</label><p class="text-lg font-black text-slate-900 uppercase leading-tight">${item.desc}</p></div>
                     <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <label class="text-[10px] font-black text-slate-400 uppercase block">Mula</label>
-                            <p class="font-bold text-slate-700">${getDayFromDate(item.dateStart)}, ${item.dateStart}</p>
-                            <p class="text-blue-600 font-black text-xl">${to12h(item.timeStart)}</p>
-                        </div>
-                        <div>
-                            <label class="text-[10px] font-black text-slate-400 uppercase block">Tamat</label>
-                            <p class="font-bold text-slate-700">${getDayFromDate(item.dateEnd || item.dateStart)}, ${item.dateEnd || item.dateStart}</p>
-                            <p class="text-blue-600 font-black text-xl">${to12h(item.timeEnd)}</p>
-                        </div>
+                        <div><label class="text-[10px] font-black text-slate-400 uppercase block">Mula</label><p class="font-bold text-slate-700">${getDayFromDate(item.dateStart)}, ${item.dateStart}</p><p class="text-blue-600 font-black text-xl">${to12h(item.timeStart)}</p></div>
+                        <div><label class="text-[10px] font-black text-slate-400 uppercase block">Tamat</label><p class="font-bold text-slate-700">${getDayFromDate(item.dateEnd || item.dateStart)}, ${item.dateEnd || item.dateStart}</p><p class="text-blue-600 font-black text-xl">${to12h(item.timeEnd)}</p></div>
                     </div>
-                    <div>
-                        <label class="text-[10px] font-black text-slate-400 uppercase block">Lokasi Penuh</label>
-                        <p class="font-bold text-slate-800 uppercase italic mb-2">${item.location || 'TIADA LOKASI DINYATAKAN'}</p>
-                        ${item.location ? `
-                        <button onclick="window.open('https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(item.location)}', '_blank')" class="flex items-center gap-2 text-xs font-black bg-blue-50 text-blue-700 px-4 py-2 rounded-lg hover:bg-blue-100 transition">
-                            <i data-lucide="map-pin" class="w-4 h-4"></i> BUKA GOOGLE MAPS
-                        </button>` : ''}
+                    <div><label class="text-[10px] font-black text-slate-400 uppercase block">Lokasi Penuh</label><p class="font-bold text-slate-800 uppercase italic mb-2">${item.location || 'TIADA LOKASI DINYATAKAN'}</p>
+                        ${item.location ? `<button onclick="window.open('https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(item.location)}', '_blank')" class="flex items-center gap-2 text-xs font-black bg-blue-50 text-blue-700 px-4 py-2 rounded-lg hover:bg-blue-100 transition"><i data-lucide="map-pin" class="w-4 h-4"></i> BUKA GOOGLE MAPS</button>` : ''}
                     </div>
-                </div>
-            `;
+                </div>`;
             document.getElementById('view-detail-modal').classList.remove('hidden');
             lucide.createIcons();
         }
@@ -446,7 +426,6 @@
             document.getElementById('btn-text').innerText = "KEMASKINI JADUAL";
             document.getElementById('save-sch-btn').classList.replace('bg-blue-600', 'bg-orange-500');
             document.getElementById('cancel-edit-btn').classList.remove('hidden');
-            // Scroll to top of form
             document.querySelector('#schedule-modal .overflow-y-auto').scrollTop = 0;
         }
 
@@ -474,16 +453,8 @@
                 location: document.getElementById('new-sch-loc').value
             };
             if(!data.dateStart || !data.desc) return alert("Sila isi tarikh dan urusan");
-            
-            if(idx === -1) {
-                futureSchedules.push(data);
-            } else {
-                futureSchedules[idx] = data;
-            }
-            
-            renderSchedules();
-            resetSchForm();
-            sync();
+            if(idx === -1) futureSchedules.push(data); else futureSchedules[idx] = data;
+            renderSchedules(); resetSchForm(); sync();
         }
 
         function removeScheduleItem(index) { if(confirm("Padam jadual ini?")) { futureSchedules.splice(index, 1); renderSchedules(); sync(); } }
@@ -533,48 +504,39 @@
             tr.innerHTML = `
                 <td class="w-date p-2">
                     <div class="input-box flex flex-col">
-                        <div class="flex items-center">
-                            <input type="date" value="${v.tarikhRaw||''}" class="row-input date-input">
-                            <span class="pulse-dot"></span>
-                        </div>
+                        <div class="flex items-center"><input type="date" value="${v.tarikhRaw||''}" class="row-input date-input"><span class="pulse-dot"></span></div>
                         <div class="web-day-label text-[10px] font-bold text-slate-400 mt-0.5 ml-1 uppercase">${getDayFromDate(v.tarikhRaw)}</div>
-                    </div>
-                    <span class="print-text">${formatDisplayDate(v.tarikhRaw)}</span>
+                    </div><span class="print-text">${formatDisplayDate(v.tarikhRaw)}</span>
                 </td>
                 <td class="w-time p-2">
                     <div class="flex flex-col input-box">
                         <input type="time" value="${v.mulaRaw||''}" class="row-input t-mula border-b border-slate-100">
                         <input type="time" value="${v.hinggaRaw||''}" class="row-input t-hingga">
-                    </div>
-                    <span class="print-text"><div class="print-center-stack"><div class="time-top">${to12h(v.mulaRaw)}</div><div class="time-bottom">${to12h(v.hinggaRaw)}</div></div></span>
+                    </div><span class="print-text"><div class="print-center-stack"><div class="time-top">${to12h(v.mulaRaw)}</div><div class="time-bottom">${to12h(v.hinggaRaw)}</div></div></span>
                 </td>
                 <td class="w-driver">
-                    <div class="input-box"><textarea class="row-input uppercase font-bold" rows="1">${v.pemandu||''}</textarea></div>
+                    <div class="input-box"><textarea class="row-input uppercase font-bold" rows="1" placeholder="Cth: AHMAD BIN ALI">${v.pemandu||''}</textarea></div>
                     <span class="print-text uppercase font-bold">${v.pemandu||''}</span>
                 </td>
                 <td class="w-purpose">
                     <div class="input-box px-1">
-                        <textarea class="row-input uppercase text-slate-800 font-bold main-purpose" rows="1" placeholder="TUJUAN & URUSAN">${v.tujuan||''}</textarea>
+                        <textarea class="row-input uppercase text-slate-800 font-bold main-purpose" rows="1" placeholder="Cth: MENGHANTAR PEGAWAI KE IBU PEJABAT">${v.tujuan||''}</textarea>
                         <div class="flex items-center gap-1 mt-1 border-t border-slate-100 pt-1">
-                            <input type="text" value="${v.lokasiPenuh||''}" class="row-input location-input" placeholder="LOKASI PENUH (GOOGLE MAPS)">
+                            <input type="text" value="${v.lokasiPenuh||''}" class="row-input location-input" placeholder="Cth: WISMA TANI, PUTRAJAYA">
                             <button onclick="openMapsFromTable(this)" class="text-blue-400 hover:text-blue-600"><i data-lucide="map-pin" class="w-3 h-3"></i></button>
                         </div>
-                    </div>
-                    <span class="print-text">
-                        <div class="font-bold uppercase">${v.tujuan||''}</div>
-                        <div class="location-print">${v.lokasiPenuh ? 'LOKASI: ' + v.lokasiPenuh : ''}</div>
-                    </span>
+                    </div><span class="print-text"><div class="font-bold uppercase">${v.tujuan||''}</div><div class="location-print">${v.lokasiPenuh ? 'LOKASI: ' + v.lokasiPenuh : ''}</div></span>
                 </td>
                 <td class="w-auth">
-                    <div class="input-box"><textarea class="row-input uppercase text-center" rows="1">${v.pelulus||''}</textarea></div>
+                    <div class="input-box"><textarea class="row-input uppercase text-center" rows="1" placeholder="Cth: KPP (L)">${v.pelulus||''}</textarea></div>
                     <span class="print-text uppercase text-center">${v.pelulus||''}</span>
                 </td>
                 <td class="w-auth">
-                    <div class="input-box"><textarea class="row-input uppercase text-center" rows="1">${v.pengguna||''}</textarea></div>
+                    <div class="input-box"><textarea class="row-input uppercase text-center" rows="1" placeholder="Cth: DR. AZMAN">${v.pengguna||''}</textarea></div>
                     <span class="print-text uppercase text-center">${v.pengguna||''}</span>
                 </td>
                 <td class="w-odo">
-                    <div class="input-box"><input type="number" value="${v.odo||''}" class="row-input odo-val font-black text-blue-600 text-center"></div>
+                    <div class="input-box"><input type="number" value="${v.odo||''}" class="row-input odo-val font-black text-blue-600 text-center" placeholder="00000"></div>
                     <span class="print-text font-black text-center">${v.odo||''}</span>
                 </td>
                 <td class="w-dist">
@@ -584,21 +546,18 @@
                 <td class="w-fuel bg-slate-50/30">
                     <div class="input-box flex flex-col px-1">
                         <div class="flex items-center"><span class="text-[10px] font-black text-slate-400 mr-1">RM</span><input type="number" step="0.01" value="${v.resit||''}" class="row-input rm-val font-bold" placeholder="0.00"></div>
-                        <div class="flex items-center"><span class="text-[8px] font-black text-blue-400 mr-1">R/N:</span><input type="text" value="${v.noResit||''}" class="row-input no-resit-val text-[10px] text-blue-600 font-bold" placeholder="..."></div>
-                    </div>
-                    <span class="print-text text-center"><div class="font-bold">RM ${v.resit||'0.00'}</div><div class="text-[7pt] text-blue-600 font-bold italic">R/N: ${v.noResit||'-'}</div></span>
+                        <div class="flex items-center"><span class="text-[8px] font-black text-blue-400 mr-1">R/N:</span><input type="text" value="${v.noResit||''}" class="row-input no-resit-val text-[10px] text-blue-600 font-bold" placeholder="No. Resit"></div>
+                    </div><span class="print-text text-center"><div class="font-bold">RM ${v.resit||'0.00'}</div><div class="text-[7pt] text-blue-600 font-bold italic">R/N: ${v.noResit||'-'}</div></span>
                 </td>
                 <td class="w-fuel">
-                    <div class="input-box"><input type="number" step="0.01" value="${v.liter||''}" class="row-input liter-val text-center"></div>
+                    <div class="input-box"><input type="number" step="0.01" value="${v.liter||''}" class="row-input liter-val text-center" placeholder="0.00"></div>
                     <span class="print-text text-center font-bold">${v.liter||''} L</span>
                 </td>
                 <td class="w-notes">
-                    <div class="input-box"><textarea class="row-input italic text-slate-500" rows="1">${v.arahan||''}</textarea></div>
+                    <div class="input-box"><textarea class="row-input italic text-slate-500" rows="1" placeholder="Cth: ARAHAN PENGARAH">${v.arahan||''}</textarea></div>
                     <span class="print-text italic text-slate-500">${v.arahan||''}</span>
                 </td>
-                <td class="no-print text-center">
-                    <button onclick="this.closest('tr').remove();calcLogic();sync()" class="text-red-400 hover:bg-red-50 p-1 rounded-full"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
-                </td>
+                <td class="no-print text-center"><button onclick="this.closest('tr').remove();calcLogic();sync()" class="text-red-400 hover:bg-red-50 p-1 rounded-full"><i data-lucide="trash-2" class="w-4 h-4"></i></button></td>
             `;
             document.getElementById('log-body').appendChild(tr);
             lucide.createIcons();
@@ -606,25 +565,21 @@
             tr.querySelectorAll('input, textarea').forEach(input => {
                 input.addEventListener('input', (e) => {
                     const row = e.target.closest('tr');
-                    // Sync values to print spans
                     if(e.target.classList.contains('date-input')) {
                         row.querySelector('.web-day-label').innerText = getDayFromDate(e.target.value);
                         row.querySelector('.w-date .print-text').innerHTML = formatDisplayDate(e.target.value);
                     } else if(e.target.classList.contains('t-mula') || e.target.classList.contains('t-hingga')) {
                         row.querySelector('.w-time .print-text').innerHTML = `<div class="print-center-stack"><div class="time-top">${to12h(row.querySelector('.t-mula').value)}</div><div class="time-bottom">${to12h(row.querySelector('.t-hingga').value)}</div></div>`;
                     } else if(e.target.classList.contains('main-purpose') || e.target.classList.contains('location-input')) {
-                        const tp = row.querySelector('.main-purpose').value;
-                        const lp = row.querySelector('.location-input').value;
+                        const tp = row.querySelector('.main-purpose').value; const lp = row.querySelector('.location-input').value;
                         row.querySelector('.w-purpose .print-text').innerHTML = `<div class="font-bold uppercase">${tp}</div><div class="location-print">${lp ? 'LOKASI: ' + lp : ''}</div>`;
                     } else if(e.target.classList.contains('rm-val') || e.target.classList.contains('no-resit-val')) {
                         row.querySelector('.w-fuel .print-text').innerHTML = `<div class="font-bold">RM ${row.querySelector('.rm-val').value || '0.00'}</div><div class="text-[7pt] text-blue-600 font-bold italic">R/N: ${row.querySelector('.no-resit-val').value || '-'}</div>`;
                     } else if(e.target.classList.contains('liter-val')) {
                         row.querySelector('.w-fuel + .w-fuel .print-text').innerText = (e.target.value || '0') + " L";
                     } else {
-                        const span = e.target.parentElement.nextElementSibling;
-                        if(span && span.classList.contains('print-text')) span.innerText = e.target.value;
+                        const span = e.target.parentElement.nextElementSibling; if(span && span.classList.contains('print-text')) span.innerText = e.target.value;
                     }
-
                     if(e.target.tagName === 'TEXTAREA') adjustHeight(e.target);
                     calcLogic(); sync();
                 });
@@ -637,12 +592,10 @@
             let td = 0, tl = 0, trm = 0;
             document.querySelectorAll('#log-body tr').forEach(row => {
                 const odo = Number(row.querySelector('.odo-val').value);
-                const df = row.querySelector('.dist-val');
-                const ds = row.querySelector('.w-dist .print-text');
+                const df = row.querySelector('.dist-val'); const ds = row.querySelector('.w-dist .print-text');
                 if(odo > 0 && odo > prev) { const diff = odo - prev; df.value = diff; ds.innerText = diff; prev = odo; td += diff; }
                 else { df.value = ""; ds.innerText = ""; if(odo > 0) prev = odo; }
-                tl += Number(row.querySelector('.liter-val').value) || 0;
-                trm += Number(row.querySelector('.rm-val').value) || 0;
+                tl += Number(row.querySelector('.liter-val').value) || 0; trm += Number(row.querySelector('.rm-val').value) || 0;
             });
             document.getElementById('sum-dist').innerText = td; document.getElementById('p-dist').innerText = td;
             document.getElementById('sum-liter').innerText = tl.toFixed(2); document.getElementById('p-liter').innerText = tl.toFixed(2);
@@ -665,37 +618,26 @@
                 const i = r.querySelectorAll('input, textarea');
                 if(i.length >= 13) {
                     logs.push({
-                        tarikhRaw:i[0].value, mulaRaw:i[1].value, hinggaRaw:i[2].value, 
-                        pemandu:i[3].value, tujuan:i[4].value, lokasiPenuh:i[5].value,
-                        pelulus:i[6].value, pengguna:i[7].value, odo:i[8].value, 
-                        jarak:i[9].value, resit:i[10].value, noResit:i[11].value, 
-                        liter:i[12].value, arahan:i[13].value
+                        tarikhRaw:i[0].value, mulaRaw:i[1].value, hinggaRaw:i[2].value, pemandu:i[3].value, tujuan:i[4].value, lokasiPenuh:i[5].value,
+                        pelulus:i[6].value, pengguna:i[7].value, odo:i[8].value, jarak:i[9].value, resit:i[10].value, noResit:i[11].value, liter:i[12].value, arahan:i[13].value
                     });
                 }
             });
             await db.collection("logs_v81").doc(currentUser.uid).set({
-                meta: { 
-                    month:document.getElementById('m-month').value, plate:document.getElementById('m-plate').value, 
-                    odo:document.getElementById('m-odo-start').value, unit:document.getElementById('m-unit').value,
-                    salary:document.getElementById('m-salary').value 
-                },
-                logs: logs, 
-                futureSchedules: futureSchedules
+                meta: { month:document.getElementById('m-month').value, plate:document.getElementById('m-plate').value, odo:document.getElementById('m-odo-start').value, unit:document.getElementById('m-unit').value, salary:document.getElementById('m-salary').value },
+                logs: logs, futureSchedules: futureSchedules
             });
         }
 
         async function loadData() {
+            if(!currentUser) return;
             const doc = await db.collection("logs_v81").doc(currentUser.uid).get();
             if(doc.exists) {
                 const d = doc.data();
-                document.getElementById('m-month').value = d.meta.month || ''; 
-                document.getElementById('m-plate').value = d.meta.plate || '';
-                document.getElementById('m-odo-start').value = d.meta.odo || ''; 
-                document.getElementById('m-unit').value = d.meta.unit || '';
-                document.getElementById('m-salary').value = d.meta.salary || ''; 
-                futureSchedules = d.futureSchedules || [];
-                document.getElementById('log-body').innerHTML = ""; 
-                if(d.logs && d.logs.length > 0) d.logs.forEach(l => addRow(l)); else addRow();
+                document.getElementById('m-month').value = d.meta.month || ''; document.getElementById('m-plate').value = d.meta.plate || '';
+                document.getElementById('m-odo-start').value = d.meta.odo || ''; document.getElementById('m-unit').value = d.meta.unit || '';
+                document.getElementById('m-salary').value = d.meta.salary || ''; futureSchedules = d.futureSchedules || [];
+                document.getElementById('log-body').innerHTML = ""; if(d.logs && d.logs.length > 0) d.logs.forEach(l => addRow(l)); else addRow();
                 calcLogic(); calcWage(); renderSchedules();
             } else { addRow(); }
         }
@@ -703,6 +645,7 @@
         async function loginGoogle() { try { const res = await auth.signInWithPopup(provider); currentUser = res.user; updateUI(); loadData(); } catch(e) {} }
         function logout() { auth.signOut().then(() => location.reload()); }
         function updateUI() { if(currentUser) { document.getElementById('login-btn').classList.add('hidden'); document.getElementById('user-profile').classList.remove('hidden'); document.getElementById('u-avatar').src = currentUser.photoURL; } }
+        
         auth.onAuthStateChanged(user => { if(user) { currentUser = user; updateUI(); loadData(); } });
         window.onload = () => { lucide.createIcons(); updateClock(); togglePrintConfig(); };
     </script>

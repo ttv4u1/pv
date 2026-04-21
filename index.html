@@ -1,10 +1,10 @@
-<!-- Pilot Intel v29 - Updated with Schedule Auto-Lock -->
+<!-- Pilot Intel v2 - Updated with Schedule Auto-Lock -->
 <!DOCTYPE html>
 <html lang="ms">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Pilot Intel v29</title>
+    <title>Pilot Intel v2</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
@@ -751,7 +751,9 @@
                         <button onclick="toggleLock(this)" class="lock-icon-btn p-1 hover:bg-slate-100 rounded-full transition-all">
                             <i data-lucide="lock-open" class="w-4 h-4 text-emerald-500"></i>
                         </button>
-                        <button onclick="this.closest('tr').remove();calcLogic();sync()" class="text-red-400 hover:bg-red-50 p-1 rounded-full"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                        <button onclick="if(confirm('Padam rekod perjalanan ini?')) { this.closest('tr').remove(); calcLogic(); sync(); }" class="text-red-400 hover:bg-red-50 p-1 rounded-full">
+                            <i data-lucide="trash-2" class="w-4 h-4"></i>
+                        </button>
                     </div>
                 </td>
             `;

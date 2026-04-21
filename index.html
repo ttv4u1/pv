@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Pilot Intel v12</title>
+    <title>Pilot Intel v13</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
@@ -385,12 +385,12 @@
         function editScheduleItem(index) {
             const item = futureSchedules[index];
             document.getElementById('editing-index').value = index;
-            document.getElementById('new-sch-date-start').value = item.dateStart;
-            document.getElementById('new-sch-time-start').value = item.timeStart;
-            document.getElementById('new-sch-date-end').value = item.dateEnd;
-            document.getElementById('new-sch-time-end').value = item.timeEnd;
-            document.getElementById('new-sch-desc').value = item.desc;
-            document.getElementById('new-sch-loc').value = item.location;
+            document.getElementById('new-sch-date-start').value = item.dateStart || "";
+            document.getElementById('new-sch-time-start').value = item.timeStart || "";
+            document.getElementById('new-sch-date-end').value = item.dateEnd || "";
+            document.getElementById('new-sch-time-end').value = item.timeEnd || "";
+            document.getElementById('new-sch-desc').value = item.desc || "";
+            document.getElementById('new-sch-loc').value = item.location || "";
             document.getElementById('btn-text').innerText = "KEMASKINI JADUAL";
             document.getElementById('save-sch-btn').classList.replace('bg-blue-600', 'bg-orange-500');
             document.getElementById('cancel-edit-btn').classList.remove('hidden');
@@ -398,7 +398,12 @@
 
         function resetSchForm() {
             document.getElementById('editing-index').value = "-1";
-            document.querySelectorAll('#schedule-modal input').forEach(i => i.value = "");
+            document.getElementById('new-sch-date-start').value = "";
+            document.getElementById('new-sch-time-start').value = "";
+            document.getElementById('new-sch-date-end').value = "";
+            document.getElementById('new-sch-time-end').value = "";
+            document.getElementById('new-sch-desc').value = "";
+            document.getElementById('new-sch-loc').value = "";
             document.getElementById('btn-text').innerText = "SIMPAN JADUAL";
             document.getElementById('save-sch-btn').classList.replace('bg-orange-500', 'bg-blue-600');
             document.getElementById('cancel-edit-btn').classList.add('hidden');
@@ -409,17 +414,25 @@
             const data = {
                 dateStart: document.getElementById('new-sch-date-start').value,
                 timeStart: document.getElementById('new-sch-time-start').value,
-                dateEnd: document.getElementById('new-sch-date-end').value,
+                dateEnd: document.getElementById('new-sch-date-end').value || document.getElementById('new-sch-date-start').value,
                 timeEnd: document.getElementById('new-sch-time-end').value,
                 desc: document.getElementById('new-sch-desc').value,
                 location: document.getElementById('new-sch-loc').value
             };
             if(!data.dateStart || !data.desc) return alert("Sila isi tarikh dan urusan");
-            if(idx === -1) futureSchedules.push(data); else futureSchedules[idx] = data;
-            resetSchForm(); renderSchedules(); sync();
+            
+            if(idx === -1) {
+                futureSchedules.push(data);
+            } else {
+                futureSchedules[idx] = data;
+            }
+            
+            renderSchedules();
+            resetSchForm();
+            sync(); // Hantar terus ke Firebase
         }
 
-        function removeScheduleItem(index) { if(confirm("Padam?")) { futureSchedules.splice(index, 1); renderSchedules(); sync(); } }
+        function removeScheduleItem(index) { if(confirm("Padam jadual ini?")) { futureSchedules.splice(index, 1); renderSchedules(); sync(); } }
 
         function updateClock() {
             const now = new Date();
@@ -552,7 +565,7 @@
                     } else if(e.target.classList.contains('rm-val') || e.target.classList.contains('no-resit-val')) {
                         row.querySelector('.w-fuel .print-text').innerHTML = `<div class="font-bold">RM ${row.querySelector('.rm-val').value || '0.00'}</div><div class="text-[7pt] text-blue-600 font-bold italic">R/N: ${row.querySelector('.no-resit-val').value || '-'}</div>`;
                     } else if(e.target.classList.contains('liter-val')) {
-                        row.querySelector('.w-fuel + .w-fuel .print-text').innerText = e.target.value + " L";
+                        row.querySelector('.w-fuel + .w-fuel .print-text').innerText = (e.target.value || '0') + " L";
                     } else {
                         const span = e.target.parentElement.nextElementSibling;
                         if(span && span.classList.contains('print-text')) span.innerText = e.target.value;
@@ -612,7 +625,8 @@
                     odo:document.getElementById('m-odo-start').value, unit:document.getElementById('m-unit').value,
                     salary:document.getElementById('m-salary').value 
                 },
-                logs: logs, futureSchedules: futureSchedules
+                logs: logs, 
+                futureSchedules: futureSchedules // Pastikan jadual dihantar
             });
         }
 
@@ -628,7 +642,7 @@
                 futureSchedules = d.futureSchedules || [];
                 document.getElementById('log-body').innerHTML = ""; 
                 if(d.logs && d.logs.length > 0) d.logs.forEach(l => addRow(l)); else addRow();
-                calcLogic(); calcWage();
+                calcLogic(); calcWage(); renderSchedules();
             } else { addRow(); }
         }
 

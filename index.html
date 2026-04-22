@@ -1,10 +1,10 @@
-<!-- Pilot Intel v2 - Updated with Schedule Auto-Lock -->
+<!-- Pilot Intel v3.1 - Updated with Schedule Print & Smart View -->
 <!DOCTYPE html>
 <html lang="ms">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Pilot Intel v2</title>
+    <title>Pilot Intel v3.1</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
@@ -18,7 +18,6 @@
         body { font-family: 'Inter', sans-serif; background: #f1f5f9; color: #1e293b; overflow-x: hidden; }
         .font-heading { font-family: 'Space Grotesk', sans-serif; }
 
-        /* Tips Animation Classes */
         .tip-fade { animation: tipFadeInOut 6s infinite; }
         @keyframes tipFadeInOut {
             0%, 5%, 95%, 100% { opacity: 0; transform: translateY(10px); }
@@ -79,6 +78,7 @@
 
         .print-text { display: none; white-space: pre-wrap; word-wrap: break-word; font-size: 8pt; line-height: 1.1; }
         
+        /* PRINT STYLES */
         @media print {
             @page { size: A4 landscape; margin: 5mm; }
             body { background: white !important; padding: 0 !important; }
@@ -109,19 +109,25 @@
             .w-fuel { width: 10%; }
             .w-notes { width: 11%; }
             .w-action { display: none !important; }
+
+            /* New Print Schedule Section */
+            .print-schedule-section { display: block !important; margin-top: 20px; page-break-before: auto; }
+            .print-schedule-title { font-size: 10pt; font-weight: 800; text-transform: uppercase; border-bottom: 1pt solid black; margin-bottom: 5px; padding-bottom: 2px; }
         }
 
         .corporate-header-print { display: none; }
         .print-footer-only { display: none; }
+        .print-schedule-section { display: none; }
 
         .scroll-hint { display: none; }
         @media (max-width: 768px) { .scroll-hint { display: block; text-align: center; font-size: 10px; color: #64748b; margin-bottom: 4px; font-weight: bold; } }
         
-        /* Locked Row Style */
         .row-locked-bg { background-color: #f8fafc; }
-        
-        /* Schedule Locked State */
         .sch-locked { opacity: 0.7; border-left-color: #94a3b8 !important; }
+
+        /* Smooth Hide/Show for Schedule Inputs */
+        .sch-form-container { transition: all 0.3s ease-in-out; max-height: 0; overflow: hidden; opacity: 0; }
+        .sch-form-container.active { max-height: 1000px; opacity: 1; padding: 1.5rem; margin-bottom: 1rem; border-bottom: 1px solid #e2e8f0; }
     </style>
 </head>
 <body class="p-2 md:p-6">
@@ -144,7 +150,7 @@
         <!-- WEB HEADER -->
         <header class="bg-slate-900 text-white p-4 md:p-5 rounded-2xl mb-4 flex flex-col lg:flex-row justify-between items-center no-print shadow-xl border-b-4 border-blue-500 gap-4">
             <div class="flex items-center gap-4">                
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/2/26/Coat_of_arms_of_Malaysia.svg" class="w-8 h-8 md:w-10 md:h-10">                
+                <img src="https://upload.wikimedia.org/wikipedia/commons/2/26/Coat_of_arms_of_Malaysia.svg" class="w-8 h-8 md:w-10 md:h-10">                
                 <div>
                     <h1 class="text-lg md:text-xl font-bold font-heading tracking-tight uppercase">Pilot <span class="text-blue-400">Intelligent</span></h1>
                     <p class="text-[8px] md:text-[9px] text-slate-400 font-bold uppercase tracking-widest">Enterprise Logistics Dashboard</p>
@@ -300,6 +306,25 @@
             </div>
         </div>
 
+        <!-- NEW: PRINT JADUAL AKAN DATANG SECTION -->
+        <div class="print-schedule-section">
+            <h3 class="print-schedule-title">Jadual Perjalanan Akan Datang</h3>
+            <table id="print-schedule-table">
+                <thead class="bg-slate-100">
+                    <tr>
+                        <th style="width: 15%">Tarikh Mula</th>
+                        <th style="width: 15%">Tarikh Akhir</th>
+                        <th style="width: 15%">Masa</th>
+                        <th style="width: 30%">Urusan / Tujuan</th>
+                        <th style="width: 25%">Lokasi</th>
+                    </tr>
+                </thead>
+                <tbody id="print-schedule-body">
+                    <!-- Data will be injected via JS -->
+                </tbody>
+            </table>
+        </div>
+
         <!-- FAB PRINT -->
         <div class="fixed bottom-6 right-6 no-print z-50">
             <button onclick="handlePrint()" class="bg-blue-600 text-white p-4 md:p-5 rounded-full shadow-2xl hover:scale-110 active:scale-90 transition-all flex items-center gap-2 font-bold border-4 border-white">
@@ -316,10 +341,16 @@
                     <i data-lucide="calendar-clock" class="text-emerald-400"></i>
                     <h2 class="font-heading font-bold text-xl uppercase tracking-tight">Jadual Akan Datang</h2>
                 </div>
-                <button onclick="toggleScheduleModal()" class="text-slate-400 hover:text-white p-2"><i data-lucide="x"></i></button>
+                <div class="flex items-center gap-2">
+                    <button onclick="toggleSchForm()" id="toggle-form-btn" class="bg-blue-600 hover:bg-blue-700 p-2 rounded-xl flex items-center gap-2 text-xs font-bold transition">
+                        <i data-lucide="plus-circle" class="w-4 h-4"></i> <span id="form-action-text">TAMBAH JADUAL</span>
+                    </button>
+                    <button onclick="toggleScheduleModal()" class="text-slate-400 hover:text-white p-2"><i data-lucide="x"></i></button>
+                </div>
             </div>
 
-            <div class="p-6 bg-slate-50 border-b border-slate-200">
+            <!-- Auto-hidden Input Form with Smart Icon Button -->
+            <div id="sch-form" class="sch-form-container bg-slate-50">
                 <input type="hidden" id="editing-index" value="-1">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
@@ -351,10 +382,10 @@
                     </div>
                 </div>
                 <div class="flex gap-2 mt-6">
-                    <button id="save-sch-btn" onclick="addScheduleItem()" class="flex-1 bg-blue-600 text-white rounded-xl font-bold py-3 hover:bg-blue-700 shadow-lg transition-all active:scale-95 flex items-center justify-center gap-2">
-                        <i data-lucide="plus"></i> <span id="btn-text">SIMPAN JADUAL</span>
+                    <button id="save-sch-btn" onclick="addScheduleItem()" class="flex-1 bg-emerald-600 text-white rounded-xl font-bold py-3 hover:bg-emerald-700 shadow-lg transition-all active:scale-95 flex items-center justify-center gap-2">
+                        <i data-lucide="save"></i> <span id="btn-text">SIMPAN DATA JADUAL</span>
                     </button>
-                    <button id="cancel-edit-btn" onclick="resetSchForm()" class="hidden bg-slate-200 text-slate-600 rounded-xl font-bold px-6 py-3 hover:bg-slate-300 transition-all active:scale-95">BATAL</button>
+                    <button onclick="toggleSchForm()" class="bg-slate-200 text-slate-600 rounded-xl font-bold px-6 py-3 hover:bg-slate-300 transition-all">BATAL</button>
                 </div>
             </div>
 
@@ -387,7 +418,6 @@
         let futureSchedules = [];
         const dayNames = ["AHAD", "ISNIN", "SELASA", "RABU", "KHAMIS", "JUMAAT", "SABTU"];
 
-        // TIPS DATA
         const intelTips = [
             { icon: "database", text: "TIPS DATA: Pastikan ODO AWAL diisi sebelum memasukkan rekod perjalanan baru." },
             { icon: "receipt", text: "TIPS DATA: Masukkan NO. RESIT minyak dengan jelas untuk rujukan audit kewangan." },
@@ -406,7 +436,7 @@
             const tipIcon = document.getElementById('tip-icon');
             if(!tipBox || !tipIcon) return;
             tipBox.classList.remove('tip-fade');
-            void tipBox.offsetWidth; // trigger reflow
+            void tipBox.offsetWidth;
             const currentTip = intelTips[currentTipIndex];
             tipBox.innerHTML = currentTip.text;
             tipIcon.setAttribute('data-lucide', currentTip.icon);
@@ -421,7 +451,22 @@
         function toggleScheduleModal() {
             const modal = document.getElementById('schedule-modal');
             modal.classList.toggle('hidden');
-            if(!modal.classList.contains('hidden')) { resetSchForm(); renderSchedules(); }
+            if(!modal.classList.contains('hidden')) { 
+                document.getElementById('sch-form').classList.remove('active');
+                renderSchedules(); 
+            }
+        }
+
+        function toggleSchForm() {
+            const form = document.getElementById('sch-form');
+            const btnText = document.getElementById('form-action-text');
+            form.classList.toggle('active');
+            if(form.classList.contains('active')) {
+                btnText.innerText = "TUTUP PENGISIAN";
+            } else {
+                btnText.innerText = "TAMBAH JADUAL";
+                resetSchForm();
+            }
         }
 
         function previewMapFromInput(inputId) {
@@ -436,7 +481,6 @@
             window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(input.value)}`, '_blank');
         }
 
-        // Logic Schedule Lock Toggle
         function toggleScheduleLock(index) {
             futureSchedules[index].isLocked = !futureSchedules[index].isLocked;
             renderSchedules();
@@ -445,15 +489,22 @@
 
         function renderSchedules() {
             const list = document.getElementById('schedule-list');
+            const printList = document.getElementById('print-schedule-body');
             list.innerHTML = "";
+            printList.innerHTML = "";
+
             if(futureSchedules.length === 0) {
                 list.innerHTML = `<div class="text-center py-10 opacity-40"><i data-lucide="calendar-x" class="w-12 h-12 mx-auto mb-2 text-slate-300"></i><p class="font-bold italic">Tiada jadual baru</p></div>`;
+                printList.innerHTML = `<tr><td colspan="5" style="text-align:center; padding: 10px;">TIADA JADUAL PERJALANAN AKAN DATANG</td></tr>`;
                 lucide.createIcons(); return;
             }
+
             futureSchedules.forEach((item, index) => {
                 const isLocked = item.isLocked || false;
+                
+                // Web List UI
                 const div = document.createElement('div');
-                div.className = `p-4 bg-slate-50 rounded-2xl border-l-4 ${isLocked ? 'sch-locked' : 'border-blue-500'} shadow-sm relative group hover:bg-slate-100 transition-all cursor-pointer`;
+                div.className = `p-4 bg-slate-50 rounded-2xl border-l-4 ${isLocked ? 'sch-locked' : 'border-blue-500'} shadow-sm relative group hover:bg-white hover:shadow-md transition-all cursor-pointer`;
                 div.onclick = (e) => { if(!e.target.closest('button')) viewFullSchedule(index); };
                 
                 div.innerHTML = `
@@ -465,25 +516,35 @@
                                 ${isLocked ? '<i data-lucide="lock" class="w-3 h-3 text-slate-400"></i>' : ''}
                             </div>
                             <h3 class="font-black text-slate-800 text-base uppercase leading-tight truncate max-w-[250px] md:max-w-md">${item.desc}</h3>
-                            ${item.location ? `<p class="text-blue-600 text-xs font-bold mt-1 truncate max-w-[250px] md:max-w-md"><i data-lucide="map-pin" class="w-3 h-3 inline"></i> ${item.location}</p>` : ''}
-                            <div class="grid grid-cols-2 gap-4 mt-3">
-                                <div><p class="text-[9px] font-bold text-slate-400 uppercase">Mula</p><p class="text-xs font-bold text-slate-700">${item.dateStart} | ${to12h(item.timeStart)}</p></div>
-                                <div><p class="text-[9px] font-bold text-slate-400 uppercase">Akhir</p><p class="text-xs font-bold text-slate-700">${item.dateEnd || item.dateStart} | ${to12h(item.timeEnd)}</p></div>
-                            </div>
+                            ${item.location ? `<p class="text-blue-600 text-xs font-bold mt-1 truncate max-w-[250px] md:max-w-md"><i data-lucide="map-pin" class="w-3 h-3 inline text-blue-400"></i> ${item.location}</p>` : ''}
                         </div>
                         <div class="flex gap-2 items-center">
-                            <button onclick="toggleScheduleLock(${index})" class="${isLocked ? 'text-red-500 bg-red-50' : 'text-emerald-500 bg-emerald-50'} p-2 rounded-full hover:scale-110 transition shadow-sm">
+                            <button onclick="viewFullSchedule(${index})" class="text-blue-500 bg-blue-50 p-2 rounded-full hover:bg-blue-100 transition shadow-sm" title="Lihat Butiran">
+                                <i data-lucide="eye" class="w-5 h-5"></i>
+                            </button>
+                            <button onclick="toggleScheduleLock(${index})" class="${isLocked ? 'text-red-500 bg-red-50' : 'text-emerald-500 bg-emerald-50'} p-2 rounded-full hover:scale-110 transition shadow-sm" title="${isLocked ? 'Buka Kunci' : 'Kunci Jadual'}">
                                 <i data-lucide="${isLocked ? 'lock' : 'lock-open'}" class="w-5 h-5"></i>
                             </button>
-                            <button onclick="editScheduleItem(${index})" class="${isLocked ? 'opacity-30 cursor-not-allowed' : 'text-blue-500 hover:bg-blue-50'} p-2 rounded-full">
+                            <button onclick="editScheduleItem(${index})" class="${isLocked ? 'opacity-30 cursor-not-allowed' : 'text-orange-500 bg-orange-50 hover:bg-orange-100'} p-2 rounded-full" title="Edit">
                                 <i data-lucide="edit-3" class="w-5 h-5"></i>
                             </button>
-                            <button onclick="removeScheduleItem(${index})" class="text-red-400 p-2 hover:bg-red-50 rounded-full">
+                            <button onclick="removeScheduleItem(${index})" class="text-red-400 p-2 hover:bg-red-50 rounded-full" title="Padam">
                                 <i data-lucide="trash-2" class="w-5 h-5"></i>
                             </button>
                         </div>
                     </div>`;
                 list.appendChild(div);
+
+                // Print Table Injection
+                const ptr = document.createElement('tr');
+                ptr.innerHTML = `
+                    <td style="font-size: 8pt; font-weight: 800; text-align: center;">${item.dateStart}<br><span style="font-size: 7pt; font-weight: 600;">${getDayFromDate(item.dateStart)}</span></td>
+                    <td style="font-size: 8pt; font-weight: 800; text-align: center;">${item.dateEnd || item.dateStart}<br><span style="font-size: 7pt; font-weight: 600;">${getDayFromDate(item.dateEnd || item.dateStart)}</span></td>
+                    <td style="font-size: 8pt; font-weight: 800; text-align: center;">${to12h(item.timeStart)} - ${to12h(item.timeEnd)}</td>
+                    <td style="font-size: 8pt; font-weight: 800; text-transform: uppercase;">${item.desc}</td>
+                    <td style="font-size: 7pt; font-weight: 700; text-transform: uppercase; font-style: italic;">${item.location || '-'}</td>
+                `;
+                printList.appendChild(ptr);
             });
             lucide.createIcons();
         }
@@ -493,13 +554,27 @@
             const content = document.getElementById('view-detail-content');
             content.innerHTML = `
                 <div class="space-y-4">
-                    <div><label class="text-[10px] font-black text-slate-400 uppercase block">Urusan / Tujuan</label><p class="text-lg font-black text-slate-900 uppercase leading-tight">${item.desc}</p></div>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div><label class="text-[10px] font-black text-slate-400 uppercase block">Mula</label><p class="font-bold text-slate-700">${getDayFromDate(item.dateStart)}, ${item.dateStart}</p><p class="text-blue-600 font-black text-xl">${to12h(item.timeStart)}</p></div>
-                        <div><label class="text-[10px] font-black text-slate-400 uppercase block">Tamat</label><p class="font-bold text-slate-700">${getDayFromDate(item.dateEnd || item.dateStart)}, ${item.dateEnd || item.dateStart}</p><p class="text-blue-600 font-black text-xl">${to12h(item.timeEnd)}</p></div>
+                    <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100">
+                        <label class="text-[10px] font-black text-slate-400 uppercase block mb-1">Urusan / Tujuan Perjalanan</label>
+                        <p class="text-lg font-black text-slate-900 uppercase leading-tight">${item.desc}</p>
                     </div>
-                    <div><label class="text-[10px] font-black text-slate-400 uppercase block">Lokasi Penuh</label><p class="font-bold text-slate-800 uppercase italic mb-2">${item.location || 'TIADA LOKASI DINYATAKAN'}</p>
-                        ${item.location ? `<button onclick="window.open('https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(item.location)}', '_blank')" class="flex items-center gap-2 text-xs font-black bg-blue-50 text-blue-700 px-4 py-2 rounded-lg hover:bg-blue-100 transition"><i data-lucide="map-pin" class="w-4 h-4"></i> BUKA GOOGLE MAPS</button>` : ''}
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="bg-blue-50 p-4 rounded-2xl">
+                            <label class="text-[10px] font-black text-blue-400 uppercase block">Mula</label>
+                            <p class="font-bold text-slate-700">${getDayFromDate(item.dateStart)}, ${item.dateStart}</p>
+                            <p class="text-blue-600 font-black text-xl">${to12h(item.timeStart)}</p>
+                        </div>
+                        <div class="bg-emerald-50 p-4 rounded-2xl">
+                            <label class="text-[10px] font-black text-emerald-400 uppercase block">Tamat (Dijangka)</label>
+                            <p class="font-bold text-slate-700">${getDayFromDate(item.dateEnd || item.dateStart)}, ${item.dateEnd || item.dateStart}</p>
+                            <p class="text-emerald-600 font-black text-xl">${to12h(item.timeEnd)}</p>
+                        </div>
+                    </div>
+                    <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100">
+                        <label class="text-[10px] font-black text-slate-400 uppercase block">Destinasi / Lokasi Penuh</label>
+                        <p class="font-bold text-slate-800 uppercase italic mb-3">${item.location || 'TIADA LOKASI DINYATAKAN'}</p>
+                        ${item.location ? `<button onclick="window.open('https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(item.location)}', '_blank')" class="flex items-center gap-2 text-xs font-black bg-white text-blue-700 border border-blue-100 px-4 py-3 rounded-xl hover:bg-blue-600 hover:text-white transition shadow-sm w-full justify-center">
+                            <i data-lucide="map-pin" class="w-4 h-4"></i> BUKA NAVIGASI GOOGLE MAPS</button>` : ''}
                     </div>
                 </div>`;
             document.getElementById('view-detail-modal').classList.remove('hidden');
@@ -517,9 +592,12 @@
             document.getElementById('new-sch-time-end').value = item.timeEnd || "";
             document.getElementById('new-sch-desc').value = item.desc || "";
             document.getElementById('new-sch-loc').value = item.location || "";
+            
             document.getElementById('btn-text').innerText = "KEMASKINI JADUAL";
-            document.getElementById('save-sch-btn').classList.replace('bg-blue-600', 'bg-orange-500');
-            document.getElementById('cancel-edit-btn').classList.remove('hidden');
+            document.getElementById('save-sch-btn').classList.replace('bg-emerald-600', 'bg-orange-500');
+            
+            // Open form if not open
+            if(!document.getElementById('sch-form').classList.contains('active')) toggleSchForm();
             document.querySelector('#schedule-modal .overflow-y-auto').scrollTop = 0;
         }
 
@@ -531,9 +609,8 @@
             document.getElementById('new-sch-time-end').value = "";
             document.getElementById('new-sch-desc').value = "";
             document.getElementById('new-sch-loc').value = "";
-            document.getElementById('btn-text').innerText = "SIMPAN JADUAL";
-            document.getElementById('save-sch-btn').classList.replace('bg-orange-500', 'bg-blue-600');
-            document.getElementById('cancel-edit-btn').classList.add('hidden');
+            document.getElementById('btn-text').innerText = "SIMPAN DATA JADUAL";
+            document.getElementById('save-sch-btn').classList.replace('bg-orange-500', 'bg-emerald-600');
         }
 
         function addScheduleItem() {
@@ -545,14 +622,17 @@
                 timeEnd: document.getElementById('new-sch-time-end').value,
                 desc: document.getElementById('new-sch-desc').value,
                 location: document.getElementById('new-sch-loc').value,
-                isLocked: true // Auto-Lock on save
+                isLocked: true 
             };
-            if(!data.dateStart || !data.desc) return alert("Sila isi tarikh dan urusan");
+            if(!data.dateStart || !data.desc) return alert("Sila isi sekurang-kurangnya tarikh mula dan urusan perjalanan.");
             if(idx === -1) futureSchedules.push(data); else futureSchedules[idx] = data;
-            renderSchedules(); resetSchForm(); sync();
+            
+            renderSchedules(); 
+            toggleSchForm();
+            sync();
         }
 
-        function removeScheduleItem(index) { if(confirm("Padam jadual ini?")) { futureSchedules.splice(index, 1); renderSchedules(); sync(); } }
+        function removeScheduleItem(index) { if(confirm("Adakah anda pasti mahu memadam jadual ini?")) { futureSchedules.splice(index, 1); renderSchedules(); sync(); } }
 
         function updateClock() {
             const now = new Date();
@@ -591,62 +671,30 @@
             window.print();
         }
 
-        // --- EXPORT FUNCTIONALITY ---
         function exportData(type) {
             const plate = document.getElementById('m-plate').value || "LOG";
             const month = document.getElementById('m-month').value || "DATA";
             const filename = `PILOT_INTEL_${plate}_${month}_${type.toUpperCase()}.csv`;
-            
-            // Collect Rows
             const logs = [];
             document.querySelectorAll('#log-body tr').forEach(r => {
                 const i = r.querySelectorAll('input, textarea');
                 if(i.length >= 13) {
                     logs.push([
-                        i[0].value, // Tarikh
-                        to12h(i[1].value), // Mula
-                        to12h(i[2].value), // Hingga
-                        i[3].value.replace(/,/g, " "), // Pemandu
-                        i[4].value.replace(/,/g, " "), // Tujuan
-                        i[5].value.replace(/,/g, " "), // Lokasi
-                        i[6].value.replace(/,/g, " "), // Pelulus
-                        i[7].value.replace(/,/g, " "), // Pengguna
-                        i[8].value, // Odo
-                        i[9].value, // Jarak
-                        i[10].value, // Kos RM
-                        i[11].value, // No Resit
-                        i[12].value, // Liter
-                        i[13].value.replace(/,/g, " ") // Catatan
+                        i[0].value, to12h(i[1].value), to12h(i[2].value), i[3].value.replace(/,/g, " "), i[4].value.replace(/,/g, " "), i[5].value.replace(/,/g, " "),
+                        i[6].value.replace(/,/g, " "), i[7].value.replace(/,/g, " "), i[8].value, i[9].value, i[10].value, i[11].value, i[12].value, i[13].value.replace(/,/g, " ")
                     ]);
                 }
             });
-
             if(logs.length === 0) return alert("Tiada data untuk dieksport");
-
-            let csvContent = "data:text/csv;charset=utf-8,";
-            csvContent += "TARIKH,MULA,HINGGA,PEMANDU,TUJUAN,LOKASI,PELULUS,PENGGUNA,ODO AKHIR,JARAK,KOS (RM),NO RESIT,LITER,CATATAN\n";
-            
+            let csvContent = "data:text/csv;charset=utf-8,TARIKH,MULA,HINGGA,PEMANDU,TUJUAN,LOKASI,PELULUS,PENGGUNA,ODO AKHIR,JARAK,KOS (RM),NO RESIT,LITER,CATATAN\n";
             logs.forEach(row => { csvContent += row.join(",") + "\n"; });
-
-            // Add Summary for Yearly/Monthly
-            if(type === 'bulan') {
-                csvContent += `\nRINGKASAN BULANAN,,,,,JARAK KESELURUHAN,${document.getElementById('sum-dist').innerText} KM\n`;
-                csvContent += `,,,,,KOS KESELURUHAN,RM ${document.getElementById('sum-rm').innerText}\n`;
-                csvContent += `,,,,,LITER KESELURUHAN,${document.getElementById('sum-liter').innerText} L\n`;
-            }
-
             const encodedUri = encodeURI(csvContent);
-            const link = document.createElement("a");
-            link.setAttribute("href", encodedUri);
-            link.setAttribute("download", filename);
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
+            const link = document.createElement("a"); link.setAttribute("href", encodedUri); link.setAttribute("download", filename);
+            document.body.appendChild(link); link.click(); document.body.removeChild(link);
         }
 
         function adjustHeight(el) { if (!el) return; el.style.height = "auto"; el.style.height = (el.scrollHeight) + "px"; }
 
-        // LOCKING LOGIC
         function toggleLock(btn) {
             const tr = btn.closest('tr');
             const isLocked = tr.getAttribute('data-locked') === 'true';
@@ -657,15 +705,12 @@
         function setRowLockState(tr, shouldLock) {
             const inputs = tr.querySelectorAll('input, textarea');
             const lockIconContainer = tr.querySelector('.lock-icon-btn');
-            
             if(shouldLock) {
-                tr.setAttribute('data-locked', 'true');
-                tr.classList.add('row-locked-bg');
+                tr.setAttribute('data-locked', 'true'); tr.classList.add('row-locked-bg');
                 inputs.forEach(i => i.disabled = true);
                 lockIconContainer.innerHTML = '<i data-lucide="lock" class="w-4 h-4 text-red-500"></i>';
             } else {
-                tr.setAttribute('data-locked', 'false');
-                tr.classList.remove('row-locked-bg');
+                tr.setAttribute('data-locked', 'false'); tr.classList.remove('row-locked-bg');
                 inputs.forEach(i => i.disabled = false);
                 lockIconContainer.innerHTML = '<i data-lucide="lock-open" class="w-4 h-4 text-emerald-500"></i>';
             }
@@ -673,121 +718,41 @@
         }
 
         function checkAutoLock(tr) {
-            // Auto lock if main data is filled: Date, Start Time, Driver, Purpose, Odo
             const date = tr.querySelector('.date-input').value;
             const tMula = tr.querySelector('.t-mula').value;
             const driver = tr.querySelector('.driver-input').value;
             const purpose = tr.querySelector('.main-purpose').value;
             const odo = tr.querySelector('.odo-val').value;
-
-            if(date && tMula && driver.length > 3 && purpose.length > 5 && odo) {
-                setRowLockState(tr, true);
-            }
+            if(date && tMula && driver.length > 3 && purpose.length > 5 && odo) { setRowLockState(tr, true); }
         }
 
         function addRow(v = {}) {
             const tr = document.createElement('tr');
             tr.className = "border-b border-slate-100 hover:bg-slate-50 transition-colors";
             tr.setAttribute('data-locked', v.isLocked ? 'true' : 'false');
-            
             tr.innerHTML = `
-                <td class="w-date p-2">
-                    <div class="input-box flex flex-col">
-                        <div class="flex items-center"><input type="date" value="${v.tarikhRaw||''}" class="row-input date-input"><span class="pulse-dot"></span></div>
-                        <div class="web-day-label text-[10px] font-bold text-slate-400 mt-0.5 ml-1 uppercase">${getDayFromDate(v.tarikhRaw)}</div>
-                    </div><span class="print-text">${formatDisplayDate(v.tarikhRaw)}</span>
-                </td>
-                <td class="w-time p-2">
-                    <div class="flex flex-col input-box">
-                        <input type="time" value="${v.mulaRaw||''}" class="row-input t-mula border-b border-slate-100">
-                        <input type="time" value="${v.hinggaRaw||''}" class="row-input t-hingga">
-                    </div><span class="print-text"><div class="print-center-stack"><div class="time-top">${to12h(v.mulaRaw)}</div><div class="time-bottom">${to12h(v.hinggaRaw)}</div></div></span>
-                </td>
-                <td class="w-driver">
-                    <div class="input-box"><textarea class="row-input uppercase font-bold driver-input" rows="1" placeholder="Cth: AHMAD BIN ALI">${v.pemandu||''}</textarea></div>
-                    <span class="print-text uppercase font-bold">${v.pemandu||''}</span>
-                </td>
-                <td class="w-purpose">
-                    <div class="input-box px-1">
-                        <textarea class="row-input uppercase text-slate-800 font-bold main-purpose" rows="1" placeholder="Cth: MENGHANTAR PEGAWAI KE IBU PEJABAT">${v.tujuan||''}</textarea>
-                        <div class="flex items-center gap-1 mt-1 border-t border-slate-100 pt-1">
-                            <input type="text" value="${v.lokasiPenuh||''}" class="row-input location-input" placeholder="Cth: WISMA TANI, PUTRAJAYA">
-                            <button onclick="openMapsFromTable(this)" class="text-blue-400 hover:text-blue-600"><i data-lucide="map-pin" class="w-3 h-3"></i></button>
-                        </div>
-                    </div><span class="print-text"><div class="font-bold uppercase">${v.tujuan||''}</div><div class="location-print">${v.lokasiPenuh ? 'LOKASI: ' + v.lokasiPenuh : ''}</div></span>
-                </td>
-                <td class="w-auth">
-                    <div class="input-box"><textarea class="row-input uppercase text-center" rows="1" placeholder="Cth: KPP (L)">${v.pelulus||''}</textarea></div>
-                    <span class="print-text uppercase text-center">${v.pelulus||''}</span>
-                </td>
-                <td class="w-auth">
-                    <div class="input-box"><textarea class="row-input uppercase text-center" rows="1" placeholder="Cth: DR. AZMAN">${v.pengguna||''}</textarea></div>
-                    <span class="print-text uppercase text-center">${v.pengguna||''}</span>
-                </td>
-                <td class="w-odo">
-                    <div class="input-box"><input type="number" value="${v.odo||''}" class="row-input odo-val font-black text-blue-600 text-center" placeholder="00000"></div>
-                    <span class="print-text font-black text-center">${v.odo||''}</span>
-                </td>
-                <td class="w-dist">
-                    <div class="input-box"><input type="number" value="${v.jarak||''}" class="row-input dist-val font-black bg-slate-50 text-center" readonly></div>
-                    <span class="print-text font-black text-center">${v.jarak||''}</span>
-                </td>
-                <td class="w-fuel bg-slate-50/30">
-                    <div class="input-box flex flex-col px-1">
-                        <div class="flex items-center"><span class="text-[10px] font-black text-slate-400 mr-1">RM</span><input type="number" step="0.01" value="${v.resit||''}" class="row-input rm-val font-bold" placeholder="0.00"></div>
-                        <div class="flex items-center"><span class="text-[8px] font-black text-blue-400 mr-1">R/N:</span><input type="text" value="${v.noResit||''}" class="row-input no-resit-val text-[10px] text-blue-600 font-bold" placeholder="No. Resit"></div>
-                    </div><span class="print-text text-center"><div class="font-bold">RM ${v.resit||'0.00'}</div><div class="text-[7pt] text-blue-600 font-bold italic">R/N: ${v.noResit||'-'}</div></span>
-                </td>
-                <td class="w-fuel">
-                    <div class="input-box"><input type="number" step="0.01" value="${v.liter||''}" class="row-input liter-val text-center" placeholder="0.00"></div>
-                    <span class="print-text text-center font-bold">${v.liter||''} L</span>
-                </td>
-                <td class="w-notes">
-                    <div class="input-box"><textarea class="row-input italic text-slate-500" rows="1" placeholder="Cth: ARAHAN PENGARAH">${v.arahan||''}</textarea></div>
-                    <span class="print-text italic text-slate-500">${v.arahan||''}</span>
-                </td>
-                <td class="no-print text-center w-action">
-                    <div class="flex flex-col items-center gap-2">
-                        <button onclick="toggleLock(this)" class="lock-icon-btn p-1 hover:bg-slate-100 rounded-full transition-all">
-                            <i data-lucide="lock-open" class="w-4 h-4 text-emerald-500"></i>
-                        </button>
-                        <button onclick="if(confirm('Padam rekod perjalanan ini?')) { this.closest('tr').remove(); calcLogic(); sync(); }" class="text-red-400 hover:bg-red-50 p-1 rounded-full">
-                            <i data-lucide="trash-2" class="w-4 h-4"></i>
-                        </button>
-                    </div>
-                </td>
+                <td class="w-date p-2"><div class="input-box flex flex-col"><div class="flex items-center"><input type="date" value="${v.tarikhRaw||''}" class="row-input date-input"><span class="pulse-dot"></span></div><div class="web-day-label text-[10px] font-bold text-slate-400 mt-0.5 ml-1 uppercase">${getDayFromDate(v.tarikhRaw)}</div></div><span class="print-text">${formatDisplayDate(v.tarikhRaw)}</span></td>
+                <td class="w-time p-2"><div class="flex flex-col input-box"><input type="time" value="${v.mulaRaw||''}" class="row-input t-mula border-b border-slate-100"><input type="time" value="${v.hinggaRaw||''}" class="row-input t-hingga"></div><span class="print-text"><div class="print-center-stack"><div class="time-top">${to12h(v.mulaRaw)}</div><div class="time-bottom">${to12h(v.hinggaRaw)}</div></div></span></td>
+                <td class="w-driver"><div class="input-box"><textarea class="row-input uppercase font-bold driver-input" rows="1" placeholder="Cth: AHMAD BIN ALI">${v.pemandu||''}</textarea></div><span class="print-text uppercase font-bold">${v.pemandu||''}</span></td>
+                <td class="w-purpose"><div class="input-box px-1"><textarea class="row-input uppercase text-slate-800 font-bold main-purpose" rows="1" placeholder="Cth: MENGHANTAR PEGAWAI KE IBU PEJABAT">${v.tujuan||''}</textarea><div class="flex items-center gap-1 mt-1 border-t border-slate-100 pt-1"><input type="text" value="${v.lokasiPenuh||''}" class="row-input location-input" placeholder="Cth: WISMA TANI, PUTRAJAYA"><button onclick="openMapsFromTable(this)" class="text-blue-400 hover:text-blue-600"><i data-lucide="map-pin" class="w-3 h-3"></i></button></div></div><span class="print-text"><div class="font-bold uppercase">${v.tujuan||''}</div><div class="location-print">${v.lokasiPenuh ? 'LOKASI: ' + v.lokasiPenuh : ''}</div></span></td>
+                <td class="w-auth"><div class="input-box"><textarea class="row-input uppercase text-center" rows="1" placeholder="Cth: KPP (L)">${v.pelulus||''}</textarea></div><span class="print-text uppercase text-center">${v.pelulus||''}</span></td>
+                <td class="w-auth"><div class="input-box"><textarea class="row-input uppercase text-center" rows="1" placeholder="Cth: DR. AZMAN">${v.pengguna||''}</textarea></div><span class="print-text uppercase text-center">${v.pengguna||''}</span></td>
+                <td class="w-odo"><div class="input-box"><input type="number" value="${v.odo||''}" class="row-input odo-val font-black text-blue-600 text-center" placeholder="00000"></div><span class="print-text font-black text-center">${v.odo||''}</span></td>
+                <td class="w-dist"><div class="input-box"><input type="number" value="${v.jarak||''}" class="row-input dist-val font-black bg-slate-50 text-center" readonly></div><span class="print-text font-black text-center">${v.jarak||''}</span></td>
+                <td class="w-fuel bg-slate-50/30"><div class="input-box flex flex-col px-1"><div class="flex items-center"><span class="text-[10px] font-black text-slate-400 mr-1">RM</span><input type="number" step="0.01" value="${v.resit||''}" class="row-input rm-val font-bold" placeholder="0.00"></div><div class="flex items-center"><span class="text-[8px] font-black text-blue-400 mr-1">R/N:</span><input type="text" value="${v.noResit||''}" class="row-input no-resit-val text-[10px] text-blue-600 font-bold" placeholder="No. Resit"></div></div><span class="print-text text-center"><div class="font-bold">RM ${v.resit||'0.00'}</div><div class="text-[7pt] text-blue-600 font-bold italic">R/N: ${v.noResit||'-'}</div></span></td>
+                <td class="w-fuel"><div class="input-box"><input type="number" step="0.01" value="${v.liter||''}" class="row-input liter-val text-center" placeholder="0.00"></div><span class="print-text text-center font-bold">${v.liter||''} L</span></td>
+                <td class="w-notes"><div class="input-box"><textarea class="row-input italic text-slate-500" rows="1" placeholder="Cth: ARAHAN PENGARAH">${v.arahan||''}</textarea></div><span class="print-text italic text-slate-500">${v.arahan||''}</span></td>
+                <td class="no-print text-center w-action"><div class="flex flex-col items-center gap-2"><button onclick="toggleLock(this)" class="lock-icon-btn p-1 hover:bg-slate-100 rounded-full transition-all"><i data-lucide="lock-open" class="w-4 h-4 text-emerald-500"></i></button><button onclick="if(confirm('Padam rekod perjalanan ini?')) { this.closest('tr').remove(); calcLogic(); sync(); }" class="text-red-400 hover:bg-red-50 p-1 rounded-full"><i data-lucide="trash-2" class="w-4 h-4"></i></button></div></td>
             `;
             document.getElementById('log-body').appendChild(tr);
-            
-            // Apply initial lock state
             if(v.isLocked) setRowLockState(tr, true);
-            
             lucide.createIcons();
-            
             tr.querySelectorAll('input, textarea').forEach(input => {
                 input.addEventListener('input', (e) => {
                     const row = e.target.closest('tr');
-                    if(e.target.classList.contains('date-input')) {
-                        row.querySelector('.web-day-label').innerText = getDayFromDate(e.target.value);
-                        row.querySelector('.w-date .print-text').innerHTML = formatDisplayDate(e.target.value);
-                    } else if(e.target.classList.contains('t-mula') || e.target.classList.contains('t-hingga')) {
-                        row.querySelector('.w-time .print-text').innerHTML = `<div class="print-center-stack"><div class="time-top">${to12h(row.querySelector('.t-mula').value)}</div><div class="time-bottom">${to12h(row.querySelector('.t-hingga').value)}</div></div>`;
-                    } else if(e.target.classList.contains('main-purpose') || e.target.classList.contains('location-input')) {
-                        const tp = row.querySelector('.main-purpose').value; const lp = row.querySelector('.location-input').value;
-                        row.querySelector('.w-purpose .print-text').innerHTML = `<div class="font-bold uppercase">${tp}</div><div class="location-print">${lp ? 'LOKASI: ' + lp : ''}</div>`;
-                    } else if(e.target.classList.contains('rm-val') || e.target.classList.contains('no-resit-val')) {
-                        row.querySelector('.w-fuel .print-text').innerHTML = `<div class="font-bold">RM ${row.querySelector('.rm-val').value || '0.00'}</div><div class="text-[7pt] text-blue-600 font-bold italic">R/N: ${row.querySelector('.no-resit-val').value || '-'}</div>`;
-                    } else if(e.target.classList.contains('liter-val')) {
-                        row.querySelector('.w-fuel + .w-fuel .print-text').innerText = (e.target.value || '0') + " L";
-                    } else {
-                        const span = e.target.parentElement.nextElementSibling; if(span && span.classList.contains('print-text')) span.innerText = e.target.value;
-                    }
+                    if(e.target.classList.contains('date-input')) { row.querySelector('.web-day-label').innerText = getDayFromDate(e.target.value); row.querySelector('.w-date .print-text').innerHTML = formatDisplayDate(e.target.value); }
+                    calcLogic(); checkAutoLock(row); sync();
                     if(e.target.tagName === 'TEXTAREA') adjustHeight(e.target);
-                    
-                    // Trigger calc and check for auto-lock
-                    calcLogic();
-                    checkAutoLock(row);
-                    sync();
                 });
                 if(input.tagName === 'TEXTAREA') adjustHeight(input);
             });

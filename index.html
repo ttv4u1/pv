@@ -1,10 +1,10 @@
-<!-- Pilot Intel v4.2 - Updated with Customizable Logo & Favicon -->
+<!-- Pilot Intel v4.3 - Updated with Customizable Logo & Favicon -->
 <!DOCTYPE html>
 <html lang="ms">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Pilot Intel v4.2</title>
+    <title>Pilot Intel v4.3</title>
     
     <!-- Favicon: Jata Negara Malaysia -->
     <link rel="icon" type="image/svg+xml" href="https://upload.wikimedia.org/wikipedia/commons/2/26/Coat_of_arms_of_Malaysia.svg">
@@ -700,12 +700,10 @@
             lucide.createIcons();
         }
 
+        // AUTOLOCK FUNCTION DISABLED AS REQUESTED
         function checkAutoLock(tr) {
-            const date = tr.querySelector('.date-input').value;
-            const tMula = tr.querySelector('.t-mula').value;
-            const driver = tr.querySelector('.driver-input').value;
-            const odo = tr.querySelector('.odo-val').value;
-            if(date && tMula && driver.length > 3 && odo) { setRowLockState(tr, true); }
+            // Function remains to prevent errors, but logic is removed.
+            return; 
         }
 
         function addRow(v = {}) {

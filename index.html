@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Pilot Intel v2</title>
+    <title>v3 Pilot Intel(Admin Enabled)</title>
     
     <!-- Favicon: Jata Negara Malaysia -->
     <link rel="icon" type="image/svg+xml" href="https://upload.wikimedia.org/wikipedia/commons/2/26/Coat_of_arms_of_Malaysia.svg">
@@ -162,19 +162,32 @@
         .sch-locked { opacity: 0.7; border-left-color: #94a3b8 !important; }
 
         .sch-form-container { transition: all 0.3s ease-in-out; max-height: 0; overflow: hidden; opacity: 0; }
-        .sch-form-container.active { max-height: 1000px; opacity: 1; padding: 1.5rem; margin-bottom: 1rem; border-bottom: 1px solid #e2e8f0; }
+        .sch-form-container.active { max-height: 1000px; opacity: 1; padding: 1.5rem; margin-bottom: 1rem; border-bottom: 1px solid #e2e2f0; }
+
+        /* Admin Specific */
+        .admin-badge { background: linear-gradient(90deg, #f59e0b, #d97706); color: white; padding: 2px 8px; border-radius: 6px; font-size: 9px; font-weight: 800; text-transform: uppercase; }
+        .admin-view-indicator { background: #fee2e2; border: 1px solid #ef4444; color: #b91c1c; padding: 8px; border-radius: 8px; margin-bottom: 10px; font-weight: bold; font-size: 12px; display: none; }
     </style>
 </head>
 <body class="p-2 md:p-6">
 
     <div class="max-w-[1850px] mx-auto">
         
+        <!-- ADMIN VIEW MODE INDICATOR -->
+        <div id="admin-indicator" class="admin-view-indicator no-print flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <i data-lucide="eye" class="w-4 h-4"></i>
+                MOD PEMERHATIAN: Anda sedang melihat log milik <span id="admin-viewing-user" class="underline">---</span> (Mod Baca Sahaja)
+            </div>
+            <button onclick="exitAdminView()" class="bg-red-600 text-white px-3 py-1 rounded text-[10px] hover:bg-red-700">KELUAR</button>
+        </div>
+
         <!-- PRINT HEADER -->
         <div id="print-header-section" class="corporate-header-print">
             <div class="flex items-center">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/2/26/Coat_of_arms_of_Malaysia.svg" style="width: 50px; height: 50px; margin-right: 12px;">                
                 <div>
-                    <h2 style="font-size: 14pt; font-weight: 800; margin: 0;" class="font-heading uppercase">Pilot Intelligent <span style="font-size: 8pt; vertical-align: top; color: #666;">v2</span></h2>
+                    <h2 style="font-size: 14pt; font-weight: 800; margin: 0;" class="font-heading uppercase">Pilot Intelligent <span style="font-size: 8pt; vertical-align: top; color: #666;">v3</span></h2>
                     <p style="font-size: 9pt; margin: 0; font-weight: 600;">Bahagian Penguatkuasa • Enterprise Logistics Dashboard</p>
                     <p id="print-meta-info" style="font-size: 8pt; margin: 0; color: #444; font-weight: 700;"></p>
                     <p id="print-fuel-info" style="font-size: 8pt; margin: 0; color: #1e40af; font-weight: 800; text-transform: uppercase;"></p>
@@ -190,7 +203,8 @@
                 <div>
                     <div class="flex items-center gap-2">
                         <h1 class="text-lg md:text-xl font-bold font-heading tracking-tight uppercase">Pilot <span class="text-blue-400">Intelligent</span></h1>
-                        <span class="bg-blue-600/30 text-blue-400 text-[9px] px-1.5 py-0.5 rounded border border-blue-500/30 font-bold">v2</span>
+                        <span class="bg-blue-600/30 text-blue-400 text-[9px] px-1.5 py-0.5 rounded border border-blue-500/30 font-bold">v3</span>
+                        <div id="admin-badge-ui" class="hidden"><span class="admin-badge">SUPER ADMIN</span></div>
                     </div>
                     <p class="text-[8px] md:text-[9px] text-slate-400 font-bold uppercase tracking-widest">Enterprise Logistics Dashboard</p>
                 </div>
@@ -205,6 +219,9 @@
             </div>
 
             <div class="flex flex-wrap justify-center gap-2 items-center">
+                <button id="admin-panel-btn" onclick="openAdminPanel()" class="hidden bg-amber-600 hover:bg-amber-700 px-4 py-2 rounded-xl font-bold text-xs shadow-lg active:scale-95 transition flex items-center gap-2">
+                    <i data-lucide="shield-check" class="w-4 h-4"></i> PANEL ADMIN
+                </button>
                 <button onclick="toggleScheduleModal()" class="bg-emerald-600 hover:bg-emerald-700 px-4 py-2 rounded-xl font-bold text-xs shadow-lg active:scale-95 transition flex items-center gap-2">
                     <i data-lucide="calendar" class="w-4 h-4"></i> JADUAL
                 </button>
@@ -353,7 +370,7 @@
             </table>
         </div>
 
-        <button onclick="addRow()" class="no-print w-full mt-4 bg-slate-900 text-white py-4 rounded-xl font-bold shadow-xl flex justify-center items-center gap-2 hover:bg-blue-600 transition-all active:scale-[0.98]">
+        <button id="add-row-btn" onclick="addRow()" class="no-print w-full mt-4 bg-slate-900 text-white py-4 rounded-xl font-bold shadow-xl flex justify-center items-center gap-2 hover:bg-blue-600 transition-all active:scale-[0.98]">
             <i data-lucide="plus-circle" class="w-5 h-5"></i> TAMBAH REKOD PERJALANAN BARU
         </button>
 
@@ -382,7 +399,7 @@
             <div style="border: 1pt solid black; padding: 6px; margin-top: 5px;">
                 <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 0.5pt solid black; padding-bottom: 2px; margin-bottom: 6px;">
                     <h4 style="font-size: 9pt; font-weight: 800; text-transform: uppercase; margin: 0;">Rumusan Keseluruhan Bulan Ini</h4>
-                    <span style="font-size: 7pt; font-weight: 700;">Pilot Intel v2 System Generated</span>
+                    <span style="font-size: 7pt; font-weight: 700;">Pilot Intel v3 System Generated</span>
                 </div>
                 <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;">
                     <div style="font-size: 8pt;"><strong>JUMLAH JARAK:</strong> <span id="p-dist">0</span> KM</div>
@@ -514,6 +531,29 @@
         </div>
     </div>
 
+    <!-- MODAL ADMIN PANEL -->
+    <div id="admin-modal" class="fixed inset-0 bg-slate-900/90 backdrop-blur-md z-[200] hidden flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-4xl rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+            <div class="bg-amber-600 p-6 text-white flex justify-between items-center">
+                <div class="flex items-center gap-3">
+                    <i data-lucide="layout-grid" class="text-white"></i>
+                    <h2 class="font-heading font-bold text-xl uppercase tracking-tight">Super Admin: User Directory</h2>
+                </div>
+                <button onclick="closeAdminPanel()" class="text-white hover:bg-amber-700 p-2 rounded-full"><i data-lucide="x"></i></button>
+            </div>
+            <div class="p-4 bg-slate-50 border-b flex justify-between items-center">
+                <p class="text-xs font-bold text-slate-500 uppercase">Senarai semua kenderaan yang berdaftar dalam sistem</p>
+                <div class="relative">
+                    <input type="text" id="admin-search" placeholder="Cari Plate..." class="pl-8 pr-4 py-2 border rounded-xl text-xs font-bold outline-none focus:ring-2 ring-amber-500" oninput="filterAdminList()">
+                    <i data-lucide="search" class="w-4 h-4 absolute left-2.5 top-2.5 text-slate-400"></i>
+                </div>
+            </div>
+            <div id="admin-user-list" class="overflow-y-auto p-4 grid grid-cols-1 md:grid-cols-2 gap-3 bg-white flex-1">
+                <!-- User cards will be injected here -->
+            </div>
+        </div>
+    </div>
+
     <script>
         const firebaseConfig = { apiKey: "AIzaSyDdCwKNCx0nA1cZirGrw1UYvtumALluVXw", authDomain: "pilot-veterinar.firebaseapp.com", projectId: "pilot-veterinar", storageBucket: "pilot-veterinar.firebasestorage.app", messagingSenderId: "559136368070", appId: "1:559136368070:web:8aaa2dcb804c73f10cbec7" };
         firebase.initializeApp(firebaseConfig);
@@ -522,6 +562,11 @@
         auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
 
         let currentUser = null;
+        let isSuperAdmin = false;
+        let adminViewMode = false;
+        let viewingUid = null;
+        let allUsersData = [];
+
         let futureSchedules = [];
         let fuelCardImages = { front: "", back: "" };
         const dayNames = ["AHAD", "ISNIN", "SELASA", "RABU", "KHAMIS", "JUMAAT", "SABTU"];
@@ -561,8 +606,8 @@
         function nextTip() { rotateTips(); clearInterval(tipInterval); tipInterval = setInterval(rotateTips, 6000); }
         let tipInterval = setInterval(rotateTips, 6000);
 
-        // MODIFIED: Added Compression to ensure autosave works within Firestore limits
         function handleCardUpload(input, side) {
+            if(adminViewMode) return alert("Mod pemerhatian sahaja.");
             const file = input.files[0];
             if (file) {
                 const reader = new FileReader();
@@ -570,25 +615,14 @@
                     const img = new Image();
                     img.onload = () => {
                         const canvas = document.createElement('canvas');
-                        const MAX_WIDTH = 800; // Resize to max 800px width for efficiency
-                        let width = img.width;
-                        let height = img.height;
-
-                        if (width > MAX_WIDTH) {
-                            height *= MAX_WIDTH / width;
-                            width = MAX_WIDTH;
-                        }
-
-                        canvas.width = width;
-                        canvas.height = height;
+                        const MAX_WIDTH = 800;
+                        let width = img.width; let height = img.height;
+                        if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; }
+                        canvas.width = width; canvas.height = height;
                         const ctx = canvas.getContext('2d');
                         ctx.drawImage(img, 0, 0, width, height);
-                        
-                        // Convert to lightweight JPEG (0.7 quality)
                         const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.7);
                         fuelCardImages[side] = compressedDataUrl;
-                        
-                        // Immediately Sync to save to Firestore
                         sync();
                         alert(`Gambar Kad ${side.toUpperCase()} Berjaya Dimuatnaik & Autosave!`);
                     };
@@ -616,9 +650,99 @@
         function flipFuelCard() {
             const cardInner = document.getElementById('fuel-card-inner');
             cardInner.classList.toggle('is-flipped');
-            flipSound.currentTime = 0;
-            flipSound.play();
+            flipSound.currentTime = 0; flipSound.play();
         }
+
+        // ADMIN FUNCTIONS
+        async function checkAdminStatus(user) {
+            try {
+                const adminDoc = await db.collection("system_admins").doc(user.uid).get();
+                if(adminDoc.exists && adminDoc.data().role === 'super_admin') {
+                    isSuperAdmin = true;
+                    document.getElementById('admin-badge-ui').classList.remove('hidden');
+                    document.getElementById('admin-panel-btn').classList.remove('hidden');
+                }
+            } catch (e) { console.log("Admin check failed", e); }
+        }
+
+        function openAdminPanel() {
+            document.getElementById('admin-modal').classList.remove('hidden');
+            loadAllUsers();
+        }
+
+        function closeAdminPanel() {
+            document.getElementById('admin-modal').classList.add('hidden');
+        }
+
+        async function loadAllUsers() {
+            const list = document.getElementById('admin-user-list');
+            list.innerHTML = '<div class="col-span-full text-center py-10 font-bold animate-pulse">Mengambil data pengguna...</div>';
+            
+            try {
+                const snapshot = await db.collection("logs_v81").get();
+                allUsersData = [];
+                snapshot.forEach(doc => {
+                    allUsersData.push({ uid: doc.id, ...doc.data() });
+                });
+                renderAdminUserList(allUsersData);
+            } catch (e) {
+                list.innerHTML = '<div class="col-span-full text-center py-10 text-red-500 font-bold">Gagal memuatkan data. Sila pastikan anda adalah Super Admin di Firestore.</div>';
+            }
+        }
+
+        function renderAdminUserList(data) {
+            const list = document.getElementById('admin-user-list');
+            list.innerHTML = "";
+            if(data.length === 0) { list.innerHTML = "Tiada pengguna."; return; }
+
+            data.forEach(user => {
+                const plate = user.meta?.plate || "TIADA PLATE";
+                const unit = user.meta?.unit || "TIADA UNIT";
+                const month = user.meta?.month || "-";
+                
+                const card = document.createElement('div');
+                card.className = "bg-slate-50 p-4 rounded-2xl border border-slate-200 hover:border-amber-500 transition-all cursor-pointer flex justify-between items-center group";
+                card.onclick = () => enterAdminView(user.uid, plate);
+                card.innerHTML = `
+                    <div>
+                        <h4 class="font-black text-slate-800 uppercase">${plate}</h4>
+                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">${unit} • ${month}</p>
+                    </div>
+                    <div class="bg-white p-2 rounded-full shadow-sm group-hover:bg-amber-500 group-hover:text-white transition-colors">
+                        <i data-lucide="external-link" class="w-4 h-4"></i>
+                    </div>
+                `;
+                list.appendChild(card);
+            });
+            lucide.createIcons();
+        }
+
+        function filterAdminList() {
+            const query = document.getElementById('admin-search').value.toUpperCase();
+            const filtered = allUsersData.filter(u => (u.meta?.plate || "").toUpperCase().includes(query));
+            renderAdminUserList(filtered);
+        }
+
+        async function enterAdminView(uid, plate) {
+            adminViewMode = true;
+            viewingUid = uid;
+            document.getElementById('admin-indicator').style.display = 'flex';
+            document.getElementById('admin-viewing-user').innerText = plate;
+            document.getElementById('add-row-btn').classList.add('hidden');
+            closeAdminPanel();
+            await loadData(uid);
+            alert(`Anda kini dalam mod pemerhatian log ${plate}. Semua pengeditan dinyahaktifkan.`);
+        }
+
+        function exitAdminView() {
+            adminViewMode = false;
+            viewingUid = null;
+            document.getElementById('admin-indicator').style.display = 'none';
+            document.getElementById('add-row-btn').classList.remove('hidden');
+            loadData();
+        }
+
+        // END ADMIN FUNCTIONS
 
         function toggleScheduleModal() {
             const modal = document.getElementById('schedule-modal');
@@ -630,6 +754,7 @@
         }
 
         function toggleSchForm() {
+            if(adminViewMode) return alert("Mod pemerhatian sahaja.");
             const form = document.getElementById('sch-form');
             const btnText = document.getElementById('form-action-text');
             form.classList.toggle('active');
@@ -648,6 +773,7 @@
         }
 
         function toggleScheduleLock(index) {
+            if(adminViewMode) return;
             futureSchedules[index].isLocked = !futureSchedules[index].isLocked;
             renderSchedules();
             sync();
@@ -678,9 +804,11 @@
                     </div>
                     <div class="flex gap-2 items-center">
                         <button onclick="viewFullSchedule(${index})" class="text-blue-500 bg-blue-50 p-2 rounded-full shadow-sm"><i data-lucide="eye" class="w-5 h-5"></i></button>
+                        ${!adminViewMode ? `
                         <button onclick="toggleScheduleLock(${index})" class="${isLocked ? 'text-red-500 bg-red-50' : 'text-emerald-500 bg-emerald-50'} p-2 rounded-full shadow-sm"><i data-lucide="${isLocked ? 'lock' : 'lock-open'}" class="w-5 h-5"></i></button>
                         <button onclick="editScheduleItem(${index})" class="${isLocked ? 'opacity-30 cursor-not-allowed' : 'text-orange-500 bg-orange-50'} p-2 rounded-full"><i data-lucide="edit-3" class="w-5 h-5"></i></button>
                         <button onclick="removeScheduleItem(${index})" class="text-red-400 p-2"><i data-lucide="trash-2" class="w-5 h-5"></i></button>
+                        ` : ''}
                     </div>
                 </div>`;
                 list.appendChild(div);
@@ -725,6 +853,7 @@
         }
 
         function editScheduleItem(index) {
+            if(adminViewMode) return;
             const item = futureSchedules[index];
             if(item.isLocked) return alert("Jadual dikunci.");
             document.getElementById('editing-index').value = index;
@@ -750,6 +879,7 @@
         }
 
         function addScheduleItem() {
+            if(adminViewMode) return;
             const idx = parseInt(document.getElementById('editing-index').value);
             const data = {
                 dateStart: document.getElementById('new-sch-date-start').value,
@@ -877,6 +1007,7 @@
         function adjustHeight(el) { if (!el) return; el.style.height = "auto"; el.style.height = (el.scrollHeight) + "px"; }
 
         function toggleLock(btn) {
+            if(adminViewMode) return;
             const tr = btn.closest('tr');
             const isLocked = tr.getAttribute('data-locked') === 'true';
             setRowLockState(tr, !isLocked);
@@ -903,18 +1034,23 @@
             tr.className = "border-b border-slate-100 hover:bg-slate-50 transition-colors";
             tr.setAttribute('data-locked', v.isLocked ? 'true' : 'false');
             tr.innerHTML = `
-                <td class="w-date p-2"><div class="input-box flex flex-col"><div class="flex items-center"><input type="date" value="${v.tarikhRaw||''}" class="row-input date-input"><span class="pulse-dot"></span></div><div class="web-day-label text-[10px] font-bold text-slate-400 mt-0.5 ml-1 uppercase">${getDayFromDate(v.tarikhRaw)}</div></div><span class="print-text">${formatDisplayDate(v.tarikhRaw)}</span></td>
-                <td class="w-time p-2"><div class="flex flex-col input-box"><input type="time" value="${v.mulaRaw||''}" class="row-input t-mula border-b border-slate-100"><input type="time" value="${v.hinggaRaw||''}" class="row-input t-hingga"></div><span class="print-text"><div class="print-center-stack"><div class="time-top">${to12h(v.mulaRaw)}</div><div class="time-bottom">${to12h(v.hinggaRaw)}</div></div></span></td>
-                <td class="w-driver"><div class="input-box"><textarea class="row-input uppercase font-bold driver-input" rows="1" placeholder="PEMANDU">${v.pemandu||''}</textarea></div><span class="print-text uppercase font-bold">${v.pemandu||''}</span></td>
-                <td class="w-purpose"><div class="input-box px-1"><textarea class="row-input uppercase text-slate-800 font-bold main-purpose" rows="1" placeholder="TUJUAN">${v.tujuan||''}</textarea><div class="flex items-center gap-1 mt-1 border-t border-slate-100 pt-1"><input type="text" value="${v.lokasiPenuh||''}" class="row-input location-input" placeholder="LOKASI"><button onclick="openMapsFromTable(this)" class="text-blue-400"><i data-lucide="map-pin" class="w-3 h-3"></i></button></div></div><span class="print-text"><div class="font-bold uppercase">${v.tujuan||''}</div><div class="location-print">${v.lokasiPenuh ? 'LOKASI: ' + v.lokasiPenuh : ''}</div></span></td>
-                <td class="w-auth"><div class="input-box"><textarea class="row-input uppercase text-center" rows="1">${v.pelulus||''}</textarea></div><span class="print-text uppercase text-center">${v.pelulus||''}</span></td>
-                <td class="w-auth"><div class="input-box"><textarea class="row-input uppercase text-center" rows="1">${v.pengguna||''}</textarea></div><span class="print-text uppercase text-center">${v.pengguna||''}</span></td>
-                <td class="w-odo"><div class="input-box"><input type="number" value="${v.odo||''}" class="row-input odo-val font-black text-blue-600 text-center"></div><span class="print-text font-black text-center">${v.odo||''}</span></td>
+                <td class="w-date p-2"><div class="input-box flex flex-col"><div class="flex items-center"><input type="date" value="${v.tarikhRaw||''}" class="row-input date-input" ${adminViewMode ? 'disabled' : ''}><span class="pulse-dot"></span></div><div class="web-day-label text-[10px] font-bold text-slate-400 mt-0.5 ml-1 uppercase">${getDayFromDate(v.tarikhRaw)}</div></div><span class="print-text">${formatDisplayDate(v.tarikhRaw)}</span></td>
+                <td class="w-time p-2"><div class="flex flex-col input-box"><input type="time" value="${v.mulaRaw||''}" class="row-input t-mula border-b border-slate-100" ${adminViewMode ? 'disabled' : ''}><input type="time" value="${v.hinggaRaw||''}" class="row-input t-hingga" ${adminViewMode ? 'disabled' : ''}></div><span class="print-text"><div class="print-center-stack"><div class="time-top">${to12h(v.mulaRaw)}</div><div class="time-bottom">${to12h(v.hinggaRaw)}</div></div></span></td>
+                <td class="w-driver"><div class="input-box"><textarea class="row-input uppercase font-bold driver-input" rows="1" placeholder="PEMANDU" ${adminViewMode ? 'disabled' : ''}>${v.pemandu||''}</textarea></div><span class="print-text uppercase font-bold">${v.pemandu||''}</span></td>
+                <td class="w-purpose"><div class="input-box px-1"><textarea class="row-input uppercase text-slate-800 font-bold main-purpose" rows="1" placeholder="TUJUAN" ${adminViewMode ? 'disabled' : ''}>${v.tujuan||''}</textarea><div class="flex items-center gap-1 mt-1 border-t border-slate-100 pt-1"><input type="text" value="${v.lokasiPenuh||''}" class="row-input location-input" placeholder="LOKASI" ${adminViewMode ? 'disabled' : ''}><button onclick="openMapsFromTable(this)" class="text-blue-400"><i data-lucide="map-pin" class="w-3 h-3"></i></button></div></div><span class="print-text"><div class="font-bold uppercase">${v.tujuan||''}</div><div class="location-print">${v.lokasiPenuh ? 'LOKASI: ' + v.lokasiPenuh : ''}</div></span></td>
+                <td class="w-auth"><div class="input-box"><textarea class="row-input uppercase text-center" rows="1" ${adminViewMode ? 'disabled' : ''}>${v.pelulus||''}</textarea></div><span class="print-text uppercase text-center">${v.pelulus||''}</span></td>
+                <td class="w-auth"><div class="input-box"><textarea class="row-input uppercase text-center" rows="1" ${adminViewMode ? 'disabled' : ''}>${v.pengguna||''}</textarea></div><span class="print-text uppercase text-center">${v.pengguna||''}</span></td>
+                <td class="w-odo"><div class="input-box"><input type="number" value="${v.odo||''}" class="row-input odo-val font-black text-blue-600 text-center" ${adminViewMode ? 'disabled' : ''}></div><span class="print-text font-black text-center">${v.odo||''}</span></td>
                 <td class="w-dist"><div class="input-box"><input type="number" value="${v.jarak||''}" class="row-input dist-val font-black bg-slate-50 text-center" readonly></div><span class="print-text font-black text-center">${v.jarak||''}</span></td>
-                <td class="w-fuel bg-slate-50/30"><div class="input-box flex flex-col px-1"><div class="flex items-center"><span class="text-[10px] font-black text-slate-400 mr-1">RM</span><input type="number" step="0.01" value="${v.resit||''}" class="row-input rm-val font-bold"></div><div class="flex items-center"><span class="text-[8px] font-black text-blue-400 mr-1">R/N:</span><input type="text" value="${v.noResit||''}" class="row-input no-resit-val text-[10px] text-blue-600 font-bold"></div></div><span class="print-text text-center"><div class="font-bold">RM ${v.resit||'0.00'}</div><div class="text-[7pt] text-blue-600 font-bold italic">R/N: ${v.noResit||'-'}</div></span></td>
-                <td class="w-fuel"><div class="input-box"><input type="number" step="0.01" value="${v.liter||''}" class="row-input liter-val text-center"></div><span class="print-text text-center font-bold">${v.liter||''} L</span></td>
-                <td class="w-notes"><div class="input-box"><textarea class="row-input italic text-slate-500" rows="1">${v.arahan||''}</textarea></div><span class="print-text italic text-slate-500">${v.arahan||''}</span></td>
-                <td class="no-print text-center w-action"><div class="flex flex-col items-center gap-2"><button onclick="toggleLock(this)" class="lock-icon-btn p-1"><i data-lucide="lock-open" class="w-4 h-4 text-emerald-500"></i></button><button onclick="if(confirm('Padam?')) { this.closest('tr').remove(); calcLogic(); sync(); }" class="text-red-400 p-1"><i data-lucide="trash-2" class="w-4 h-4"></i></button></div></td>
+                <td class="w-fuel bg-slate-50/30"><div class="input-box flex flex-col px-1"><div class="flex items-center"><span class="text-[10px] font-black text-slate-400 mr-1">RM</span><input type="number" step="0.01" value="${v.resit||''}" class="row-input rm-val font-bold" ${adminViewMode ? 'disabled' : ''}></div><div class="flex items-center"><span class="text-[8px] font-black text-blue-400 mr-1">R/N:</span><input type="text" value="${v.noResit||''}" class="row-input no-resit-val text-[10px] text-blue-600 font-bold" ${adminViewMode ? 'disabled' : ''}></div></div><span class="print-text text-center"><div class="font-bold">RM ${v.resit||'0.00'}</div><div class="text-[7pt] text-blue-600 font-bold italic">R/N: ${v.noResit||'-'}</div></span></td>
+                <td class="w-fuel"><div class="input-box"><input type="number" step="0.01" value="${v.liter||''}" class="row-input liter-val text-center" ${adminViewMode ? 'disabled' : ''}></div><span class="print-text text-center font-bold">${v.liter||''} L</span></td>
+                <td class="w-notes"><div class="input-box"><textarea class="row-input italic text-slate-500" rows="1" ${adminViewMode ? 'disabled' : ''}>${v.arahan||''}</textarea></div><span class="print-text italic text-slate-500">${v.arahan||''}</span></td>
+                <td class="no-print text-center w-action"><div class="flex flex-col items-center gap-2">
+                    ${!adminViewMode ? `
+                    <button onclick="toggleLock(this)" class="lock-icon-btn p-1"><i data-lucide="lock-open" class="w-4 h-4 text-emerald-500"></i></button>
+                    <button onclick="if(confirm('Padam?')) { this.closest('tr').remove(); calcLogic(); sync(); }" class="text-red-400 p-1"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                    ` : '<i data-lucide="eye" class="w-4 h-4 text-slate-300"></i>'}
+                </div></td>
             `;
             document.getElementById('log-body').appendChild(tr);
             if(v.isLocked) setRowLockState(tr, true);
@@ -957,7 +1093,7 @@
         }
 
         async function sync() {
-            if(!currentUser) return;
+            if(!currentUser || adminViewMode) return;
             const logs = [];
             document.querySelectorAll('#log-body tr').forEach(r => {
                 const i = r.querySelectorAll('input, textarea');
@@ -970,23 +1106,24 @@
                 }
             });
 
-            // UPDATED: Ensuring fuelCardImages are saved correctly
             await db.collection("logs_v81").doc(currentUser.uid).set({
                 meta: { 
                     month:document.getElementById('m-month').value, plate:document.getElementById('m-plate').value, 
                     odo:document.getElementById('m-odo-start').value, unit:document.getElementById('m-unit').value, 
                     salary:document.getElementById('m-salary').value, logoUrl:document.getElementById('m-logo-url').value,
                     fuelCardNo: document.getElementById('m-fuel-card-no').value, fuelCardName: document.getElementById('m-fuel-card-name').value,
-                    fuelCardFront: fuelCardImages.front, // Autosave front image
-                    fuelCardBack: fuelCardImages.back   // Autosave back image
+                    fuelCardFront: fuelCardImages.front,
+                    fuelCardBack: fuelCardImages.back
                 },
                 logs: logs, futureSchedules: futureSchedules
             });
         }
 
-        async function loadData() {
-            if(!currentUser) return;
-            const doc = await db.collection("logs_v81").doc(currentUser.uid).get();
+        async function loadData(targetUid = null) {
+            const uid = targetUid || (currentUser ? currentUser.uid : null);
+            if(!uid) return;
+
+            const doc = await db.collection("logs_v81").doc(uid).get();
             if(doc.exists) {
                 const d = doc.data();
                 document.getElementById('m-month').value = d.meta.month || ''; document.getElementById('m-plate').value = d.meta.plate || '';
@@ -994,20 +1131,38 @@
                 document.getElementById('m-salary').value = d.meta.salary || ''; document.getElementById('m-logo-url').value = d.meta.logoUrl || ''; 
                 document.getElementById('m-fuel-card-no').value = d.meta.fuelCardNo || ''; document.getElementById('m-fuel-card-name').value = d.meta.fuelCardName || '';
                 
-                // UPDATED: Load images into the global state
                 fuelCardImages.front = d.meta.fuelCardFront || "";
                 fuelCardImages.back = d.meta.fuelCardBack || "";
 
                 futureSchedules = d.futureSchedules || [];
                 document.getElementById('log-body').innerHTML = ""; if(d.logs && d.logs.length > 0) d.logs.forEach(l => addRow(l)); else addRow();
                 calcLogic(); calcWage(); renderSchedules(); updateDynamicLogo();
-            } else { addRow(); }
+
+                // Lockdown inputs if in admin view mode
+                if(adminViewMode) {
+                    const inputs = document.querySelectorAll('.grid input, .grid textarea, #m-month, #m-plate, #m-odo-start, #m-unit, #m-logo-url, #m-salary, #m-fuel-card-no, #m-fuel-card-name');
+                    inputs.forEach(i => i.disabled = true);
+                } else {
+                    const inputs = document.querySelectorAll('.grid input, .grid textarea, #m-month, #m-plate, #m-odo-start, #m-unit, #m-logo-url, #m-salary, #m-fuel-card-no, #m-fuel-card-name');
+                    inputs.forEach(i => i.disabled = false);
+                }
+
+            } else { if(!adminViewMode) addRow(); }
         }
 
-        async function loginGoogle() { try { const res = await auth.signInWithPopup(provider); currentUser = res.user; updateUI(); loadData(); } catch(e) {} }
+        async function loginGoogle() { try { const res = await auth.signInWithPopup(provider); currentUser = res.user; updateUI(); await checkAdminStatus(currentUser); loadData(); } catch(e) {} }
         function logout() { auth.signOut().then(() => location.reload()); }
         function updateUI() { if(currentUser) { document.getElementById('login-btn').classList.add('hidden'); document.getElementById('user-profile').classList.remove('hidden'); document.getElementById('u-avatar').src = currentUser.photoURL; } }
-        auth.onAuthStateChanged(user => { if(user) { currentUser = user; updateUI(); loadData(); } });
+        
+        auth.onAuthStateChanged(async (user) => { 
+            if(user) { 
+                currentUser = user; 
+                updateUI(); 
+                await checkAdminStatus(user);
+                loadData(); 
+            } 
+        });
+
         window.onload = () => { lucide.createIcons(); updateClock(); togglePrintConfig(); rotateTips(); updateDynamicLogo(); };
     </script>
 </body>

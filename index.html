@@ -1,10 +1,10 @@
-<!-- Pilot Intel v7 - Updated with Full CSV Data Export -->
+<!-- Pilot Intel v8 - Updated with Full CSV Data Export & Fuel Card Image -->
 <!DOCTYPE html>
 <html lang="ms">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Pilot Intel v7</title>
+    <title>Pilot Intel v8</title>
     
     <!-- Favicon: Jata Negara Malaysia -->
     <link rel="icon" type="image/svg+xml" href="https://upload.wikimedia.org/wikipedia/commons/2/26/Coat_of_arms_of_Malaysia.svg">
@@ -129,6 +129,23 @@
 
         .sch-form-container { transition: all 0.3s ease-in-out; max-height: 0; overflow: hidden; opacity: 0; }
         .sch-form-container.active { max-height: 1000px; opacity: 1; padding: 1.5rem; margin-bottom: 1rem; border-bottom: 1px solid #e2e8f0; }
+
+        /* Style tambahan untuk Image Box */
+        .card-img-box {
+            width: 80px;
+            height: 50px;
+            border: 2px dashed #cbd5e1;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            overflow: hidden;
+            background: #f8fafc;
+            transition: all 0.2s;
+        }
+        .card-img-box:hover { border-color: #3b82f6; background: #eff6ff; }
+        .card-img-box img { width: 100%; height: 100%; object-fit: cover; }
     </style>
 </head>
 <body class="p-2 md:p-6">
@@ -140,7 +157,7 @@
             <div class="flex items-center">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/2/26/Coat_of_arms_of_Malaysia.svg" style="width: 50px; height: 50px; margin-right: 12px;">                
                 <div>
-                    <h2 style="font-size: 14pt; font-weight: 800; margin: 0;" class="font-heading uppercase">Pilot Intelligent <span style="font-size: 8pt; vertical-align: top; color: #666;">v7.0.1</span></h2>
+                    <h2 style="font-size: 14pt; font-weight: 800; margin: 0;" class="font-heading uppercase">Pilot Intelligent <span style="font-size: 8pt; vertical-align: top; color: #666;">v8</span></h2>
                     <p style="font-size: 9pt; margin: 0; font-weight: 600;">Bahagian Penguatkuasa • Enterprise Logistics Dashboard</p>
                     <p id="print-meta-info" style="font-size: 8pt; margin: 0; color: #444; font-weight: 700;"></p>
                     <p id="print-fuel-info" style="font-size: 8pt; margin: 0; color: #1e40af; font-weight: 800; text-transform: uppercase;"></p>
@@ -156,7 +173,7 @@
                 <div>
                     <div class="flex items-center gap-2">
                         <h1 class="text-lg md:text-xl font-bold font-heading tracking-tight uppercase">Pilot <span class="text-blue-400">Intelligent</span></h1>
-                        <span class="bg-blue-600/30 text-blue-400 text-[9px] px-1.5 py-0.5 rounded border border-blue-500/30 font-bold">V7</span>
+                        <span class="bg-blue-600/30 text-blue-400 text-[9px] px-1.5 py-0.5 rounded border border-blue-500/30 font-bold">V8</span>
                     </div>
                     <p class="text-[8px] md:text-[9px] text-slate-400 font-bold uppercase tracking-widest">Enterprise Logistics Dashboard</p>
                 </div>
@@ -256,8 +273,8 @@
             </div>
         </div>
 
-        <!-- FUEL CARD INFORMATION BAR -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-6 no-print">
+        <!-- FUEL CARD INFORMATION BAR - UPDATED WITH IMAGE BOX -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-6 no-print">
             <div class="bg-white p-4 rounded-xl border-2 border-dashed border-slate-200 flex items-center gap-4">
                 <div class="bg-slate-100 p-2 rounded-lg"><i data-lucide="credit-card" class="text-slate-400 w-6 h-6"></i></div>
                 <div class="flex-1">
@@ -271,6 +288,18 @@
                     <label class="text-[9px] font-black text-slate-400 uppercase tracking-widest">KAD MINYAK: NAME (NAME:)</label>
                     <input type="text" id="m-fuel-card-name" class="w-full font-bold text-sm md:text-base outline-none text-slate-700 uppercase" placeholder="NAMA PEMEGANG KAD" onchange="sync()">
                 </div>
+            </div>
+            <!-- TAMBAHAN: Kotak Gambar Kad Minyak -->
+            <div class="bg-white p-4 rounded-xl border-2 border-dashed border-slate-200 flex items-center justify-between gap-4">
+                <div class="flex-1">
+                    <label class="text-[9px] font-black text-slate-400 uppercase tracking-widest">GAMBAR KAD MINYAK</label>
+                    <p class="text-[8px] text-slate-400 font-bold">KLIK KOTAK UNTUK UPLOAD</p>
+                </div>
+                <div onclick="document.getElementById('m-fuel-card-img-input').click()" class="card-img-box" id="card-img-preview-container">
+                    <i data-lucide="image-plus" class="text-slate-300 w-6 h-6" id="placeholder-icon"></i>
+                    <img id="m-fuel-card-preview" class="hidden" onclick="event.stopPropagation(); viewFullImage(this.src)">
+                </div>
+                <input type="file" id="m-fuel-card-img-input" accept="image/*" class="hidden" onchange="handleCardImage(this)">
             </div>
         </div>
 
@@ -327,7 +356,7 @@
             <div style="border: 1pt solid black; padding: 6px; margin-top: 5px;">
                 <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 0.5pt solid black; padding-bottom: 2px; margin-bottom: 6px;">
                     <h4 style="font-size: 9pt; font-weight: 800; text-transform: uppercase; margin: 0;">Rumusan Keseluruhan Bulan Ini</h4>
-                    <span style="font-size: 7pt; font-weight: 700;">Pilot Intel v7 System Generated</span>
+                    <span style="font-size: 7pt; font-weight: 700;">Pilot Intel v8 System Generated</span>
                 </div>
                 <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;">
                     <div style="font-size: 8pt;"><strong>JUMLAH JARAK:</strong> <span id="p-dist">0</span> KM</div>
@@ -423,10 +452,10 @@
     <div id="view-detail-modal" class="fixed inset-0 bg-black/60 backdrop-blur-md z-[110] hidden flex items-center justify-center p-4">
         <div class="bg-white w-full max-w-lg rounded-3xl shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200">
             <div class="bg-blue-600 p-5 text-white flex justify-between items-center">
-                <h3 class="font-heading font-bold text-lg uppercase">Butiran Penuh Jadual</h3>
+                <h3 class="font-heading font-bold text-lg uppercase" id="modal-title">Butiran Penuh</h3>
                 <button onclick="document.getElementById('view-detail-modal').classList.add('hidden')" class="p-1 hover:bg-blue-500 rounded-lg"><i data-lucide="x"></i></button>
             </div>
-            <div id="view-detail-content" class="p-6 space-y-4"></div>
+            <div id="view-detail-content" class="p-6 space-y-4 flex justify-center"></div>
             <div class="p-4 bg-slate-50 flex justify-end">
                 <button onclick="document.getElementById('view-detail-modal').classList.add('hidden')" class="bg-slate-900 text-white px-6 py-2 rounded-xl font-bold text-sm">TUTUP</button>
             </div>
@@ -458,6 +487,33 @@
             const targetLogo = logoUrl && logoUrl.trim() !== "" ? logoUrl : defaultLogo;
             document.getElementById('dynamic-logo-web').src = targetLogo;
             document.getElementById('dynamic-logo-print').src = targetLogo;
+        }
+
+        // FUNGSI MUAT NAIK GAMBAR KAD MINYAK
+        function handleCardImage(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const preview = document.getElementById('m-fuel-card-preview');
+                    const icon = document.getElementById('placeholder-icon');
+                    preview.src = e.target.result;
+                    preview.classList.remove('hidden');
+                    icon.classList.add('hidden');
+                    sync(); // Simpan ke Firestore
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        // FUNGSI LIHAT GAMBAR PENUH
+        function viewFullImage(src) {
+            const modal = document.getElementById('view-detail-modal');
+            const content = document.getElementById('view-detail-content');
+            const title = document.getElementById('modal-title');
+            
+            title.innerText = "Gambar Kad Minyak";
+            content.innerHTML = `<img src="${src}" class="max-w-full max-h-[70vh] rounded-xl shadow-lg">`;
+            modal.classList.remove('hidden');
         }
 
         function rotateTips() {
@@ -550,8 +606,12 @@
 
         function viewFullSchedule(index) {
             const item = futureSchedules[index];
+            const modal = document.getElementById('view-detail-modal');
+            const title = document.getElementById('modal-title');
             const content = document.getElementById('view-detail-content');
-            content.innerHTML = `<div class="space-y-4">
+            
+            title.innerText = "Butiran Penuh Jadual";
+            content.innerHTML = `<div class="space-y-4 w-full">
                 <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100">
                     <label class="text-[10px] font-black text-slate-400 uppercase block mb-1">Urusan / Tujuan Perjalanan</label>
                     <p class="text-lg font-black text-slate-900 uppercase leading-tight">${item.desc}</p>
@@ -573,7 +633,7 @@
                     <p class="font-bold text-slate-800 uppercase italic mb-3">${item.location || 'TIADA LOKASI'}</p>
                 </div>
             </div>`;
-            document.getElementById('view-detail-modal').classList.remove('hidden');
+            modal.classList.remove('hidden');
             lucide.createIcons();
         }
 
@@ -660,13 +720,8 @@
             window.print();
         }
 
-        /**
-         * UPDATED: Includes ALL Metadata, Logs, and Future Schedules in CSV
-         */
         function generateCSVContent() {
             let csv = "";
-            
-            // 1. HEADER SECTION (Metadata)
             csv += "--- MAKLUMAT KENDERAAN & PEMEGANG KAD ---\n";
             csv += "PLATE,BULAN,UNIT,ODO_AWAL,GAJI_POKOK,KAD_MINYAK_NO,KAD_MINYAK_NAMA\n";
             const metaRow = [
@@ -680,7 +735,6 @@
             ].map(v => `"${(v || '').toString().replace(/"/g, '""')}"`);
             csv += metaRow.join(",") + "\n\n";
 
-            // 2. MAIN LOG SECTION
             csv += "--- LOG PERJALANAN SEBENAR ---\n";
             csv += "TARIKH,MULA,HINGGA,PEMANDU,TUJUAN,LOKASI_PENUH,PELULUS,PENGGUNA,ODO_AKHIR,JARAK,KOS_RM,NO_RESIT,LITER,CATATAN\n";
             
@@ -689,42 +743,21 @@
                 const i = r.querySelectorAll('input, textarea');
                 if(i.length >= 13) {
                     let rowData = [
-                        i[0].value, // date
-                        to12h(i[1].value), // start time
-                        to12h(i[2].value), // end time
-                        i[3].value, // driver
-                        i[4].value, // purpose
-                        i[5].value, // location
-                        i[6].value, // approver
-                        i[7].value, // user
-                        i[8].value, // odo end
-                        i[9].value, // distance
-                        i[10].value, // cost rm
-                        i[11].value, // receipt no
-                        i[12].value, // liter
-                        i[13].value  // notes
+                        i[0].value, to12h(i[1].value), to12h(i[2].value), i[3].value, i[4].value, i[5].value,
+                        i[6].value, i[7].value, i[8].value, i[9].value, i[10].value, i[11].value, i[12].value, i[13].value
                     ].map(v => `"${(v || '').toString().replace(/"/g, '""')}"`);
                     csv += rowData.join(",") + "\n";
                 }
             });
 
-            // 3. SCHEDULE SECTION
             if(futureSchedules.length > 0) {
                 csv += "\n--- JADUAL PERJALANAN AKAN DATANG ---\n";
                 csv += "TARIKH_MULA,TARIKH_TAMAT,MASA_MULA,MASA_TAMAT,TUJUAN,LOKASI\n";
                 futureSchedules.forEach(s => {
-                    let schRow = [
-                        s.dateStart,
-                        s.dateEnd || s.dateStart,
-                        to12h(s.timeStart),
-                        to12h(s.timeEnd),
-                        s.desc,
-                        s.location
-                    ].map(v => `"${(v || '').toString().replace(/"/g, '""')}"`);
+                    let schRow = [ s.dateStart, s.dateEnd || s.dateStart, to12h(s.timeStart), to12h(s.timeEnd), s.desc, s.location ].map(v => `"${(v || '').toString().replace(/"/g, '""')}"`);
                     csv += schRow.join(",") + "\n";
                 });
             }
-
             return csv;
         }
 
@@ -854,7 +887,8 @@
                     month:document.getElementById('m-month').value, plate:document.getElementById('m-plate').value, 
                     odo:document.getElementById('m-odo-start').value, unit:document.getElementById('m-unit').value, 
                     salary:document.getElementById('m-salary').value, logoUrl:document.getElementById('m-logo-url').value,
-                    fuelCardNo: document.getElementById('m-fuel-card-no').value, fuelCardName: document.getElementById('m-fuel-card-name').value
+                    fuelCardNo: document.getElementById('m-fuel-card-no').value, fuelCardName: document.getElementById('m-fuel-card-name').value,
+                    fuelCardImg: document.getElementById('m-fuel-card-preview').src // Simpan gambar
                 },
                 logs: logs, futureSchedules: futureSchedules
             });
@@ -869,6 +903,16 @@
                 document.getElementById('m-odo-start').value = d.meta.odo || ''; document.getElementById('m-unit').value = d.meta.unit || '';
                 document.getElementById('m-salary').value = d.meta.salary || ''; document.getElementById('m-logo-url').value = d.meta.logoUrl || ''; 
                 document.getElementById('m-fuel-card-no').value = d.meta.fuelCardNo || ''; document.getElementById('m-fuel-card-name').value = d.meta.fuelCardName || '';
+                
+                // Load Gambar Kad
+                if(d.meta.fuelCardImg && d.meta.fuelCardImg.startsWith('data:image')) {
+                    const preview = document.getElementById('m-fuel-card-preview');
+                    const icon = document.getElementById('placeholder-icon');
+                    preview.src = d.meta.fuelCardImg;
+                    preview.classList.remove('hidden');
+                    icon.classList.add('hidden');
+                }
+
                 futureSchedules = d.futureSchedules || [];
                 document.getElementById('log-body').innerHTML = ""; if(d.logs && d.logs.length > 0) d.logs.forEach(l => addRow(l)); else addRow();
                 calcLogic(); calcWage(); renderSchedules(); updateDynamicLogo();

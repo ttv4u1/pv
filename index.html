@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>v4 Pilot Intel</title>
+    <title>v5 Pilot Intel</title>
     
     <!-- Favicon: Jata Negara Malaysia -->
     <link rel="icon" type="image/svg+xml" href="https://upload.wikimedia.org/wikipedia/commons/2/26/Coat_of_arms_of_Malaysia.svg">
@@ -193,7 +193,7 @@
                     <p id="print-fuel-info" style="font-size: 8pt; margin: 0; color: #1e40af; font-weight: 800; text-transform: uppercase;"></p>
                 </div>
             </div>
-            <img id="dynamic-logo-print" src="https://github.com/ttv4u1/KP/raw/main/DVS.svg" style="width: 55px; height: 55px;">
+            <img id="dynamic-logo-print" src="https://github.com/ttv5u1/KP/raw/main/DVS.svg" style="width: 55px; height: 55px;">
         </div>
 
         <!-- WEB HEADER -->
@@ -230,7 +230,7 @@
                     <img id="u-avatar" class="w-8 h-8 rounded-full border border-blue-500">
                     <button onclick="logout()" class="text-[10px] text-red-400 font-bold underline uppercase">Logout</button>
                 </div>
-                <img id="dynamic-logo-web" src="https://github.com/ttv4u1/KP/raw/main/DVS.svg" class="w-10 h-10 ml-2 hidden lg:block">
+                <img id="dynamic-logo-web" src="https://github.com/ttv5u1/KP/raw/main/DVS.svg" class="w-10 h-10 ml-2 hidden lg:block">
             </div>
         </header>
 
@@ -295,7 +295,7 @@
                 <input type="text" id="m-unit" class="w-full font-bold text-base md:text-lg uppercase outline-none" placeholder="Cth: LOGISTIK" onchange="sync()">
             </div>
             <div class="bg-blue-50 p-3 rounded-xl border border-blue-200 shadow-sm">
-                <label class="text-[9px] font-bold text-blue-500 uppercase flex items-center gap-1"><i data-lucide="image" class="w-2.5 h-2.5"></i> URL Logo Jabatan</label>
+                <label class="text-[9px] font-bold text-blue-500 uppercase flex items-center gap-1"><i data-lucide="image" class="w-2.5 h-2.5"></i> URL Logo Jabatan untuk tukar header Print</label>
                 <input type="text" id="m-logo-url" class="w-full font-bold text-[10px] outline-none bg-transparent text-slate-600" placeholder="https://logo.com/image.png" onchange="updateDynamicLogo(); sync()">
             </div>
             <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm">
@@ -583,7 +583,7 @@
 
         function updateDynamicLogo() {
             const logoUrl = document.getElementById('m-logo-url').value;
-            const defaultLogo = "https://github.com/ttv4u1/KP/raw/main/DVS.svg";
+            const defaultLogo = "https://github.com/ttv5u1/KP/raw/main/DVS.svg";
             const targetLogo = logoUrl && logoUrl.trim() !== "" ? logoUrl : defaultLogo;
             document.getElementById('dynamic-logo-web').src = targetLogo;
             document.getElementById('dynamic-logo-print').src = targetLogo;

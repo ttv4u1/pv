@@ -1,10 +1,10 @@
-<!-- Pilot Intel v8 - Updated with Full CSV Data Export & Fuel Card Image -->
+<!-- Pilot Intel v14 - Updated with Full Screen Flip Fuel Card -->
 <!DOCTYPE html>
 <html lang="ms">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Pilot Intel v8</title>
+    <title>Pilot Intel v14</title>
     
     <!-- Favicon: Jata Negara Malaysia -->
     <link rel="icon" type="image/svg+xml" href="https://upload.wikimedia.org/wikipedia/commons/2/26/Coat_of_arms_of_Malaysia.svg">
@@ -130,22 +130,111 @@
         .sch-form-container { transition: all 0.3s ease-in-out; max-height: 0; overflow: hidden; opacity: 0; }
         .sch-form-container.active { max-height: 1000px; opacity: 1; padding: 1.5rem; margin-bottom: 1rem; border-bottom: 1px solid #e2e8f0; }
 
-        /* Style tambahan untuk Image Box */
-        .card-img-box {
-            width: 80px;
-            height: 50px;
-            border: 2px dashed #cbd5e1;
+        /* --- FLIP CARD STYLES --- */
+        .fuel-card-wrapper {
+            width: 100px;
+            height: 65px;
+            perspective: 1000px;
+            cursor: pointer;
+            position: relative;
+        }
+        .fuel-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-style: preserve-3d;
+        }
+        .fuel-card-wrapper.is-flipped .fuel-card-inner {
+            transform: rotateY(180deg);
+        }
+        .fuel-card-front, .fuel-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
             border-radius: 8px;
+            border: 2px dashed #cbd5e1;
+            background: #f8fafc;
             display: flex;
             align-items: center;
             justify-content: center;
-            cursor: pointer;
             overflow: hidden;
-            background: #f8fafc;
-            transition: all 0.2s;
         }
-        .card-img-box:hover { border-color: #3b82f6; background: #eff6ff; }
-        .card-img-box img { width: 100%; height: 100%; object-fit: cover; }
+        .fuel-card-back {
+            transform: rotateY(180deg);
+            border-color: #94a3b8;
+        }
+        .fuel-card-front img, .fuel-card-back img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .card-label {
+            position: absolute;
+            bottom: 2px;
+            left: 0;
+            right: 0;
+            font-size: 7px;
+            font-weight: 800;
+            background: rgba(255,255,255,0.8);
+            color: #475569;
+            text-transform: uppercase;
+        }
+        .delete-img-btn {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #ef4444;
+            color: white;
+            border-radius: 50%;
+            padding: 2px;
+            z-index: 20;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        /* --- FULL VIEW MODAL STYLES --- */
+        .full-card-container {
+            width: 90vw;
+            max-width: 500px;
+            aspect-ratio: 1.58 / 1; /* Standard credit card ratio */
+            perspective: 2000px;
+        }
+        .full-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-style: preserve-3d;
+            cursor: pointer;
+        }
+        .full-card-container.is-flipped .full-card-inner {
+            transform: rotateY(180deg);
+        }
+        .full-card-front, .full-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            background: #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .full-card-back {
+            transform: rotateY(180deg);
+        }
+        .full-card-front img, .full-card-back img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            background: #000;
+        }
     </style>
 </head>
 <body class="p-2 md:p-6">
@@ -157,7 +246,7 @@
             <div class="flex items-center">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/2/26/Coat_of_arms_of_Malaysia.svg" style="width: 50px; height: 50px; margin-right: 12px;">                
                 <div>
-                    <h2 style="font-size: 14pt; font-weight: 800; margin: 0;" class="font-heading uppercase">Pilot Intelligent <span style="font-size: 8pt; vertical-align: top; color: #666;">v8</span></h2>
+                    <h2 style="font-size: 14pt; font-weight: 800; margin: 0;" class="font-heading uppercase">Pilot Intelligent <span style="font-size: 8pt; vertical-align: top; color: #666;">v14</span></h2>
                     <p style="font-size: 9pt; margin: 0; font-weight: 600;">Bahagian Penguatkuasa • Enterprise Logistics Dashboard</p>
                     <p id="print-meta-info" style="font-size: 8pt; margin: 0; color: #444; font-weight: 700;"></p>
                     <p id="print-fuel-info" style="font-size: 8pt; margin: 0; color: #1e40af; font-weight: 800; text-transform: uppercase;"></p>
@@ -173,7 +262,7 @@
                 <div>
                     <div class="flex items-center gap-2">
                         <h1 class="text-lg md:text-xl font-bold font-heading tracking-tight uppercase">Pilot <span class="text-blue-400">Intelligent</span></h1>
-                        <span class="bg-blue-600/30 text-blue-400 text-[9px] px-1.5 py-0.5 rounded border border-blue-500/30 font-bold">V8</span>
+                        <span class="bg-blue-600/30 text-blue-400 text-[9px] px-1.5 py-0.5 rounded border border-blue-500/30 font-bold">V14</span>
                     </div>
                     <p class="text-[8px] md:text-[9px] text-slate-400 font-bold uppercase tracking-widest">Enterprise Logistics Dashboard</p>
                 </div>
@@ -273,7 +362,7 @@
             </div>
         </div>
 
-        <!-- FUEL CARD INFORMATION BAR - UPDATED WITH IMAGE BOX -->
+        <!-- FUEL CARD INFORMATION BAR -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-6 no-print">
             <div class="bg-white p-4 rounded-xl border-2 border-dashed border-slate-200 flex items-center gap-4">
                 <div class="bg-slate-100 p-2 rounded-lg"><i data-lucide="credit-card" class="text-slate-400 w-6 h-6"></i></div>
@@ -289,17 +378,40 @@
                     <input type="text" id="m-fuel-card-name" class="w-full font-bold text-sm md:text-base outline-none text-slate-700 uppercase" placeholder="NAMA PEMEGANG KAD" onchange="sync()">
                 </div>
             </div>
-            <!-- TAMBAHAN: Kotak Gambar Kad Minyak -->
+            
+            <!-- FLIP CARD IMAGE SECTION -->
             <div class="bg-white p-4 rounded-xl border-2 border-dashed border-slate-200 flex items-center justify-between gap-4">
                 <div class="flex-1">
                     <label class="text-[9px] font-black text-slate-400 uppercase tracking-widest">GAMBAR KAD MINYAK</label>
-                    <p class="text-[8px] text-slate-400 font-bold">KLIK KOTAK UNTUK UPLOAD</p>
+                    <p class="text-[7px] text-blue-500 font-bold uppercase">Klik Kotak: Expand/Flip</p>
+                    <div class="flex gap-1 mt-1">
+                         <button onclick="document.getElementById('fuel-img-front-input').click()" class="bg-slate-100 hover:bg-blue-100 p-1 rounded text-[8px] font-bold">DEPAN</button>
+                         <button onclick="document.getElementById('fuel-img-back-input').click()" class="bg-slate-100 hover:bg-blue-100 p-1 rounded text-[8px] font-bold">BELAKANG</button>
+                    </div>
                 </div>
-                <div onclick="document.getElementById('m-fuel-card-img-input').click()" class="card-img-box" id="card-img-preview-container">
-                    <i data-lucide="image-plus" class="text-slate-300 w-6 h-6" id="placeholder-icon"></i>
-                    <img id="m-fuel-card-preview" class="hidden" onclick="event.stopPropagation(); viewFullImage(this.src)">
+
+                <div class="fuel-card-wrapper" id="fuelCardWrapper" onclick="handleCardClick()">
+                    <div class="fuel-card-inner" id="fuelCardInner">
+                        <!-- FRONT FACE -->
+                        <div class="fuel-card-front" id="front-preview-container">
+                            <i data-lucide="image-plus" class="text-slate-300 w-5 h-5" id="icon-front"></i>
+                            <img id="img-front-view" class="hidden">
+                            <span class="card-label">DEPAN</span>
+                            <button onclick="event.stopPropagation(); deleteFuelImage('front')" class="delete-img-btn hidden" id="del-front"><i data-lucide="x" class="w-2 h-2"></i></button>
+                        </div>
+                        <!-- BACK FACE -->
+                        <div class="fuel-card-back" id="back-preview-container">
+                            <i data-lucide="image-plus" class="text-slate-300 w-5 h-5" id="icon-back"></i>
+                            <img id="img-back-view" class="hidden">
+                            <span class="card-label">BELAKANG</span>
+                            <button onclick="event.stopPropagation(); deleteFuelImage('back')" class="delete-img-btn hidden" id="del-back"><i data-lucide="x" class="w-2 h-2"></i></button>
+                        </div>
+                    </div>
                 </div>
-                <input type="file" id="m-fuel-card-img-input" accept="image/*" class="hidden" onchange="handleCardImage(this)">
+
+                <!-- Hidden Inputs -->
+                <input type="file" id="fuel-img-front-input" accept="image/*" class="hidden" onchange="handleFuelImageUpload('front', this)">
+                <input type="file" id="fuel-img-back-input" accept="image/*" class="hidden" onchange="handleFuelImageUpload('back', this)">
             </div>
         </div>
 
@@ -356,7 +468,7 @@
             <div style="border: 1pt solid black; padding: 6px; margin-top: 5px;">
                 <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 0.5pt solid black; padding-bottom: 2px; margin-bottom: 6px;">
                     <h4 style="font-size: 9pt; font-weight: 800; text-transform: uppercase; margin: 0;">Rumusan Keseluruhan Bulan Ini</h4>
-                    <span style="font-size: 7pt; font-weight: 700;">Pilot Intel v8 System Generated</span>
+                    <span style="font-size: 7pt; font-weight: 700;">Pilot Intel v14 System Generated</span>
                 </div>
                 <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;">
                     <div style="font-size: 8pt;"><strong>JUMLAH JARAK:</strong> <span id="p-dist">0</span> KM</div>
@@ -462,6 +574,40 @@
         </div>
     </div>
 
+    <!-- MODAL FULL FUEL CARD VIEW -->
+    <div id="fuel-card-full-modal" class="fixed inset-0 bg-slate-900/90 backdrop-blur-xl z-[150] hidden flex items-center justify-center p-6" onclick="closeFuelCardModal()">
+        <div class="flex flex-col items-center gap-8 w-full">
+            <div class="flex justify-between items-center w-full max-w-[500px]">
+                <div>
+                    <h2 class="text-white font-heading font-bold text-xl uppercase tracking-tighter">Fuel Card Viewer</h2>
+                    <p class="text-blue-400 text-xs font-bold uppercase">Klik pada kad untuk pusing (Flip)</p>
+                </div>
+                <button onclick="closeFuelCardModal()" class="bg-white/10 hover:bg-white/20 text-white p-3 rounded-full transition-all">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+
+            <div class="full-card-container" id="fullCardContainer" onclick="event.stopPropagation(); flipFullCard()">
+                <div class="full-card-inner">
+                    <div class="full-card-front">
+                        <img id="full-img-front" src="" alt="Fuel Card Front">
+                        <div class="absolute top-4 left-4 bg-white/20 backdrop-blur px-3 py-1 rounded-full text-[10px] text-white font-bold uppercase border border-white/30">Depan</div>
+                    </div>
+                    <div class="full-card-back">
+                        <img id="full-img-back" src="" alt="Fuel Card Back">
+                        <div class="absolute top-4 left-4 bg-white/20 backdrop-blur px-3 py-1 rounded-full text-[10px] text-white font-bold uppercase border border-white/30">Belakang</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex gap-4 no-print">
+                 <button onclick="event.stopPropagation(); flipFullCard()" class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-2xl font-bold flex items-center gap-2 shadow-2xl transition-all active:scale-95">
+                     <i data-lucide="refresh-cw"></i> PUSING KAD
+                 </button>
+            </div>
+        </div>
+    </div>
+
     <script>
         const firebaseConfig = { apiKey: "AIzaSyDdCwKNCx0nA1cZirGrw1UYvtumALluVXw", authDomain: "pilot-veterinar.firebaseapp.com", projectId: "pilot-veterinar", storageBucket: "pilot-veterinar.firebasestorage.app", messagingSenderId: "559136368070", appId: "1:559136368070:web:8aaa2dcb804c73f10cbec7" };
         firebase.initializeApp(firebaseConfig);
@@ -472,6 +618,8 @@
         let currentUser = null;
         let futureSchedules = [];
         const dayNames = ["AHAD", "ISNIN", "SELASA", "RABU", "KHAMIS", "JUMAAT", "SABTU"];
+
+        const flipSound = new Audio('https://www.soundjay.com/misc/sounds/page-flip-01a.mp3');
 
         const intelTips = [
             { icon: "database", text: "TIPS DATA: Pastikan ODO AWAL diisi sebelum memasukkan rekod perjalanan baru." },
@@ -489,33 +637,89 @@
             document.getElementById('dynamic-logo-print').src = targetLogo;
         }
 
-        // FUNGSI MUAT NAIK GAMBAR KAD MINYAK
-        function handleCardImage(input) {
+        // --- FUNGSI FLIP CARD, UPLOAD & MODAL FULL VIEW ---
+        function handleCardClick() {
+            const frontImg = document.getElementById('img-front-view');
+            const backImg = document.getElementById('img-back-view');
+            
+            // Jika ada gambar, buka modal. Jika tiada, flip preview sahaja.
+            if (!frontImg.classList.contains('hidden') || !backImg.classList.contains('hidden')) {
+                openFuelCardModal();
+            } else {
+                flipFuelCard();
+            }
+        }
+
+        function flipFuelCard() {
+            const wrapper = document.getElementById('fuelCardWrapper');
+            wrapper.classList.toggle('is-flipped');
+            playFlipSound();
+        }
+
+        function playFlipSound() {
+            flipSound.currentTime = 0;
+            flipSound.play().catch(e => {}); 
+        }
+
+        function openFuelCardModal() {
+            const modal = document.getElementById('fuel-card-full-modal');
+            const fullFront = document.getElementById('full-img-front');
+            const fullBack = document.getElementById('full-img-back');
+            const srcFront = document.getElementById('img-front-view').src;
+            const srcBack = document.getElementById('img-back-view').src;
+
+            fullFront.src = srcFront || "";
+            fullBack.src = srcBack || "";
+            
+            modal.classList.remove('hidden');
+            document.getElementById('fullCardContainer').classList.remove('is-flipped');
+            lucide.createIcons();
+        }
+
+        function closeFuelCardModal() {
+            document.getElementById('fuel-card-full-modal').classList.add('hidden');
+        }
+
+        function flipFullCard() {
+            const container = document.getElementById('fullCardContainer');
+            container.classList.toggle('is-flipped');
+            playFlipSound();
+        }
+
+        function handleFuelImageUpload(side, input) {
             if (input.files && input.files[0]) {
                 const reader = new FileReader();
                 reader.onload = function(e) {
-                    const preview = document.getElementById('m-fuel-card-preview');
-                    const icon = document.getElementById('placeholder-icon');
-                    preview.src = e.target.result;
-                    preview.classList.remove('hidden');
+                    const imgView = document.getElementById(`img-${side}-view`);
+                    const icon = document.getElementById(`icon-${side}`);
+                    const delBtn = document.getElementById(`del-${side}`);
+                    
+                    imgView.src = e.target.result;
+                    imgView.classList.remove('hidden');
                     icon.classList.add('hidden');
-                    sync(); // Simpan ke Firestore
+                    delBtn.classList.remove('hidden');
+                    sync(); 
                 };
                 reader.readAsDataURL(input.files[0]);
             }
         }
 
-        // FUNGSI LIHAT GAMBAR PENUH
-        function viewFullImage(src) {
-            const modal = document.getElementById('view-detail-modal');
-            const content = document.getElementById('view-detail-content');
-            const title = document.getElementById('modal-title');
+        function deleteFuelImage(side) {
+            if(!confirm(`Padam gambar kad bahagian ${side.toUpperCase()}?`)) return;
+            const imgView = document.getElementById(`img-${side}-view`);
+            const icon = document.getElementById(`icon-${side}`);
+            const delBtn = document.getElementById(`del-${side}`);
+            const input = document.getElementById(`fuel-img-${side}-input`);
             
-            title.innerText = "Gambar Kad Minyak";
-            content.innerHTML = `<img src="${src}" class="max-w-full max-h-[70vh] rounded-xl shadow-lg">`;
-            modal.classList.remove('hidden');
+            imgView.src = "";
+            imgView.classList.add('hidden');
+            icon.classList.remove('hidden');
+            delBtn.classList.add('hidden');
+            input.value = "";
+            sync();
         }
 
+        // --- FUNGSI ASAL LAIN-LAIN ---
         function rotateTips() {
             const tipBox = document.getElementById('tip-text-box');
             const tipIcon = document.getElementById('tip-icon');
@@ -888,7 +1092,8 @@
                     odo:document.getElementById('m-odo-start').value, unit:document.getElementById('m-unit').value, 
                     salary:document.getElementById('m-salary').value, logoUrl:document.getElementById('m-logo-url').value,
                     fuelCardNo: document.getElementById('m-fuel-card-no').value, fuelCardName: document.getElementById('m-fuel-card-name').value,
-                    fuelCardImg: document.getElementById('m-fuel-card-preview').src // Simpan gambar
+                    fuelCardFront: document.getElementById('img-front-view').src, 
+                    fuelCardBack: document.getElementById('img-back-view').src
                 },
                 logs: logs, futureSchedules: futureSchedules
             });
@@ -904,13 +1109,19 @@
                 document.getElementById('m-salary').value = d.meta.salary || ''; document.getElementById('m-logo-url').value = d.meta.logoUrl || ''; 
                 document.getElementById('m-fuel-card-no').value = d.meta.fuelCardNo || ''; document.getElementById('m-fuel-card-name').value = d.meta.fuelCardName || '';
                 
-                // Load Gambar Kad
-                if(d.meta.fuelCardImg && d.meta.fuelCardImg.startsWith('data:image')) {
-                    const preview = document.getElementById('m-fuel-card-preview');
-                    const icon = document.getElementById('placeholder-icon');
-                    preview.src = d.meta.fuelCardImg;
-                    preview.classList.remove('hidden');
-                    icon.classList.add('hidden');
+                // Load Gambar Depan
+                if(d.meta.fuelCardFront && d.meta.fuelCardFront.startsWith('data:image')) {
+                    const view = document.getElementById('img-front-view');
+                    view.src = d.meta.fuelCardFront; view.classList.remove('hidden');
+                    document.getElementById('icon-front').classList.add('hidden');
+                    document.getElementById('del-front').classList.remove('hidden');
+                }
+                // Load Gambar Belakang
+                if(d.meta.fuelCardBack && d.meta.fuelCardBack.startsWith('data:image')) {
+                    const view = document.getElementById('img-back-view');
+                    view.src = d.meta.fuelCardBack; view.classList.remove('hidden');
+                    document.getElementById('icon-back').classList.add('hidden');
+                    document.getElementById('del-back').classList.remove('hidden');
                 }
 
                 futureSchedules = d.futureSchedules || [];

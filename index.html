@@ -1,10 +1,14 @@
-<!-- Pilot Intel v3.1 - Updated with Schedule Print & Smart View -->
+--- START OF FILE ---
+<!-- Pilot Intel v4.2 - Updated with Customizable Logo & Favicon -->
 <!DOCTYPE html>
 <html lang="ms">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Pilot Intel v3.1</title>
+    <title>Pilot Intel v4.2</title>
+    
+    <!-- Favicon: Jata Negara Malaysia -->
+    <link rel="icon" type="image/svg+xml" href="https://upload.wikimedia.org/wikipedia/commons/2/26/Coat_of_arms_of_Malaysia.svg">
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
@@ -110,7 +114,6 @@
             .w-notes { width: 11%; }
             .w-action { display: none !important; }
 
-            /* New Print Schedule Section */
             .print-schedule-section { display: block !important; margin-top: 20px; page-break-before: auto; }
             .print-schedule-title { font-size: 10pt; font-weight: 800; text-transform: uppercase; border-bottom: 1pt solid black; margin-bottom: 5px; padding-bottom: 2px; }
         }
@@ -125,7 +128,6 @@
         .row-locked-bg { background-color: #f8fafc; }
         .sch-locked { opacity: 0.7; border-left-color: #94a3b8 !important; }
 
-        /* Smooth Hide/Show for Schedule Inputs */
         .sch-form-container { transition: all 0.3s ease-in-out; max-height: 0; overflow: hidden; opacity: 0; }
         .sch-form-container.active { max-height: 1000px; opacity: 1; padding: 1.5rem; margin-bottom: 1rem; border-bottom: 1px solid #e2e8f0; }
     </style>
@@ -139,12 +141,13 @@
             <div class="flex items-center">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/2/26/Coat_of_arms_of_Malaysia.svg" style="width: 50px; height: 50px; margin-right: 12px;">                
                 <div>
-                    <h2 style="font-size: 14pt; font-weight: 800; margin: 0;" class="font-heading uppercase">Pilot Intelligent</h2>
+                    <h2 style="font-size: 14pt; font-weight: 800; margin: 0;" class="font-heading uppercase">Pilot Intelligent <span style="font-size: 8pt; vertical-align: top; color: #666;">v4.2.0</span></h2>
                     <p style="font-size: 9pt; margin: 0; font-weight: 600;">Bahagian Penguatkuasa • Enterprise Logistics Dashboard</p>
                     <p id="print-meta-info" style="font-size: 8pt; margin: 0; color: #444; font-weight: 700;"></p>
                 </div>
             </div>
-            <img src="https://github.com/ttv4u1/KP/raw/main/DVS.svg" style="width: 55px; height: 55px;">
+            <!-- Custom Dynamic Logo (Print) -->
+            <img id="dynamic-logo-print" src="https://github.com/ttv4u1/KP/raw/main/DVS.svg" style="width: 55px; height: 55px;">
         </div>
 
         <!-- WEB HEADER -->
@@ -152,7 +155,10 @@
             <div class="flex items-center gap-4">                
                 <img src="https://upload.wikimedia.org/wikipedia/commons/2/26/Coat_of_arms_of_Malaysia.svg" class="w-8 h-8 md:w-10 md:h-10">                
                 <div>
-                    <h1 class="text-lg md:text-xl font-bold font-heading tracking-tight uppercase">Pilot <span class="text-blue-400">Intelligent</span></h1>
+                    <div class="flex items-center gap-2">
+                        <h1 class="text-lg md:text-xl font-bold font-heading tracking-tight uppercase">Pilot <span class="text-blue-400">Intelligent</span></h1>
+                        <span class="bg-blue-600/30 text-blue-400 text-[9px] px-1.5 py-0.5 rounded border border-blue-500/30 font-bold">V4.2.0</span>
+                    </div>
                     <p class="text-[8px] md:text-[9px] text-slate-400 font-bold uppercase tracking-widest">Enterprise Logistics Dashboard</p>
                 </div>
             </div>
@@ -174,7 +180,8 @@
                     <img id="u-avatar" class="w-8 h-8 rounded-full border border-blue-500">
                     <button onclick="logout()" class="text-[10px] text-red-400 font-bold underline uppercase">Logout</button>
                 </div>
-                <img src="https://github.com/ttv4u1/KP/raw/main/DVS.svg" class="w-10 h-10 ml-2 hidden lg:block">
+                <!-- Custom Dynamic Logo (Web) -->
+                <img id="dynamic-logo-web" src="https://github.com/ttv4u1/KP/raw/main/DVS.svg" class="w-10 h-10 ml-2 hidden lg:block">
             </div>
         </header>
 
@@ -218,14 +225,14 @@
         </div>
 
         <!-- INFO BAR -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 mb-6 no-print">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-3 mb-6 no-print">
             <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm">
                 <label class="text-[9px] font-bold text-slate-400 uppercase">Bulan Rekod</label>
                 <input type="month" id="m-month" class="w-full font-bold text-base md:text-lg outline-none text-blue-600" onchange="sync()">
             </div>
             <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm">
                 <label class="text-[9px] font-bold text-slate-400 uppercase">No. Pendaftaran</label>
-                <input type="text" id="m-plate" class="w-full font-bold text-base md:text-lg uppercase outline-none" placeholder="Cth: VNC 974 / WRA 1234" onchange="sync()">
+                <input type="text" id="m-plate" class="w-full font-bold text-base md:text-lg uppercase outline-none" placeholder="Cth: VNC 974" onchange="sync()">
             </div>
             <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm">
                 <label class="text-[9px] font-bold text-slate-400 uppercase">Odo Awal</label>
@@ -233,13 +240,17 @@
             </div>
             <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm">
                 <label class="text-[9px] font-bold text-slate-400 uppercase">Bahagian / Unit</label>
-                <input type="text" id="m-unit" class="w-full font-bold text-base md:text-lg uppercase outline-none" placeholder="Cth: UNIT LOGISTIK / PENGUATKUASA" onchange="sync()">
+                <input type="text" id="m-unit" class="w-full font-bold text-base md:text-lg uppercase outline-none" placeholder="Cth: LOGISTIK" onchange="sync()">
+            </div>
+            <!-- NEW: CUSTOM LOGO URL INPUT -->
+            <div class="bg-blue-50 p-3 rounded-xl border border-blue-200 shadow-sm">
+                <label class="text-[9px] font-bold text-blue-500 uppercase flex items-center gap-1"><i data-lucide="image" class="w-2.5 h-2.5"></i> URL Logo Jabatan</label>
+                <input type="text" id="m-logo-url" class="w-full font-bold text-[10px] outline-none bg-transparent text-slate-600" placeholder="https://logo.com/image.png" onchange="updateDynamicLogo(); sync()">
             </div>
             <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm">
                 <label class="text-[9px] font-bold text-slate-400 uppercase">Gaji Pokok (RM)</label>
-                <input type="number" id="m-salary" class="w-full font-bold text-base md:text-lg outline-none" placeholder="Cth: 2500.00" oninput="calcWage(); sync()">
+                <input type="number" id="m-salary" class="w-full font-bold text-base md:text-lg outline-none" placeholder="2500" oninput="calcWage(); sync()">
                 <div id="wage-result" class="mt-1 leading-tight">
-                    <p class="text-[9px] font-bold text-slate-500 uppercase">Jumlah (+ RM765): <span id="total-with-allowance" class="text-slate-700">RM 0.00</span></p>
                     <p id="hourly-rate" class="text-[10px] font-black text-emerald-600 uppercase italic tracking-tighter">Kadar/Jam: RM 0.00</p>
                 </div>
             </div>
@@ -296,7 +307,10 @@
         <!-- PRINT FOOTER RUMUSAN -->
         <div class="print-footer-only">
             <div style="border: 1pt solid black; padding: 6px; margin-top: 5px;">
-                <h4 style="font-size: 9pt; font-weight: 800; border-bottom: 0.5pt solid black; padding-bottom: 2px; margin-bottom: 6px; text-transform: uppercase;">Rumusan Keseluruhan Bulan Ini</h4>
+                <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 0.5pt solid black; padding-bottom: 2px; margin-bottom: 6px;">
+                    <h4 style="font-size: 9pt; font-weight: 800; text-transform: uppercase; margin: 0;">Rumusan Keseluruhan Bulan Ini</h4>
+                    <span style="font-size: 7pt; font-weight: 700;">Pilot Intel v4.2.0 System Generated</span>
+                </div>
                 <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;">
                     <div style="font-size: 8pt;"><strong>JUMLAH JARAK:</strong> <span id="p-dist">0</span> KM</div>
                     <div style="font-size: 8pt;"><strong>JUMLAH LITER:</strong> <span id="p-liter">0</span> L</div>
@@ -306,7 +320,7 @@
             </div>
         </div>
 
-        <!-- NEW: PRINT JADUAL AKAN DATANG SECTION -->
+        <!-- PRINT JADUAL AKAN DATANG SECTION -->
         <div class="print-schedule-section">
             <h3 class="print-schedule-title">Jadual Perjalanan Akan Datang</h3>
             <table id="print-schedule-table">
@@ -319,9 +333,7 @@
                         <th style="width: 25%">Lokasi</th>
                     </tr>
                 </thead>
-                <tbody id="print-schedule-body">
-                    <!-- Data will be injected via JS -->
-                </tbody>
+                <tbody id="print-schedule-body"></tbody>
             </table>
         </div>
 
@@ -349,7 +361,6 @@
                 </div>
             </div>
 
-            <!-- Auto-hidden Input Form with Smart Icon Button -->
             <div id="sch-form" class="sch-form-container bg-slate-50">
                 <input type="hidden" id="editing-index" value="-1">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -369,15 +380,12 @@
                     </div>
                     <div class="md:col-span-2">
                         <label class="text-[10px] font-black text-slate-400 uppercase">Tujuan / Urusan</label>
-                        <input type="text" id="new-sch-desc" class="w-full mt-1 p-2 border rounded-xl text-sm font-bold uppercase" placeholder="Cth: LAWATAN TAPAK / MENGHANTAR PEGAWAI KE KLIA">
+                        <input type="text" id="new-sch-desc" class="w-full mt-1 p-2 border rounded-xl text-sm font-bold uppercase" placeholder="Cth: LAWATAN TAPAK">
                     </div>
                     <div class="md:col-span-2">
                         <label class="text-[10px] font-black text-slate-400 uppercase">Lokasi Penuh (Google Maps)</label>
                         <div class="flex gap-2 mt-1">
-                            <input type="text" id="new-sch-loc" class="flex-1 p-2 border rounded-xl text-sm font-bold uppercase" placeholder="Cth: IBU PEJABAT PERKHIDMATAN VETERINAR, PUTRAJAYA">
-                            <button onclick="previewMapFromInput('new-sch-loc')" class="bg-slate-200 text-slate-700 p-2 rounded-xl hover:bg-slate-300 transition shadow-sm">
-                                <i data-lucide="map-pin" class="w-5 h-5"></i>
-                            </button>
+                            <input type="text" id="new-sch-loc" class="flex-1 p-2 border rounded-xl text-sm font-bold uppercase" placeholder="Cth: WISMA TANI">
                         </div>
                     </div>
                 </div>
@@ -421,15 +429,20 @@
         const intelTips = [
             { icon: "database", text: "TIPS DATA: Pastikan ODO AWAL diisi sebelum memasukkan rekod perjalanan baru." },
             { icon: "receipt", text: "TIPS DATA: Masukkan NO. RESIT minyak dengan jelas untuk rujukan audit kewangan." },
-            { icon: "wrench", text: "PENJAGAAN: Periksa tekanan tayar setiap minggu untuk penjimatan bahan api optimum." },
-            { icon: "droplets", text: "PENJAGAAN: Pastikan paras air radiator dan minyak hitam diperiksa sebelum perjalanan jauh." },
-            { icon: "shield-check", text: "KESELAMATAN: Gunakan tali pinggang keledar dan elakkan penggunaan telefon semasa memandu." },
             { icon: "gauge", text: "HAD LAJU: Lebuhraya <span class='speed-badge'>110</span> Jalan Persekutuan <span class='speed-badge'>90</span>" },
-            { icon: "home", text: "HAD LAJU: Kawasan Perkampungan & Bandar <span class='speed-badge'>60</span> km/j sahaja." },
-            { icon: "graduation-cap", text: "HAD LAJU: Kawasan Sekolah <span class='speed-badge'>30</span> km/j. Berhati-hati dengan kanak-kanak." },
             { icon: "clock-3", text: "PRO-TIP: Amalkan rehat 15 minit bagi setiap 2 jam pemanduan untuk elak mengantuk." }
         ];
         let currentTipIndex = 0;
+
+        // Function to Update Logo on Screen
+        function updateDynamicLogo() {
+            const logoUrl = document.getElementById('m-logo-url').value;
+            const defaultLogo = "https://github.com/ttv4u1/KP/raw/main/DVS.svg";
+            const targetLogo = logoUrl && logoUrl.trim() !== "" ? logoUrl : defaultLogo;
+            
+            document.getElementById('dynamic-logo-web').src = targetLogo;
+            document.getElementById('dynamic-logo-print').src = targetLogo;
+        }
 
         function rotateTips() {
             const tipBox = document.getElementById('tip-text-box');
@@ -469,12 +482,6 @@
             }
         }
 
-        function previewMapFromInput(inputId) {
-            const loc = document.getElementById(inputId).value;
-            if(!loc) return alert("Sila masukkan nama lokasi");
-            window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(loc)}`, '_blank');
-        }
-
         function openMapsFromTable(btn) {
             const input = btn.previousElementSibling;
             if(!input.value) return alert("Sila isi lokasi dahulu");
@@ -501,41 +508,28 @@
 
             futureSchedules.forEach((item, index) => {
                 const isLocked = item.isLocked || false;
-                
-                // Web List UI
                 const div = document.createElement('div');
                 div.className = `p-4 bg-slate-50 rounded-2xl border-l-4 ${isLocked ? 'sch-locked' : 'border-blue-500'} shadow-sm relative group hover:bg-white hover:shadow-md transition-all cursor-pointer`;
                 div.onclick = (e) => { if(!e.target.closest('button')) viewFullSchedule(index); };
-                
                 div.innerHTML = `
                     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
                         <div class="flex-1">
                             <div class="flex items-center gap-2 mb-1">
                                 <span class="${isLocked ? 'bg-slate-200 text-slate-600' : 'bg-blue-100 text-blue-700'} text-[9px] font-black px-2 py-0.5 rounded-full uppercase">${getDayFromDate(item.dateStart)}</span>
                                 <span class="text-xs font-bold text-slate-400 uppercase tracking-widest">Jadual #${index+1}</span>
-                                ${isLocked ? '<i data-lucide="lock" class="w-3 h-3 text-slate-400"></i>' : ''}
                             </div>
                             <h3 class="font-black text-slate-800 text-base uppercase leading-tight truncate max-w-[250px] md:max-w-md">${item.desc}</h3>
                             ${item.location ? `<p class="text-blue-600 text-xs font-bold mt-1 truncate max-w-[250px] md:max-w-md"><i data-lucide="map-pin" class="w-3 h-3 inline text-blue-400"></i> ${item.location}</p>` : ''}
                         </div>
                         <div class="flex gap-2 items-center">
-                            <button onclick="viewFullSchedule(${index})" class="text-blue-500 bg-blue-50 p-2 rounded-full hover:bg-blue-100 transition shadow-sm" title="Lihat Butiran">
-                                <i data-lucide="eye" class="w-5 h-5"></i>
-                            </button>
-                            <button onclick="toggleScheduleLock(${index})" class="${isLocked ? 'text-red-500 bg-red-50' : 'text-emerald-500 bg-emerald-50'} p-2 rounded-full hover:scale-110 transition shadow-sm" title="${isLocked ? 'Buka Kunci' : 'Kunci Jadual'}">
-                                <i data-lucide="${isLocked ? 'lock' : 'lock-open'}" class="w-5 h-5"></i>
-                            </button>
-                            <button onclick="editScheduleItem(${index})" class="${isLocked ? 'opacity-30 cursor-not-allowed' : 'text-orange-500 bg-orange-50 hover:bg-orange-100'} p-2 rounded-full" title="Edit">
-                                <i data-lucide="edit-3" class="w-5 h-5"></i>
-                            </button>
-                            <button onclick="removeScheduleItem(${index})" class="text-red-400 p-2 hover:bg-red-50 rounded-full" title="Padam">
-                                <i data-lucide="trash-2" class="w-5 h-5"></i>
-                            </button>
+                            <button onclick="viewFullSchedule(${index})" class="text-blue-500 bg-blue-50 p-2 rounded-full shadow-sm"><i data-lucide="eye" class="w-5 h-5"></i></button>
+                            <button onclick="toggleScheduleLock(${index})" class="${isLocked ? 'text-red-500 bg-red-50' : 'text-emerald-500 bg-emerald-50'} p-2 rounded-full shadow-sm"><i data-lucide="${isLocked ? 'lock' : 'lock-open'}" class="w-5 h-5"></i></button>
+                            <button onclick="editScheduleItem(${index})" class="${isLocked ? 'opacity-30 cursor-not-allowed' : 'text-orange-500 bg-orange-50'} p-2 rounded-full"><i data-lucide="edit-3" class="w-5 h-5"></i></button>
+                            <button onclick="removeScheduleItem(${index})" class="text-red-400 p-2"><i data-lucide="trash-2" class="w-5 h-5"></i></button>
                         </div>
                     </div>`;
                 list.appendChild(div);
 
-                // Print Table Injection
                 const ptr = document.createElement('tr');
                 ptr.innerHTML = `
                     <td style="font-size: 8pt; font-weight: 800; text-align: center;">${item.dateStart}<br><span style="font-size: 7pt; font-weight: 600;">${getDayFromDate(item.dateStart)}</span></td>
@@ -572,9 +566,9 @@
                     </div>
                     <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100">
                         <label class="text-[10px] font-black text-slate-400 uppercase block">Destinasi / Lokasi Penuh</label>
-                        <p class="font-bold text-slate-800 uppercase italic mb-3">${item.location || 'TIADA LOKASI DINYATAKAN'}</p>
-                        ${item.location ? `<button onclick="window.open('https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(item.location)}', '_blank')" class="flex items-center gap-2 text-xs font-black bg-white text-blue-700 border border-blue-100 px-4 py-3 rounded-xl hover:bg-blue-600 hover:text-white transition shadow-sm w-full justify-center">
-                            <i data-lucide="map-pin" class="w-4 h-4"></i> BUKA NAVIGASI GOOGLE MAPS</button>` : ''}
+                        <p class="font-bold text-slate-800 uppercase italic mb-3">${item.location || 'TIADA LOKASI'}</p>
+                        ${item.location ? `<button onclick="window.open('https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(item.location)}', '_blank')" class="flex items-center gap-2 text-xs font-black bg-white text-blue-700 border border-blue-100 px-4 py-3 rounded-xl w-full justify-center shadow-sm">
+                            <i data-lucide="map-pin" class="w-4 h-4"></i> BUKA GOOGLE MAPS</button>` : ''}
                     </div>
                 </div>`;
             document.getElementById('view-detail-modal').classList.remove('hidden');
@@ -583,8 +577,7 @@
 
         function editScheduleItem(index) {
             const item = futureSchedules[index];
-            if(item.isLocked) return alert("Jadual ini dikunci. Sila tekan ikon mangga untuk buka kunci sebelum mengedit.");
-            
+            if(item.isLocked) return alert("Jadual dikunci.");
             document.getElementById('editing-index').value = index;
             document.getElementById('new-sch-date-start').value = item.dateStart || "";
             document.getElementById('new-sch-time-start').value = item.timeStart || "";
@@ -592,13 +585,8 @@
             document.getElementById('new-sch-time-end').value = item.timeEnd || "";
             document.getElementById('new-sch-desc').value = item.desc || "";
             document.getElementById('new-sch-loc').value = item.location || "";
-            
             document.getElementById('btn-text').innerText = "KEMASKINI JADUAL";
-            document.getElementById('save-sch-btn').classList.replace('bg-emerald-600', 'bg-orange-500');
-            
-            // Open form if not open
             if(!document.getElementById('sch-form').classList.contains('active')) toggleSchForm();
-            document.querySelector('#schedule-modal .overflow-y-auto').scrollTop = 0;
         }
 
         function resetSchForm() {
@@ -610,7 +598,6 @@
             document.getElementById('new-sch-desc').value = "";
             document.getElementById('new-sch-loc').value = "";
             document.getElementById('btn-text').innerText = "SIMPAN DATA JADUAL";
-            document.getElementById('save-sch-btn').classList.replace('bg-orange-500', 'bg-emerald-600');
         }
 
         function addScheduleItem() {
@@ -624,15 +611,12 @@
                 location: document.getElementById('new-sch-loc').value,
                 isLocked: true 
             };
-            if(!data.dateStart || !data.desc) return alert("Sila isi sekurang-kurangnya tarikh mula dan urusan perjalanan.");
+            if(!data.dateStart || !data.desc) return alert("Sila isi maklumat.");
             if(idx === -1) futureSchedules.push(data); else futureSchedules[idx] = data;
-            
-            renderSchedules(); 
-            toggleSchForm();
-            sync();
+            renderSchedules(); toggleSchForm(); sync();
         }
 
-        function removeScheduleItem(index) { if(confirm("Adakah anda pasti mahu memadam jadual ini?")) { futureSchedules.splice(index, 1); renderSchedules(); sync(); } }
+        function removeScheduleItem(index) { if(confirm("Padam?")) { futureSchedules.splice(index, 1); renderSchedules(); sync(); } }
 
         function updateClock() {
             const now = new Date();
@@ -685,8 +669,8 @@
                     ]);
                 }
             });
-            if(logs.length === 0) return alert("Tiada data untuk dieksport");
-            let csvContent = "data:text/csv;charset=utf-8,TARIKH,MULA,HINGGA,PEMANDU,TUJUAN,LOKASI,PELULUS,PENGGUNA,ODO AKHIR,JARAK,KOS (RM),NO RESIT,LITER,CATATAN\n";
+            if(logs.length === 0) return alert("Tiada data.");
+            let csvContent = "data:text/csv;charset=utf-8,TARIKH,MULA,HINGGA,PEMANDU,TUJUAN,LOKASI,PELULUS,PENGGUNA,ODO AKHIR,JARAK,KOS,NO RESIT,LITER,CATATAN\n";
             logs.forEach(row => { csvContent += row.join(",") + "\n"; });
             const encodedUri = encodeURI(csvContent);
             const link = document.createElement("a"); link.setAttribute("href", encodedUri); link.setAttribute("download", filename);
@@ -721,9 +705,8 @@
             const date = tr.querySelector('.date-input').value;
             const tMula = tr.querySelector('.t-mula').value;
             const driver = tr.querySelector('.driver-input').value;
-            const purpose = tr.querySelector('.main-purpose').value;
             const odo = tr.querySelector('.odo-val').value;
-            if(date && tMula && driver.length > 3 && purpose.length > 5 && odo) { setRowLockState(tr, true); }
+            if(date && tMula && driver.length > 3 && odo) { setRowLockState(tr, true); }
         }
 
         function addRow(v = {}) {
@@ -733,16 +716,16 @@
             tr.innerHTML = `
                 <td class="w-date p-2"><div class="input-box flex flex-col"><div class="flex items-center"><input type="date" value="${v.tarikhRaw||''}" class="row-input date-input"><span class="pulse-dot"></span></div><div class="web-day-label text-[10px] font-bold text-slate-400 mt-0.5 ml-1 uppercase">${getDayFromDate(v.tarikhRaw)}</div></div><span class="print-text">${formatDisplayDate(v.tarikhRaw)}</span></td>
                 <td class="w-time p-2"><div class="flex flex-col input-box"><input type="time" value="${v.mulaRaw||''}" class="row-input t-mula border-b border-slate-100"><input type="time" value="${v.hinggaRaw||''}" class="row-input t-hingga"></div><span class="print-text"><div class="print-center-stack"><div class="time-top">${to12h(v.mulaRaw)}</div><div class="time-bottom">${to12h(v.hinggaRaw)}</div></div></span></td>
-                <td class="w-driver"><div class="input-box"><textarea class="row-input uppercase font-bold driver-input" rows="1" placeholder="Cth: AHMAD BIN ALI">${v.pemandu||''}</textarea></div><span class="print-text uppercase font-bold">${v.pemandu||''}</span></td>
-                <td class="w-purpose"><div class="input-box px-1"><textarea class="row-input uppercase text-slate-800 font-bold main-purpose" rows="1" placeholder="Cth: MENGHANTAR PEGAWAI KE IBU PEJABAT">${v.tujuan||''}</textarea><div class="flex items-center gap-1 mt-1 border-t border-slate-100 pt-1"><input type="text" value="${v.lokasiPenuh||''}" class="row-input location-input" placeholder="Cth: WISMA TANI, PUTRAJAYA"><button onclick="openMapsFromTable(this)" class="text-blue-400 hover:text-blue-600"><i data-lucide="map-pin" class="w-3 h-3"></i></button></div></div><span class="print-text"><div class="font-bold uppercase">${v.tujuan||''}</div><div class="location-print">${v.lokasiPenuh ? 'LOKASI: ' + v.lokasiPenuh : ''}</div></span></td>
-                <td class="w-auth"><div class="input-box"><textarea class="row-input uppercase text-center" rows="1" placeholder="Cth: KPP (L)">${v.pelulus||''}</textarea></div><span class="print-text uppercase text-center">${v.pelulus||''}</span></td>
-                <td class="w-auth"><div class="input-box"><textarea class="row-input uppercase text-center" rows="1" placeholder="Cth: DR. AZMAN">${v.pengguna||''}</textarea></div><span class="print-text uppercase text-center">${v.pengguna||''}</span></td>
-                <td class="w-odo"><div class="input-box"><input type="number" value="${v.odo||''}" class="row-input odo-val font-black text-blue-600 text-center" placeholder="00000"></div><span class="print-text font-black text-center">${v.odo||''}</span></td>
+                <td class="w-driver"><div class="input-box"><textarea class="row-input uppercase font-bold driver-input" rows="1" placeholder="PEMANDU">${v.pemandu||''}</textarea></div><span class="print-text uppercase font-bold">${v.pemandu||''}</span></td>
+                <td class="w-purpose"><div class="input-box px-1"><textarea class="row-input uppercase text-slate-800 font-bold main-purpose" rows="1" placeholder="TUJUAN">${v.tujuan||''}</textarea><div class="flex items-center gap-1 mt-1 border-t border-slate-100 pt-1"><input type="text" value="${v.lokasiPenuh||''}" class="row-input location-input" placeholder="LOKASI"><button onclick="openMapsFromTable(this)" class="text-blue-400"><i data-lucide="map-pin" class="w-3 h-3"></i></button></div></div><span class="print-text"><div class="font-bold uppercase">${v.tujuan||''}</div><div class="location-print">${v.lokasiPenuh ? 'LOKASI: ' + v.lokasiPenuh : ''}</div></span></td>
+                <td class="w-auth"><div class="input-box"><textarea class="row-input uppercase text-center" rows="1">${v.pelulus||''}</textarea></div><span class="print-text uppercase text-center">${v.pelulus||''}</span></td>
+                <td class="w-auth"><div class="input-box"><textarea class="row-input uppercase text-center" rows="1">${v.pengguna||''}</textarea></div><span class="print-text uppercase text-center">${v.pengguna||''}</span></td>
+                <td class="w-odo"><div class="input-box"><input type="number" value="${v.odo||''}" class="row-input odo-val font-black text-blue-600 text-center"></div><span class="print-text font-black text-center">${v.odo||''}</span></td>
                 <td class="w-dist"><div class="input-box"><input type="number" value="${v.jarak||''}" class="row-input dist-val font-black bg-slate-50 text-center" readonly></div><span class="print-text font-black text-center">${v.jarak||''}</span></td>
-                <td class="w-fuel bg-slate-50/30"><div class="input-box flex flex-col px-1"><div class="flex items-center"><span class="text-[10px] font-black text-slate-400 mr-1">RM</span><input type="number" step="0.01" value="${v.resit||''}" class="row-input rm-val font-bold" placeholder="0.00"></div><div class="flex items-center"><span class="text-[8px] font-black text-blue-400 mr-1">R/N:</span><input type="text" value="${v.noResit||''}" class="row-input no-resit-val text-[10px] text-blue-600 font-bold" placeholder="No. Resit"></div></div><span class="print-text text-center"><div class="font-bold">RM ${v.resit||'0.00'}</div><div class="text-[7pt] text-blue-600 font-bold italic">R/N: ${v.noResit||'-'}</div></span></td>
-                <td class="w-fuel"><div class="input-box"><input type="number" step="0.01" value="${v.liter||''}" class="row-input liter-val text-center" placeholder="0.00"></div><span class="print-text text-center font-bold">${v.liter||''} L</span></td>
-                <td class="w-notes"><div class="input-box"><textarea class="row-input italic text-slate-500" rows="1" placeholder="Cth: ARAHAN PENGARAH">${v.arahan||''}</textarea></div><span class="print-text italic text-slate-500">${v.arahan||''}</span></td>
-                <td class="no-print text-center w-action"><div class="flex flex-col items-center gap-2"><button onclick="toggleLock(this)" class="lock-icon-btn p-1 hover:bg-slate-100 rounded-full transition-all"><i data-lucide="lock-open" class="w-4 h-4 text-emerald-500"></i></button><button onclick="if(confirm('Padam rekod perjalanan ini?')) { this.closest('tr').remove(); calcLogic(); sync(); }" class="text-red-400 hover:bg-red-50 p-1 rounded-full"><i data-lucide="trash-2" class="w-4 h-4"></i></button></div></td>
+                <td class="w-fuel bg-slate-50/30"><div class="input-box flex flex-col px-1"><div class="flex items-center"><span class="text-[10px] font-black text-slate-400 mr-1">RM</span><input type="number" step="0.01" value="${v.resit||''}" class="row-input rm-val font-bold"></div><div class="flex items-center"><span class="text-[8px] font-black text-blue-400 mr-1">R/N:</span><input type="text" value="${v.noResit||''}" class="row-input no-resit-val text-[10px] text-blue-600 font-bold"></div></div><span class="print-text text-center"><div class="font-bold">RM ${v.resit||'0.00'}</div><div class="text-[7pt] text-blue-600 font-bold italic">R/N: ${v.noResit||'-'}</div></span></td>
+                <td class="w-fuel"><div class="input-box"><input type="number" step="0.01" value="${v.liter||''}" class="row-input liter-val text-center"></div><span class="print-text text-center font-bold">${v.liter||''} L</span></td>
+                <td class="w-notes"><div class="input-box"><textarea class="row-input italic text-slate-500" rows="1">${v.arahan||''}</textarea></div><span class="print-text italic text-slate-500">${v.arahan||''}</span></td>
+                <td class="no-print text-center w-action"><div class="flex flex-col items-center gap-2"><button onclick="toggleLock(this)" class="lock-icon-btn p-1"><i data-lucide="lock-open" class="w-4 h-4 text-emerald-500"></i></button><button onclick="if(confirm('Padam?')) { this.closest('tr').remove(); calcLogic(); sync(); }" class="text-red-400 p-1"><i data-lucide="trash-2" class="w-4 h-4"></i></button></div></td>
             `;
             document.getElementById('log-body').appendChild(tr);
             if(v.isLocked) setRowLockState(tr, true);
@@ -750,7 +733,10 @@
             tr.querySelectorAll('input, textarea').forEach(input => {
                 input.addEventListener('input', (e) => {
                     const row = e.target.closest('tr');
-                    if(e.target.classList.contains('date-input')) { row.querySelector('.web-day-label').innerText = getDayFromDate(e.target.value); row.querySelector('.w-date .print-text').innerHTML = formatDisplayDate(e.target.value); }
+                    if(e.target.classList.contains('date-input')) { 
+                        row.querySelector('.web-day-label').innerText = getDayFromDate(e.target.value); 
+                        row.querySelector('.w-date .print-text').innerHTML = formatDisplayDate(e.target.value); 
+                    }
                     calcLogic(); checkAutoLock(row); sync();
                     if(e.target.tagName === 'TEXTAREA') adjustHeight(e.target);
                 });
@@ -778,7 +764,6 @@
         function calcWage() {
             const gaji = Number(document.getElementById('m-salary').value) || 0;
             const total = gaji > 0 ? gaji + 765 : 0;
-            document.getElementById('total-with-allowance').innerText = `RM ${total.toFixed(2)}`;
             document.getElementById('hourly-rate').innerText = `Kadar/Jam: RM ${((total * 12) / 2504).toFixed(2)}`;
         }
 
@@ -796,7 +781,14 @@
                 }
             });
             await db.collection("logs_v81").doc(currentUser.uid).set({
-                meta: { month:document.getElementById('m-month').value, plate:document.getElementById('m-plate').value, odo:document.getElementById('m-odo-start').value, unit:document.getElementById('m-unit').value, salary:document.getElementById('m-salary').value },
+                meta: { 
+                    month:document.getElementById('m-month').value, 
+                    plate:document.getElementById('m-plate').value, 
+                    odo:document.getElementById('m-odo-start').value, 
+                    unit:document.getElementById('m-unit').value, 
+                    salary:document.getElementById('m-salary').value,
+                    logoUrl:document.getElementById('m-logo-url').value
+                },
                 logs: logs, futureSchedules: futureSchedules
             });
         }
@@ -808,9 +800,11 @@
                 const d = doc.data();
                 document.getElementById('m-month').value = d.meta.month || ''; document.getElementById('m-plate').value = d.meta.plate || '';
                 document.getElementById('m-odo-start').value = d.meta.odo || ''; document.getElementById('m-unit').value = d.meta.unit || '';
-                document.getElementById('m-salary').value = d.meta.salary || ''; futureSchedules = d.futureSchedules || [];
+                document.getElementById('m-salary').value = d.meta.salary || ''; 
+                document.getElementById('m-logo-url').value = d.meta.logoUrl || ''; 
+                futureSchedules = d.futureSchedules || [];
                 document.getElementById('log-body').innerHTML = ""; if(d.logs && d.logs.length > 0) d.logs.forEach(l => addRow(l)); else addRow();
-                calcLogic(); calcWage(); renderSchedules();
+                calcLogic(); calcWage(); renderSchedules(); updateDynamicLogo();
             } else { addRow(); }
         }
 
@@ -819,7 +813,8 @@
         function updateUI() { if(currentUser) { document.getElementById('login-btn').classList.add('hidden'); document.getElementById('user-profile').classList.remove('hidden'); document.getElementById('u-avatar').src = currentUser.photoURL; } }
         
         auth.onAuthStateChanged(user => { if(user) { currentUser = user; updateUI(); loadData(); } });
-        window.onload = () => { lucide.createIcons(); updateClock(); togglePrintConfig(); rotateTips(); };
+        window.onload = () => { lucide.createIcons(); updateClock(); togglePrintConfig(); rotateTips(); updateDynamicLogo(); };
     </script>
 </body>
 </html>
+--- END OF FILE ---

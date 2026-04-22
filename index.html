@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>v5 Pilot Intel</title>
+    <title>v6.0 Pilot Intel</title>
     
     <!-- Favicon: Jata Negara Malaysia -->
     <link rel="icon" type="image/svg+xml" href="https://upload.wikimedia.org/wikipedia/commons/2/26/Coat_of_arms_of_Malaysia.svg">
@@ -230,7 +230,7 @@
                     <img id="u-avatar" class="w-8 h-8 rounded-full border border-blue-500">
                     <button onclick="logout()" class="text-[10px] text-red-400 font-bold underline uppercase">Logout</button>
                 </div>
-                <img id="dynamic-logo-web" src="https://github.com/ttv5u1/KP/raw/main/DVS.svg" class="w-10 h-10 ml-2 hidden lg:block">
+                <img id="dynamic-logo-web" src="https://github.com/ttv4u1/KP/raw/main/DVS.svg" class="w-10 h-10 ml-2 hidden lg:block">
             </div>
         </header>
 
@@ -583,7 +583,7 @@
 
         function updateDynamicLogo() {
             const logoUrl = document.getElementById('m-logo-url').value;
-            const defaultLogo = "https://github.com/ttv5u1/KP/raw/main/DVS.svg";
+            const defaultLogo = "https://github.com/ttv4u1/KP/raw/main/DVS.svg";
             const targetLogo = logoUrl && logoUrl.trim() !== "" ? logoUrl : defaultLogo;
             document.getElementById('dynamic-logo-web').src = targetLogo;
             document.getElementById('dynamic-logo-print').src = targetLogo;

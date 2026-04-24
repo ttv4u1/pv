@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>v7 Pilot Intel</title>
+    <title>v31 Pilot Intel (Pro)</title>
     
     <!-- Favicon: Jata Negara Malaysia -->
     <link rel="icon" type="image/svg+xml" href="https://upload.wikimedia.org/wikipedia/commons/2/26/Coat_of_arms_of_Malaysia.svg">
@@ -166,20 +166,28 @@
 
         /* Admin Specific */
         .admin-badge { background: linear-gradient(90deg, #f59e0b, #d97706); color: white; padding: 2px 8px; border-radius: 6px; font-size: 9px; font-weight: 800; text-transform: uppercase; }
-        .admin-view-indicator { background: #fee2e2; border: 1px solid #ef4444; color: #b91c1c; padding: 8px; border-radius: 8px; margin-bottom: 10px; font-weight: bold; font-size: 12px; display: none; }
+        .admin-view-indicator { background: #fff7ed; border: 1px solid #f59e0b; color: #9a3412; padding: 8px; border-radius: 8px; margin-bottom: 10px; font-weight: bold; font-size: 12px; display: none; }
+        
+        /* New Trash Tab */
+        .admin-tab { padding: 8px 16px; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer; transition: 0.2s; }
+        .admin-tab.active { background: #f59e0b; color: white; }
+        .admin-tab.inactive { background: #f1f5f9; color: #64748b; }
     </style>
 </head>
 <body class="p-2 md:p-6">
 
     <div class="max-w-[1850px] mx-auto">
         
-        <!-- ADMIN VIEW MODE INDICATOR -->
-        <div id="admin-indicator" class="admin-view-indicator no-print flex items-center justify-between">
+        <!-- ADMIN VIEW MODE INDICATOR - Hidden by default for users -->
+        <div id="admin-indicator" class="admin-view-indicator no-print items-center justify-between">
             <div class="flex items-center gap-2">
-                <i data-lucide="eye" class="w-4 h-4"></i>
-                MOD PEMERHATIAN: Anda sedang melihat log milik <span id="admin-viewing-user" class="underline">---</span> (Mod Baca Sahaja)
+                <i data-lucide="shield-alert" class="w-4 h-4"></i>
+                MOD KAWALAN PENTADBIR: Anda menguruskan log milik <span id="admin-viewing-user" class="underline">---</span> (Akses Penuh)
             </div>
-            <button onclick="exitAdminView()" class="bg-red-600 text-white px-3 py-1 rounded text-[10px] hover:bg-red-700">KELUAR</button>
+            <div class="flex items-center gap-2">
+                <button onclick="confirmSoftDeleteCurrentData()" class="bg-red-50 text-red-600 border border-red-200 px-3 py-1 rounded text-[10px] hover:bg-red-600 hover:text-white transition">PADAM KE TONG SAMPAH</button>
+                <button onclick="exitAdminView()" class="bg-slate-800 text-white px-3 py-1 rounded text-[10px] hover:bg-black">KELUAR</button>
+            </div>
         </div>
 
         <!-- PRINT HEADER -->
@@ -187,7 +195,7 @@
             <div class="flex items-center">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/2/26/Coat_of_arms_of_Malaysia.svg" style="width: 50px; height: 50px; margin-right: 12px;">                
                 <div>
-                    <h2 style="font-size: 14pt; font-weight: 800; margin: 0;" class="font-heading uppercase">Pilot Intelligent <span style="font-size: 8pt; vertical-align: top; color: #666;">v7</span></h2>
+                    <h2 style="font-size: 14pt; font-weight: 800; margin: 0;" class="font-heading uppercase">Pilot Intelligent <span style="font-size: 8pt; vertical-align: top; color: #666;">v31</span></h2>
                     <p style="font-size: 9pt; margin: 0; font-weight: 600;">Bahagian Penguatkuasa • Enterprise Logistics Dashboard</p>
                     <p id="print-meta-info" style="font-size: 8pt; margin: 0; color: #444; font-weight: 700;"></p>
                     <p id="print-fuel-info" style="font-size: 8pt; margin: 0; color: #1e40af; font-weight: 800; text-transform: uppercase;"></p>
@@ -203,7 +211,7 @@
                 <div>
                     <div class="flex items-center gap-2">
                         <h1 class="text-lg md:text-xl font-bold font-heading tracking-tight uppercase">Pilot <span class="text-blue-400">Intelligent</span></h1>
-                        <span class="bg-blue-600/30 text-blue-400 text-[9px] px-1.5 py-0.5 rounded border border-blue-500/30 font-bold">v7</span>
+                        <span class="bg-blue-600/30 text-blue-400 text-[9px] px-1.5 py-0.5 rounded border border-blue-500/30 font-bold">v31</span>
                         <div id="admin-badge-ui" class="hidden"><span class="admin-badge">SUPER ADMIN</span></div>
                     </div>
                     <p class="text-[8px] md:text-[9px] text-slate-400 font-bold uppercase tracking-widest">Enterprise Logistics Dashboard</p>
@@ -284,7 +292,12 @@
             </div>
             <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm">
                 <label class="text-[9px] font-bold text-slate-400 uppercase">No. Pendaftaran</label>
-                <input type="text" id="m-plate" class="w-full font-bold text-base md:text-lg uppercase outline-none" placeholder="Cth: VNC 974" onchange="sync()">
+                <select id="m-plate" class="w-full font-bold text-base md:text-lg uppercase outline-none bg-transparent cursor-pointer" onchange="sync()">
+                    <option value="">Sila Pilih</option>
+                    <option value="VNC 1054">VNC 1054</option>
+                    <option value="VNC 1045">VNC 1045</option>
+                    <option value="VNC 974">VNC 974</option>
+                </select>
             </div>
             <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm">
                 <label class="text-[9px] font-bold text-slate-400 uppercase">Odo Awal</label>
@@ -399,7 +412,7 @@
             <div style="border: 1pt solid black; padding: 6px; margin-top: 5px;">
                 <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 0.5pt solid black; padding-bottom: 2px; margin-bottom: 6px;">
                     <h4 style="font-size: 9pt; font-weight: 800; text-transform: uppercase; margin: 0;">Rumusan Keseluruhan Bulan Ini</h4>
-                    <span style="font-size: 7pt; font-weight: 700;">Pilot Intel v7 System Generated</span>
+                    <span style="font-size: 7pt; font-weight: 700;">Pilot Intel v31 System Generated</span>
                 </div>
                 <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;">
                     <div style="font-size: 8pt;"><strong>JUMLAH JARAK:</strong> <span id="p-dist">0</span> KM</div>
@@ -539,15 +552,25 @@
                     <i data-lucide="layout-grid" class="text-white"></i>
                     <h2 class="font-heading font-bold text-xl uppercase tracking-tight">Super Admin: User Directory</h2>
                 </div>
-                <button onclick="closeAdminPanel()" class="text-white hover:bg-amber-700 p-2 rounded-full"><i data-lucide="x"></i></button>
+                <div class="flex items-center gap-2">
+                    <button onclick="adminCreateNewUser()" class="bg-white text-amber-600 px-3 py-2 rounded-xl text-xs font-black shadow-lg hover:bg-amber-50 active:scale-95 transition flex items-center gap-2">
+                        <i data-lucide="user-plus" class="w-4 h-4"></i> TAMBAH REKOD
+                    </button>
+                    <button onclick="closeAdminPanel()" class="text-white hover:bg-amber-700 p-2 rounded-full"><i data-lucide="x"></i></button>
+                </div>
             </div>
-            <div class="p-4 bg-slate-50 border-b flex justify-between items-center">
-                <p class="text-xs font-bold text-slate-500 uppercase">Senarai semua kenderaan yang berdaftar dalam sistem</p>
-                <div class="relative">
-                    <input type="text" id="admin-search" placeholder="Cari Plate..." class="pl-8 pr-4 py-2 border rounded-xl text-xs font-bold outline-none focus:ring-2 ring-amber-500" oninput="filterAdminList()">
+            
+            <div class="p-4 bg-slate-50 border-b flex flex-col md:flex-row gap-4 justify-between items-center">
+                <div class="flex bg-slate-200 p-1 rounded-xl">
+                    <button id="tab-active" onclick="switchAdminTab('active')" class="admin-tab active">AKTIF</button>
+                    <button id="tab-trash" onclick="switchAdminTab('trash')" class="admin-tab inactive flex items-center gap-2"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i> TONG SAMPAH</button>
+                </div>
+                <div class="relative w-full md:w-auto">
+                    <input type="text" id="admin-search" placeholder="Cari Plate..." class="w-full pl-8 pr-4 py-2 border rounded-xl text-xs font-bold outline-none focus:ring-2 ring-amber-500" oninput="filterAdminList()">
                     <i data-lucide="search" class="w-4 h-4 absolute left-2.5 top-2.5 text-slate-400"></i>
                 </div>
             </div>
+
             <div id="admin-user-list" class="overflow-y-auto p-4 grid grid-cols-1 md:grid-cols-2 gap-3 bg-white flex-1">
                 <!-- User cards will be injected here -->
             </div>
@@ -566,6 +589,7 @@
         let adminViewMode = false;
         let viewingUid = null;
         let allUsersData = [];
+        let currentAdminTab = 'active'; 
 
         let futureSchedules = [];
         let fuelCardImages = { front: "", back: "" };
@@ -607,7 +631,7 @@
         let tipInterval = setInterval(rotateTips, 6000);
 
         function handleCardUpload(input, side) {
-            if(adminViewMode) return alert("Mod pemerhatian sahaja.");
+            if(adminViewMode && !isSuperAdmin) return alert("Hanya Admin boleh mengedit data orang lain.");
             const file = input.files[0];
             if (file) {
                 const reader = new FileReader();
@@ -653,7 +677,8 @@
             flipSound.currentTime = 0; flipSound.play();
         }
 
-        // ADMIN FUNCTIONS
+        // --- ADMIN FUNCTIONS ---
+
         async function checkAdminStatus(user) {
             try {
                 const adminDoc = await db.collection("system_admins").doc(user.uid).get();
@@ -661,39 +686,90 @@
                     isSuperAdmin = true;
                     document.getElementById('admin-badge-ui').classList.remove('hidden');
                     document.getElementById('admin-panel-btn').classList.remove('hidden');
+                } else {
+                    isSuperAdmin = false;
+                    document.getElementById('admin-badge-ui').classList.add('hidden');
+                    document.getElementById('admin-panel-btn').classList.add('hidden');
                 }
             } catch (e) { console.log("Admin check failed", e); }
         }
 
         function openAdminPanel() {
+            if(!isSuperAdmin) return;
             document.getElementById('admin-modal').classList.remove('hidden');
-            loadAllUsers();
+            loadAdminData();
+        }
+
+        function switchAdminTab(tab) {
+            currentAdminTab = tab;
+            document.getElementById('tab-active').className = `admin-tab ${tab === 'active' ? 'active' : 'inactive'}`;
+            document.getElementById('tab-trash').className = `admin-tab ${tab === 'trash' ? 'active' : 'inactive'}`;
+            loadAdminData();
+        }
+
+        function loadAdminData() {
+            if (currentAdminTab === 'active') loadAllUsers();
+            else loadTrashUsers();
         }
 
         function closeAdminPanel() {
             document.getElementById('admin-modal').classList.add('hidden');
         }
 
+        async function adminCreateNewUser() {
+            if(!isSuperAdmin) return;
+            const plate = prompt("MASUKKAN NO. PENDAFTARAN (Contoh: VNC 1054):");
+            if(!plate) return;
+            
+            const newUid = "REKOD_MANUAL_" + Date.now();
+            try {
+                await db.collection("logs_v81").doc(newUid).set({
+                    meta: { 
+                        plate: plate.toUpperCase(), 
+                        unit: "PENYEDIAAN ADMIN", 
+                        month: new Date().toISOString().slice(0, 7) 
+                    },
+                    logs: [],
+                    futureSchedules: []
+                });
+                alert(`Rekod untuk ${plate} berjaya dicipta.`);
+                loadAdminData();
+            } catch(e) { alert("Gagal mencipta rekod."); }
+        }
+
         async function loadAllUsers() {
             const list = document.getElementById('admin-user-list');
-            list.innerHTML = '<div class="col-span-full text-center py-10 font-bold animate-pulse">Mengambil data pengguna...</div>';
-            
+            list.innerHTML = '<div class="col-span-full text-center py-10 font-bold animate-pulse text-amber-600">Mengambil data pengguna aktif...</div>';
             try {
                 const snapshot = await db.collection("logs_v81").get();
                 allUsersData = [];
-                snapshot.forEach(doc => {
-                    allUsersData.push({ uid: doc.id, ...doc.data() });
-                });
+                snapshot.forEach(doc => { allUsersData.push({ uid: doc.id, ...doc.data() }); });
                 renderAdminUserList(allUsersData);
             } catch (e) {
-                list.innerHTML = '<div class="col-span-full text-center py-10 text-red-500 font-bold">Gagal memuatkan data. Sila pastikan anda adalah Super Admin di Firestore.</div>';
+                list.innerHTML = '<div class="col-span-full text-center py-10 text-red-500 font-bold">Gagal memuatkan data aktif.</div>';
+            }
+        }
+
+        async function loadTrashUsers() {
+            const list = document.getElementById('admin-user-list');
+            list.innerHTML = '<div class="col-span-full text-center py-10 font-bold animate-pulse text-red-400">Mengambil data tong sampah...</div>';
+            try {
+                const snapshot = await db.collection("trash_logs_v81").get();
+                allUsersData = [];
+                snapshot.forEach(doc => { allUsersData.push({ uid: doc.id, ...doc.data(), isTrash: true }); });
+                renderAdminUserList(allUsersData);
+            } catch (e) {
+                list.innerHTML = '<div class="col-span-full text-center py-10 text-red-500 font-bold">Gagal memuatkan tong sampah.</div>';
             }
         }
 
         function renderAdminUserList(data) {
             const list = document.getElementById('admin-user-list');
             list.innerHTML = "";
-            if(data.length === 0) { list.innerHTML = "Tiada pengguna."; return; }
+            if(data.length === 0) { 
+                list.innerHTML = `<div class="col-span-full text-center py-10 font-bold text-slate-300">TIADA REKOD ${currentAdminTab === 'active' ? 'AKTIF' : 'DALAM TONG SAMPAH'}</div>`; 
+                return; 
+            }
 
             data.forEach(user => {
                 const plate = user.meta?.plate || "TIADA PLATE";
@@ -702,19 +778,87 @@
                 
                 const card = document.createElement('div');
                 card.className = "bg-slate-50 p-4 rounded-2xl border border-slate-200 hover:border-amber-500 transition-all cursor-pointer flex justify-between items-center group";
-                card.onclick = () => enterAdminView(user.uid, plate);
-                card.innerHTML = `
-                    <div>
-                        <h4 class="font-black text-slate-800 uppercase">${plate}</h4>
-                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">${unit} • ${month}</p>
-                    </div>
-                    <div class="bg-white p-2 rounded-full shadow-sm group-hover:bg-amber-500 group-hover:text-white transition-colors">
-                        <i data-lucide="external-link" class="w-4 h-4"></i>
-                    </div>
-                `;
+                
+                if (!user.isTrash) {
+                    card.onclick = (e) => { if(e.target.closest('.action-btn')) return; enterAdminView(user.uid, plate); };
+                    card.innerHTML = `
+                        <div>
+                            <h4 class="font-black text-slate-800 uppercase">${plate}</h4>
+                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">${unit} • ${month}</p>
+                        </div>
+                        <div class="flex gap-2">
+                            <button onclick="confirmSoftDeleteUser('${user.uid}', '${plate}')" class="action-btn bg-red-50 text-red-400 p-2 rounded-full hover:bg-red-500 hover:text-white transition-colors" title="Padam ke Tong Sampah">
+                                <i data-lucide="trash-2" class="w-4 h-4"></i>
+                            </button>
+                            <div class="bg-white p-2 rounded-full shadow-sm group-hover:bg-amber-500 group-hover:text-white transition-colors">
+                                <i data-lucide="edit-3" class="w-4 h-4"></i>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    card.innerHTML = `
+                        <div>
+                            <h4 class="font-black text-slate-400 uppercase line-through">${plate}</h4>
+                            <p class="text-[10px] font-bold text-red-400 uppercase tracking-tighter">DALAM TONG SAMPAH</p>
+                        </div>
+                        <div class="flex gap-2">
+                            <button onclick="restoreUser('${user.uid}', '${plate}')" class="action-btn bg-emerald-50 text-emerald-600 px-3 py-2 rounded-xl text-[10px] font-bold hover:bg-emerald-600 hover:text-white flex items-center gap-1">
+                                <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i> RESTORE
+                            </button>
+                            <button onclick="confirmPermanentDelete('${user.uid}', '${plate}')" class="action-btn bg-slate-200 text-slate-600 p-2 rounded-full hover:bg-black hover:text-white">
+                                <i data-lucide="x" class="w-4 h-4"></i>
+                            </button>
+                        </div>
+                    `;
+                }
                 list.appendChild(card);
             });
             lucide.createIcons();
+        }
+
+        async function confirmSoftDeleteUser(uid, plate) {
+            if(!isSuperAdmin) return;
+            const msg = `NOTIS PENTADBIR:\n\nAdakah anda pasti ingin memindahkan data ${plate} ke TONG SAMPAH?\n\nData ini tidak akan dipaparkan di Dashboard tetapi boleh di 'Restore' semula oleh Super Admin.`;
+            if(confirm(msg)) {
+                try {
+                    const doc = await db.collection("logs_v81").doc(uid).get();
+                    if (doc.exists) {
+                        await db.collection("trash_logs_v81").doc(uid).set(doc.data());
+                        await db.collection("logs_v81").doc(uid).delete();
+                        alert(`${plate} telah dipindahkan ke Tong Sampah.`);
+                        loadAdminData();
+                    }
+                } catch(e) { alert("Gagal memproses."); }
+            }
+        }
+
+        async function restoreUser(uid, plate) {
+            if(!isSuperAdmin) return;
+            try {
+                const doc = await db.collection("trash_logs_v81").doc(uid).get();
+                if (doc.exists) {
+                    await db.collection("logs_v81").doc(uid).set(doc.data());
+                    await db.collection("trash_logs_v81").doc(uid).delete();
+                    alert(`Data ${plate} Berjaya Di-Restore!`);
+                    loadAdminData();
+                }
+            } catch(e) { alert("Gagal restore."); }
+        }
+
+        async function confirmPermanentDelete(uid, plate) {
+            if(!isSuperAdmin) return;
+            if(confirm(`AMARAN KERAS: Padam ${plate} secara KEKAL?\n\nTindakan ini tidak boleh dikembalikan lagi.`)) {
+                await db.collection("trash_logs_v81").doc(uid).delete();
+                loadAdminData();
+            }
+        }
+
+        async function confirmSoftDeleteCurrentData() {
+            if(!adminViewMode || !viewingUid) return;
+            const plate = document.getElementById('m-plate').value;
+            confirmSoftDeleteUser(viewingUid, plate).then(() => {
+                exitAdminView();
+            });
         }
 
         function filterAdminList() {
@@ -728,40 +872,47 @@
             viewingUid = uid;
             document.getElementById('admin-indicator').style.display = 'flex';
             document.getElementById('admin-viewing-user').innerText = plate;
-            document.getElementById('add-row-btn').classList.add('hidden');
             closeAdminPanel();
             await loadData(uid);
-            alert(`Anda kini dalam mod pemerhatian log ${plate}. Semua pengeditan dinyahaktifkan.`);
+            alert(`MOD KAWALAN PENTADBIR AKTIF: Anda kini boleh mengedit log ${plate}.`);
         }
 
         function exitAdminView() {
             adminViewMode = false;
             viewingUid = null;
             document.getElementById('admin-indicator').style.display = 'none';
-            document.getElementById('add-row-btn').classList.remove('hidden');
             loadData();
         }
 
-        // END ADMIN FUNCTIONS
+        // --- END ADMIN FUNCTIONS ---
 
         function toggleScheduleModal() {
             const modal = document.getElementById('schedule-modal');
+            const list = document.getElementById('schedule-list');
             modal.classList.toggle('hidden');
             if(!modal.classList.contains('hidden')) { 
                 document.getElementById('sch-form').classList.remove('active');
+                list.style.display = 'block'; 
                 renderSchedules(); 
             }
         }
 
         function toggleSchForm() {
-            if(adminViewMode) return alert("Mod pemerhatian sahaja.");
+            if(adminViewMode && !isSuperAdmin) return alert("Hanya Admin boleh mengedit data orang lain.");
             const form = document.getElementById('sch-form');
+            const list = document.getElementById('schedule-list');
             const btnText = document.getElementById('form-action-text');
+            
             form.classList.toggle('active');
+
             if(form.classList.contains('active')) {
                 btnText.innerText = "TUTUP PENGISIAN";
+                if (window.innerWidth < 768) {
+                    list.style.display = 'none';
+                }
             } else {
                 btnText.innerText = "TAMBAH JADUAL";
+                list.style.display = 'block';
                 resetSchForm();
             }
         }
@@ -773,7 +924,7 @@
         }
 
         function toggleScheduleLock(index) {
-            if(adminViewMode) return;
+            if(adminViewMode && !isSuperAdmin) return;
             futureSchedules[index].isLocked = !futureSchedules[index].isLocked;
             renderSchedules();
             sync();
@@ -804,9 +955,9 @@
                     </div>
                     <div class="flex gap-2 items-center">
                         <button onclick="viewFullSchedule(${index})" class="text-blue-500 bg-blue-50 p-2 rounded-full shadow-sm"><i data-lucide="eye" class="w-5 h-5"></i></button>
-                        ${!adminViewMode ? `
+                        ${(!adminViewMode || isSuperAdmin) ? `
                         <button onclick="toggleScheduleLock(${index})" class="${isLocked ? 'text-red-500 bg-red-50' : 'text-emerald-500 bg-emerald-50'} p-2 rounded-full shadow-sm"><i data-lucide="${isLocked ? 'lock' : 'lock-open'}" class="w-5 h-5"></i></button>
-                        <button onclick="editScheduleItem(${index})" class="${isLocked ? 'opacity-30 cursor-not-allowed' : 'text-orange-500 bg-orange-50'} p-2 rounded-full"><i data-lucide="edit-3" class="w-5 h-5"></i></button>
+                        <button onclick="editScheduleItem(${index})" class="${isLocked && !isSuperAdmin ? 'opacity-30 cursor-not-allowed' : 'text-orange-500 bg-orange-50'} p-2 rounded-full"><i data-lucide="edit-3" class="w-5 h-5"></i></button>
                         <button onclick="removeScheduleItem(${index})" class="text-red-400 p-2"><i data-lucide="trash-2" class="w-5 h-5"></i></button>
                         ` : ''}
                     </div>
@@ -853,9 +1004,9 @@
         }
 
         function editScheduleItem(index) {
-            if(adminViewMode) return;
+            if(adminViewMode && !isSuperAdmin) return;
             const item = futureSchedules[index];
-            if(item.isLocked) return alert("Jadual dikunci.");
+            if(item.isLocked && !isSuperAdmin) return alert("Jadual dikunci.");
             document.getElementById('editing-index').value = index;
             document.getElementById('new-sch-date-start').value = item.dateStart || "";
             document.getElementById('new-sch-time-start').value = item.timeStart || "";
@@ -876,10 +1027,11 @@
             document.getElementById('new-sch-desc').value = "";
             document.getElementById('new-sch-loc').value = "";
             document.getElementById('btn-text').innerText = "SIMPAN DATA JADUAL";
+            document.getElementById('schedule-list').style.display = 'block';
         }
 
         function addScheduleItem() {
-            if(adminViewMode) return;
+            if(adminViewMode && !isSuperAdmin) return;
             const idx = parseInt(document.getElementById('editing-index').value);
             const data = {
                 dateStart: document.getElementById('new-sch-date-start').value,
@@ -892,7 +1044,11 @@
             };
             if(!data.dateStart || !data.desc) return alert("Sila isi maklumat.");
             if(idx === -1) futureSchedules.push(data); else futureSchedules[idx] = data;
-            renderSchedules(); toggleSchForm(); sync();
+            
+            document.getElementById('schedule-list').style.display = 'block';
+            renderSchedules(); 
+            toggleSchForm(); 
+            sync();
         }
 
         function removeScheduleItem(index) { if(confirm("Padam?")) { futureSchedules.splice(index, 1); renderSchedules(); sync(); } }
@@ -1007,7 +1163,7 @@
         function adjustHeight(el) { if (!el) return; el.style.height = "auto"; el.style.height = (el.scrollHeight) + "px"; }
 
         function toggleLock(btn) {
-            if(adminViewMode) return;
+            if(adminViewMode && !isSuperAdmin) return;
             const tr = btn.closest('tr');
             const isLocked = tr.getAttribute('data-locked') === 'true';
             setRowLockState(tr, !isLocked);
@@ -1017,7 +1173,7 @@
         function setRowLockState(tr, shouldLock) {
             const inputs = tr.querySelectorAll('input, textarea');
             const lockIconContainer = tr.querySelector('.lock-icon-btn');
-            if(shouldLock) {
+            if(shouldLock && !isSuperAdmin) {
                 tr.setAttribute('data-locked', 'true'); tr.classList.add('row-locked-bg');
                 inputs.forEach(i => i.disabled = true);
                 lockIconContainer.innerHTML = '<i data-lucide="lock" class="w-4 h-4 text-red-500"></i>';
@@ -1033,22 +1189,24 @@
             const tr = document.createElement('tr');
             tr.className = "border-b border-slate-100 hover:bg-slate-50 transition-colors";
             tr.setAttribute('data-locked', v.isLocked ? 'true' : 'false');
+            const disableAttr = (adminViewMode && !isSuperAdmin) ? 'disabled' : '';
+
             tr.innerHTML = `
-                <td class="w-date p-2"><div class="input-box flex flex-col"><div class="flex items-center"><input type="date" value="${v.tarikhRaw||''}" class="row-input date-input" ${adminViewMode ? 'disabled' : ''}><span class="pulse-dot"></span></div><div class="web-day-label text-[10px] font-bold text-slate-400 mt-0.5 ml-1 uppercase">${getDayFromDate(v.tarikhRaw)}</div></div><span class="print-text">${formatDisplayDate(v.tarikhRaw)}</span></td>
-                <td class="w-time p-2"><div class="flex flex-col input-box"><input type="time" value="${v.mulaRaw||''}" class="row-input t-mula border-b border-slate-100" ${adminViewMode ? 'disabled' : ''}><input type="time" value="${v.hinggaRaw||''}" class="row-input t-hingga" ${adminViewMode ? 'disabled' : ''}></div><span class="print-text"><div class="print-center-stack"><div class="time-top">${to12h(v.mulaRaw)}</div><div class="time-bottom">${to12h(v.hinggaRaw)}</div></div></span></td>
-                <td class="w-driver"><div class="input-box"><textarea class="row-input uppercase font-bold driver-input" rows="1" placeholder="PEMANDU" ${adminViewMode ? 'disabled' : ''}>${v.pemandu||''}</textarea></div><span class="print-text uppercase font-bold">${v.pemandu||''}</span></td>
-                <td class="w-purpose"><div class="input-box px-1"><textarea class="row-input uppercase text-slate-800 font-bold main-purpose" rows="1" placeholder="TUJUAN" ${adminViewMode ? 'disabled' : ''}>${v.tujuan||''}</textarea><div class="flex items-center gap-1 mt-1 border-t border-slate-100 pt-1"><input type="text" value="${v.lokasiPenuh||''}" class="row-input location-input" placeholder="LOKASI" ${adminViewMode ? 'disabled' : ''}><button onclick="openMapsFromTable(this)" class="text-blue-400"><i data-lucide="map-pin" class="w-3 h-3"></i></button></div></div><span class="print-text"><div class="font-bold uppercase">${v.tujuan||''}</div><div class="location-print">${v.lokasiPenuh ? 'LOKASI: ' + v.lokasiPenuh : ''}</div></span></td>
-                <td class="w-auth"><div class="input-box"><textarea class="row-input uppercase text-center" rows="1" ${adminViewMode ? 'disabled' : ''}>${v.pelulus||''}</textarea></div><span class="print-text uppercase text-center">${v.pelulus||''}</span></td>
-                <td class="w-auth"><div class="input-box"><textarea class="row-input uppercase text-center" rows="1" ${adminViewMode ? 'disabled' : ''}>${v.pengguna||''}</textarea></div><span class="print-text uppercase text-center">${v.pengguna||''}</span></td>
-                <td class="w-odo"><div class="input-box"><input type="number" value="${v.odo||''}" class="row-input odo-val font-black text-blue-600 text-center" ${adminViewMode ? 'disabled' : ''}></div><span class="print-text font-black text-center">${v.odo||''}</span></td>
+                <td class="w-date p-2"><div class="input-box flex flex-col"><div class="flex items-center"><input type="date" value="${v.tarikhRaw||''}" class="row-input date-input" ${disableAttr}><span class="pulse-dot"></span></div><div class="web-day-label text-[10px] font-bold text-slate-400 mt-0.5 ml-1 uppercase">${getDayFromDate(v.tarikhRaw)}</div></div><span class="print-text">${formatDisplayDate(v.tarikhRaw)}</span></td>
+                <td class="w-time p-2"><div class="flex flex-col input-box"><input type="time" value="${v.mulaRaw||''}" class="row-input t-mula border-b border-slate-100" ${disableAttr}><input type="time" value="${v.hinggaRaw||''}" class="row-input t-hingga" ${disableAttr}></div><span class="print-text"><div class="print-center-stack"><div class="time-top">${to12h(v.mulaRaw)}</div><div class="time-bottom">${to12h(v.hinggaRaw)}</div></div></span></td>
+                <td class="w-driver"><div class="input-box"><textarea class="row-input uppercase font-bold driver-input" rows="1" placeholder="PEMANDU" ${disableAttr}>${v.pemandu||''}</textarea></div><span class="print-text uppercase font-bold">${v.pemandu||''}</span></td>
+                <td class="w-purpose"><div class="input-box px-1"><textarea class="row-input uppercase text-slate-800 font-bold main-purpose" rows="1" placeholder="TUJUAN" ${disableAttr}>${v.tujuan||''}</textarea><div class="flex items-center gap-1 mt-1 border-t border-slate-100 pt-1"><input type="text" value="${v.lokasiPenuh||''}" class="row-input location-input" placeholder="LOKASI" ${disableAttr}><button onclick="openMapsFromTable(this)" class="text-blue-400"><i data-lucide="map-pin" class="w-3 h-3"></i></button></div></div><span class="print-text"><div class="font-bold uppercase">${v.tujuan||''}</div><div class="location-print">${v.lokasiPenuh ? 'LOKASI: ' + v.lokasiPenuh : ''}</div></span></td>
+                <td class="w-auth"><div class="input-box"><textarea class="row-input uppercase text-center" rows="1" ${disableAttr}>${v.pelulus||''}</textarea></div><span class="print-text uppercase text-center">${v.pelulus||''}</span></td>
+                <td class="w-auth"><div class="input-box"><textarea class="row-input uppercase text-center" rows="1" ${disableAttr}>${v.pengguna||''}</textarea></div><span class="print-text uppercase text-center">${v.pengguna||''}</span></td>
+                <td class="w-odo"><div class="input-box"><input type="number" value="${v.odo||''}" class="row-input odo-val font-black text-blue-600 text-center" ${disableAttr}></div><span class="print-text font-black text-center">${v.odo||''}</span></td>
                 <td class="w-dist"><div class="input-box"><input type="number" value="${v.jarak||''}" class="row-input dist-val font-black bg-slate-50 text-center" readonly></div><span class="print-text font-black text-center">${v.jarak||''}</span></td>
-                <td class="w-fuel bg-slate-50/30"><div class="input-box flex flex-col px-1"><div class="flex items-center"><span class="text-[10px] font-black text-slate-400 mr-1">RM</span><input type="number" step="0.01" value="${v.resit||''}" class="row-input rm-val font-bold" ${adminViewMode ? 'disabled' : ''}></div><div class="flex items-center"><span class="text-[8px] font-black text-blue-400 mr-1">R/N:</span><input type="text" value="${v.noResit||''}" class="row-input no-resit-val text-[10px] text-blue-600 font-bold" ${adminViewMode ? 'disabled' : ''}></div></div><span class="print-text text-center"><div class="font-bold">RM ${v.resit||'0.00'}</div><div class="text-[7pt] text-blue-600 font-bold italic">R/N: ${v.noResit||'-'}</div></span></td>
-                <td class="w-fuel"><div class="input-box"><input type="number" step="0.01" value="${v.liter||''}" class="row-input liter-val text-center" ${adminViewMode ? 'disabled' : ''}></div><span class="print-text text-center font-bold">${v.liter||''} L</span></td>
-                <td class="w-notes"><div class="input-box"><textarea class="row-input italic text-slate-500" rows="1" ${adminViewMode ? 'disabled' : ''}>${v.arahan||''}</textarea></div><span class="print-text italic text-slate-500">${v.arahan||''}</span></td>
+                <td class="w-fuel bg-slate-50/30"><div class="input-box flex flex-col px-1"><div class="flex items-center"><span class="text-[10px] font-black text-slate-400 mr-1">RM</span><input type="number" step="0.01" value="${v.resit||''}" class="row-input rm-val font-bold" ${disableAttr}></div><div class="flex items-center"><span class="text-[8px] font-black text-blue-400 mr-1">R/N:</span><input type="text" value="${v.noResit||''}" class="row-input no-resit-val text-[10px] text-blue-600 font-bold" ${disableAttr}></div></div><span class="print-text text-center"><div class="font-bold">RM ${v.resit||'0.00'}</div><div class="text-[7pt] text-blue-600 font-bold italic">R/N: ${v.noResit||'-'}</div></span></td>
+                <td class="w-fuel"><div class="input-box"><input type="number" step="0.01" value="${v.liter||''}" class="row-input liter-val text-center" ${disableAttr}></div><span class="print-text text-center font-bold">${v.liter||''} L</span></td>
+                <td class="w-notes"><div class="input-box"><textarea class="row-input italic text-slate-500" rows="1" ${disableAttr}>${v.arahan||''}</textarea></div><span class="print-text italic text-slate-500">${v.arahan||''}</span></td>
                 <td class="no-print text-center w-action"><div class="flex flex-col items-center gap-2">
-                    ${!adminViewMode ? `
+                    ${(!adminViewMode || isSuperAdmin) ? `
                     <button onclick="toggleLock(this)" class="lock-icon-btn p-1"><i data-lucide="lock-open" class="w-4 h-4 text-emerald-500"></i></button>
-                    <button onclick="if(confirm('Padam?')) { this.closest('tr').remove(); calcLogic(); sync(); }" class="text-red-400 p-1"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                    <button onclick="if(confirm('Padam baris ini?')) { this.closest('tr').remove(); calcLogic(); sync(); }" class="text-red-400 p-1"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
                     ` : '<i data-lucide="eye" class="w-4 h-4 text-slate-300"></i>'}
                 </div></td>
             `;
@@ -1093,7 +1251,8 @@
         }
 
         async function sync() {
-            if(!currentUser || adminViewMode) return;
+            if(!currentUser || (adminViewMode && !isSuperAdmin)) return;
+            const targetUid = adminViewMode ? viewingUid : currentUser.uid;
             const logs = [];
             document.querySelectorAll('#log-body tr').forEach(r => {
                 const i = r.querySelectorAll('input, textarea');
@@ -1106,14 +1265,13 @@
                 }
             });
 
-            await db.collection("logs_v81").doc(currentUser.uid).set({
+            await db.collection("logs_v81").doc(targetUid).set({
                 meta: { 
                     month:document.getElementById('m-month').value, plate:document.getElementById('m-plate').value, 
                     odo:document.getElementById('m-odo-start').value, unit:document.getElementById('m-unit').value, 
                     salary:document.getElementById('m-salary').value, logoUrl:document.getElementById('m-logo-url').value,
                     fuelCardNo: document.getElementById('m-fuel-card-no').value, fuelCardName: document.getElementById('m-fuel-card-name').value,
-                    fuelCardFront: fuelCardImages.front,
-                    fuelCardBack: fuelCardImages.back
+                    fuelCardFront: fuelCardImages.front, fuelCardBack: fuelCardImages.back
                 },
                 logs: logs, futureSchedules: futureSchedules
             });
@@ -1122,7 +1280,6 @@
         async function loadData(targetUid = null) {
             const uid = targetUid || (currentUser ? currentUser.uid : null);
             if(!uid) return;
-
             const doc = await db.collection("logs_v81").doc(uid).get();
             if(doc.exists) {
                 const d = doc.data();
@@ -1130,23 +1287,13 @@
                 document.getElementById('m-odo-start').value = d.meta.odo || ''; document.getElementById('m-unit').value = d.meta.unit || '';
                 document.getElementById('m-salary').value = d.meta.salary || ''; document.getElementById('m-logo-url').value = d.meta.logoUrl || ''; 
                 document.getElementById('m-fuel-card-no').value = d.meta.fuelCardNo || ''; document.getElementById('m-fuel-card-name').value = d.meta.fuelCardName || '';
-                
-                fuelCardImages.front = d.meta.fuelCardFront || "";
-                fuelCardImages.back = d.meta.fuelCardBack || "";
-
+                fuelCardImages.front = d.meta.fuelCardFront || ""; fuelCardImages.back = d.meta.fuelCardBack || "";
                 futureSchedules = d.futureSchedules || [];
                 document.getElementById('log-body').innerHTML = ""; if(d.logs && d.logs.length > 0) d.logs.forEach(l => addRow(l)); else addRow();
                 calcLogic(); calcWage(); renderSchedules(); updateDynamicLogo();
-
-                // Lockdown inputs if in admin view mode
-                if(adminViewMode) {
-                    const inputs = document.querySelectorAll('.grid input, .grid textarea, #m-month, #m-plate, #m-odo-start, #m-unit, #m-logo-url, #m-salary, #m-fuel-card-no, #m-fuel-card-name');
-                    inputs.forEach(i => i.disabled = true);
-                } else {
-                    const inputs = document.querySelectorAll('.grid input, .grid textarea, #m-month, #m-plate, #m-odo-start, #m-unit, #m-logo-url, #m-salary, #m-fuel-card-no, #m-fuel-card-name');
-                    inputs.forEach(i => i.disabled = false);
-                }
-
+                const isReadOnly = adminViewMode && !isSuperAdmin;
+                const topInputs = document.querySelectorAll('.grid input, .grid textarea, .grid select, #m-month, #m-plate, #m-odo-start, #m-unit, #m-logo-url, #m-salary, #m-fuel-card-no, #m-fuel-card-name');
+                topInputs.forEach(i => i.disabled = isReadOnly);
             } else { if(!adminViewMode) addRow(); }
         }
 
@@ -1155,12 +1302,7 @@
         function updateUI() { if(currentUser) { document.getElementById('login-btn').classList.add('hidden'); document.getElementById('user-profile').classList.remove('hidden'); document.getElementById('u-avatar').src = currentUser.photoURL; } }
         
         auth.onAuthStateChanged(async (user) => { 
-            if(user) { 
-                currentUser = user; 
-                updateUI(); 
-                await checkAdminStatus(user);
-                loadData(); 
-            } 
+            if(user) { currentUser = user; updateUI(); await checkAdminStatus(user); loadData(); } 
         });
 
         window.onload = () => { lucide.createIcons(); updateClock(); togglePrintConfig(); rotateTips(); updateDynamicLogo(); };
